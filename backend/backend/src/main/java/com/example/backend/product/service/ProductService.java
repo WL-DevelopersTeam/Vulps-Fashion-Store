@@ -24,36 +24,34 @@ public class ProductService
     @Autowired
     private ProductRepository productRepository;
 
-    private final String uploadDir = "images/";
+    // ✅ ALWAYS points to backend/images
+    private final String uploadDir =
+            System.getProperty("user.dir") + "/images/";
 
-    // Add product (Admin)
-    public ProductResponse addProduct(ProductRequest request) throws IOException 
-    {
+    // Add product
+    public ProductResponse addProduct(ProductRequest request) throws IOException {
 
         MultipartFile image = request.getImage();
-
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
 
-        // Create folder if not exists
         Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) 
-        {
+        if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        // Save image file
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Save product in DB
         Product product = new Product();
         product.setName(request.getName());
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setCategory(request.getCategory());
-        product.setImageUrl("http://localhost:8080/images/" + fileName);
         product.setColors(request.getColors());
         product.setSizes(request.getSizes());
+
+        // ✅ Correct image URL
+        product.setImageUrl("/images/" + fileName);
 
         productRepository.save(product);
 

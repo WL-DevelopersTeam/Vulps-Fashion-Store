@@ -1,5 +1,3 @@
-
-
 package com.example.backend.Common.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +9,10 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:./images/");
+                .addResourceLocations(
+                        "file:" + System.getProperty("user.dir") + "/images/"
+                );
     }
 }
-
