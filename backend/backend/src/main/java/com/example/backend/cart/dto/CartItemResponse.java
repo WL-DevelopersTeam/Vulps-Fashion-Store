@@ -1,0 +1,45 @@
+package com.example.backend.cart.dto;
+
+public class CartItemResponse {
+
+    private Long productId;
+    private String productName;
+    private String imageUrl;
+    private double price;
+    private String size;
+    private String color;
+    private int quantity;
+    public Long getProductId() {
+        return productId;
+    }
+    public String getProductName() {
+        return productName;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public String getSize() {
+        return size;
+    }
+    public String getColor() {
+        return color;
+    }
+    public int getQuantity() {
+        return quantity;
+    }
+    public CartItemResponse(Long productId, String productName, String imageUrl, double price, String size,
+            String color, int quantity) {
+        this.productId = productId;
+        this.productName = productName;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.size = size;
+        this.color = color;
+        this.quantity = quantity;
+    }
+
+    // constructor + getters
+}

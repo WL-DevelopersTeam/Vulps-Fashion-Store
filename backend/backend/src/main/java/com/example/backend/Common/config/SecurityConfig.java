@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .requestMatchers("/images/**").permitAll()   // ✅ IMAGE ACCESS
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
+                .requestMatchers("/api/cart/**").permitAll()
                 .anyRequest().authenticated()
             );
 
