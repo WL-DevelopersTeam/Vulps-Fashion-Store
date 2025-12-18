@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
+import axios from 'axios';
+
 
 function SignIn() {
   const navigate = useNavigate();
@@ -45,29 +47,57 @@ function SignIn() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (isLoading) {
-      return;
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (isLoading) return;
+
+  const newErrors = validate();
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const response = await axios.post(
+      'http://localhost:8080/api/auth/signin',
+      {
+        email: formData.email,
+        password: formData.password
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('Login success:', response.data);
+
+    // ✅ Save token (VERY IMPORTANT)
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+
+    // Redirect to home/dashboard
+    navigate('/');
+
+  } catch (error) {
+    console.error('Login error:', error);
+
+    if (error.response && error.response.status === 401) {
+      setErrors({ submit: 'Invalid email or password' });
+    } else if (error.response && error.response.data) {
+      setErrors({ submit: error.response.data.message });
+    } else {
+      setErrors({ submit: 'Server error. Please try again.' });
     }
-    
-    const newErrors = validate();
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Navigate on success
-      navigate('/');
-    }, 1500);
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="auth-page">

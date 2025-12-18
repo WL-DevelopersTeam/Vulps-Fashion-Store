@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.backend.Login.dto.SigninRequest;
 import com.example.backend.Login.dto.SignupRequest;
 import com.example.backend.Login.service.AuthService;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController 

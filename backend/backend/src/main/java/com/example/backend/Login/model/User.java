@@ -17,12 +17,15 @@ public class User
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String name;
+    private String phonenumber;
 
     private String password;
 
-    private String role; // CUSTOMER / ADMIN
+
+    //private String role; // CUSTOMER / ADMIN
 }

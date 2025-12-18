@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
+import axios from 'axios';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -67,29 +68,58 @@ function SignUp() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (isLoading) {
-      return;
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (isLoading) return;
+
+  const newErrors = validate();
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const response = await axios.post(
+      'http://localhost:8080/api/auth/signup',
+      {
+        name: formData.name,
+        email: formData.email,
+        phonenumber: formData.phone,   // 🔥 mapping here
+        password: formData.password,
+        confirmPassword: formData.confirmPassword
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('Signup Success:', response.data);
+
+    // Redirect to Sign In page
+    navigate('/signin');
+
+  } catch (error) {
+    console.error('Signup Error:', error);
+
+    if (error.response && error.response.data) {
+      setErrors({
+        submit: error.response.data.message || 'Signup failed'
+      });
+    } else {
+      setErrors({
+        submit: 'Server not reachable. Please try again later.'
+      });
     }
-    
-    const newErrors = validate();
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      // Navigate on success
-      navigate('/signin');
-    }, 1500);
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="auth-page">
