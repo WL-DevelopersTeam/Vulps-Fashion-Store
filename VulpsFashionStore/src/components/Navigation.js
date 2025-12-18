@@ -27,15 +27,16 @@ function Navigation() {
           <span className="logo-subtitle">fashion store</span>
         </Link>
         <ul className="nav-menu">
-          <li><Link to="/#home">Home</Link></li>
-          <li><Link to="/#shop">Shop</Link></li>
-          <li><Link to="/About">About Us</Link></li>
-          <li><Link to="/Blog">Blog</Link></li>
-          <li><Link to="/#stories">Success Stories</Link></li>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/shop">Shop</Link></li>
+          <li><Link to="/about">About Us</Link></li>
+          <li><Link to="/blog">Blog</Link></li>
+          <li><Link to="/successstories">Success Stories</Link></li>
         </ul>
+
         <div className="nav-icons">
-          <button 
-            className="nav-icon-btn wishlist-icon-btn" 
+          <button
+            className="nav-icon-btn wishlist-icon-btn"
             onClick={() => navigate('/wishlist')}
             title="Wishlist"
             aria-label="Wishlist"
@@ -43,8 +44,8 @@ function Navigation() {
             <WishlistIcon className="icon-svg" />
             {wishlistCount > 0 && <span className="badge">{wishlistCount}</span>}
           </button>
-          <button 
-            className="nav-icon-btn cart-icon-btn" 
+          <button
+            className="nav-icon-btn cart-icon-btn"
             onClick={() => navigate('/cart')}
             title="Shopping Cart"
             aria-label="Shopping Cart"
@@ -52,8 +53,8 @@ function Navigation() {
             <CartIcon className="icon-svg" />
             {cartCount > 0 && <span className="badge">{cartCount}</span>}
           </button>
-          <button 
-            className="sign-in-btn" 
+          <button
+            className="sign-in-btn"
             onClick={() => navigate('/signin')}
           >
             Sign in
