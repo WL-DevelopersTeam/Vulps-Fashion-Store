@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'; // 1. Added Link for navigation
 import '../App.css';
 import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
@@ -10,10 +10,100 @@ const premiumBgImages = [
   "https://images.unsplash.com/photo-1554568218-0f1715e72254?auto=format&fit=crop&w=1500&q=80",
   "https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=1500&q=80"
 ];
+const testimonials = [
+  {
+    id: 1,
+    stars: "⭐⭐⭐⭐⭐",
+    text: "Inviting and vibrant, just like the vibe at Vulps. The clothing truly stands out — especially the organic cotton tees.",
+    author: "Prasad Kale",
+    role: "Founder & CEO, Rayfit",
+    image: "https://i.pravatar.cc/150?u=prasad" // Replace with real image paths
+  },
+  {
+    id: 2,
+    stars: "⭐⭐⭐⭐⭐",
+    text: "This collection is perfect for casual outings or special events. The fit is impeccable.",
+    author: "Sudhir Siddheshware",
+    role: "Graphic Designer",
+    image: "https://i.pravatar.cc/150?u=sudhir"
+  },
+  {
+    id: 3,
+    stars: "⭐⭐⭐⭐⭐",
+    text: "A truly exquisite fashion experience. I highly recommend the Eco-Friendly Collection.",
+    author: "Iris Doe",
+    role: "Manager, FashionBrand",
+    image: "https://i.pravatar.cc/150?u=iris"
+  },
+  {
+    id: 4,
+    stars: "⭐⭐⭐⭐⭐",
+    text: "The best premium streetwear in the market. Quality and sustainability combined.",
+    author: "Rahul Sharma",
+    role: "Content Creator",
+    image: "https://i.pravatar.cc/150?u=rahul"
+  }
+];
+// We define this separately so it's easy to manage
+const ProcessSection = () => {
+  const [isAnimated, setIsAnimated] = useState(false);
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setIsAnimated(true);
+      } else {
+        // Reset the animation when the user scrolls away
+        setIsAnimated(false); 
+      }
+    },
+    { threshold: 0.2 } // Starts when 20% of the section is visible
+  );
+
+  if (sectionRef.current) observer.observe(sectionRef.current);
+  
+  return () => {
+    if (sectionRef.current) observer.disconnect();
+  };
+}, []);
+
+  const steps = [
+    { title: "Add to cart", desc: "Select size and quantity." },
+    { title: "Sign in", desc: "Create an account to track." },
+    { title: "Pay", desc: "UPI, Cards, or Net Banking." },
+    { title: "Delivered", desc: "Quick shipping to your door." }
+  ];
+
+  return (
+    <section className="process-section" ref={sectionRef}>
+      <div className="container">
+        <h2 className="section-title">How It Works</h2>
+        <div className="process-container">
+          <div className="road-line">
+            <div className={`truck-icon ${isAnimated ? 'drive' : ''}`}>🚚</div>
+          </div>
+          <div className="process-steps">
+            {steps.map((step, index) => (
+              <div key={index} className={`process-step ${isAnimated ? 'fade-up' : ''}`} 
+                   style={{ transitionDelay: `${index * 0.4}s` }}>
+                <div className="step-circle">{index + 1}</div>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [premiumBgIndex, setPremiumBgIndex] = useState(0);
-
+  const [isAnimated, setIsAnimated] = useState(false); 
+  const sectionRef = useRef(null);
   // Hero carousel timer
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,6 +139,7 @@ function Home() {
       },
       { threshold: 0.1 }
     );
+    
 
     const elements = document.querySelectorAll('.fade-in, .slide-up, .slide-left, .slide-right');
     elements.forEach((el) => observer.observe(el));
@@ -56,7 +147,11 @@ function Home() {
     return () => {
       elements.forEach((el) => observer.unobserve(el));
     };
+    
+    
   }, []);
+
+  
 
   return (
     <div className="home-page">
@@ -223,62 +318,33 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Testimonials */}
-      <section className="testimonials-section">
-        <div className="container">
-          <h2 className="section-title fade-in">What Our Customers Say</h2>
-          <div className="testimonials-grid">
-            <div className="testimonial-card slide-right">
-              <div className="stars">⭐️⭐️⭐️⭐️⭐️</div>
-              <p className="testimonial-text">"Inviting and vibrant, just like the vibe at Vulps. The atmosphere is great, but it's the clothing that truly stands out — especially the organic cotton tees. They're breathable, premium, and feel like they were made for me."</p>
-              <p className="testimonial-author">- Prasad. Kale</p>
-              <p className="testimonial-role">Founder & CEO of Rayfit Brand</p>
-            </div>
-            <div className="testimonial-card slide-right">
-              <div className="stars">⭐️⭐️⭐️⭐️⭐️</div>
-              <p className="testimonial-text">"This collection is perfect for casual outings or special events."</p>
-              <p className="testimonial-author">- Sudhir Siddheshware</p>
-              <p className="testimonial-role">Graphic Designer</p>
-            </div>
-            <div className="testimonial-card slide-right">
-              <div className="stars">⭐️⭐️⭐️⭐️⭐️</div>
-              <p className="testimonial-text">"A truly exquisite fashion experience. I highly recommend the Eco-Friendly Collection, it's simply stunning."</p>
-              <p className="testimonial-author">- Iris DOE</p>
-              <p className="testimonial-role">Manager of FashionBrand</p>
-            </div>
+      {/* Testimonials Section */}
+     <section className="testimonials-section">
+      <div className="container">
+        <h2 className="section-title">What Our Customers Say</h2>
+        
+        <div className="marquee-wrapper">
+          <div className="marquee-content">
+            {/* Render two sets of items for seamless looping */}
+            {[...testimonials, ...testimonials].map((t, index) => (
+              <div key={index} className="testimonial-card">
+                <div className="card-header">
+                  <img src={t.image} alt={t.author} className="author-img" />
+                  <div className="stars">{t.stars}</div>
+                </div>
+                <p className="testimonial-text">"{t.text}"</p>
+                <div className="author-info">
+                  <h4 className="author-name">{t.author}</h4>
+                  <p className="author-role">{t.role}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
-
-      {/* Process Section */}
-      <section className="process-section">
-        <div className="container">
-          <h2 className="section-title fade-in">Our process in four easy steps</h2>
-          <div className="process-steps">
-            <div className="process-step slide-up">
-              <div className="step-number-large">1</div>
-              <h3>Add to cart</h3>
-              <p>Select your <strong>size and quantity</strong>, then click <strong>"Add to Cart"</strong>.</p>
-            </div>
-            <div className="process-step slide-up">
-              <div className="step-number-large">2</div>
-              <h3>Sign in</h3>
-              <p>New here? Click <strong>"Create an Account"</strong> to sign up and track your orders.</p>
-            </div>
-            <div className="process-step slide-up">
-              <div className="step-number-large">3</div>
-              <h3>Pay</h3>
-              <p>Choose your preferred <strong>payment method</strong> (UPI, Credit/Debit Card, etc.).</p>
-            </div>
-            <div className="process-step slide-up">
-              <div className="step-number-large">4</div>
-              <h3>Get Delivered</h3>
-              <p>Once payment is confirmed, we process and ship your order.</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
+    </section>
+    {/* {<ProcessSection />} */}
+<ProcessSection />
 
       {/* Classified Collection */}
       <section className="classified-section">
