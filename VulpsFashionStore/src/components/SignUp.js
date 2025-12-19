@@ -83,7 +83,7 @@ function SignUp() {
 
   try {
     const response = await axios.post(
-      'http://localhost:8080/api/auth/signup',
+      'http://10.191.17.135:8080/api/auth/signup',
       {
         name: formData.name,
         email: formData.email,
