@@ -135,7 +135,7 @@ function Home() {
       <section className="custom-design-section">
         <div className="container">
           <div className="custom-design-content fade-in">
-            <h2>✨ Your Design, Our Print ✨</h2>
+            <h2> Your Design, Our Print </h2>
             <p className="custom-subtitle">Turn your ideas into custom T-shirts & Hoodies</p>
             <div className="custom-steps">
               <div className="step-item slide-left">
@@ -259,7 +259,7 @@ function Home() {
           </div>
           <div className="footer-bottom">
             <p>Copyright - ©Vulps</p>
-            <p>Powered by Odoo - The #1 Open Source eCommerce</p>
+            <p>Powered by <b><a href="https://wordlanetech.com/">WordLaneTech</a></b> -</p>
           </div>
         </div>
       </footer>
