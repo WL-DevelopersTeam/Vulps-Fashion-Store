@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'; // 1. Added Link for navigation
 import '../App.css';
 import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+
 // Removed: import './About.jsx'; (Not needed here)
 const premiumBgImages = [
   "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1500&q=80",
