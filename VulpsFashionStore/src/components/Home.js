@@ -68,10 +68,9 @@ const ProcessSection = () => {
     if (sectionRef.current) observer.disconnect();
   };
 }, []);
-
   const steps = [
-    { title: "Add to cart", desc: "Select size and quantity." },
     { title: "Sign in", desc: "Create an account to track." },
+    { title: "Add to cart", desc: "Select size and quantity." },
     { title: "Pay", desc: "UPI, Cards, or Net Banking." },
     { title: "Delivered", desc: "Quick shipping to your door." }
   ];
