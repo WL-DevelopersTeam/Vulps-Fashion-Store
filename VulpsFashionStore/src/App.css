@@ -889,6 +889,26 @@
     transform: scale(1.05);
   }
 }
+/* Custom Card specific styling */
+.custom-card-style {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.custom-card-style:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Ensure the testimonial slider doesn't show scrollbars */
+.testimonials-section .relative {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* Collections background transition */
+.collections-section {
+  transition: background 0.5s ease-in-out;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
