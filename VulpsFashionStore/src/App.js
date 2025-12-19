@@ -11,6 +11,7 @@ import About from './components/About';
 import Blog from './components/Blog';
 import Shop from './components/Shop';
 import SuccessStories from './components/SuccessStories';
+import CustomShirtForm from './components/CustomShirtForm';
 import './App.css';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/successstories" element={<SuccessStories />} />
+           <Route path="/customshirtform" element={<CustomShirtForm />} />
         </Routes>
       </div>
     </Router>

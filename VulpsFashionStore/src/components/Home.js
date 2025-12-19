@@ -147,7 +147,7 @@ function Home() {
                 <p>Upload your design & submit it</p>
               </div>
             </div>
-            <button className="cta-button">Fill the Form</button>
+            <a href="/CustomShirtForm"><button className="cta-button">Fill the Form</button></a>
           </div>
         </div>
       </section>
