@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// 1. Define initialState outside the component so it's globally accessible
+const initialState = {
+  name: '',
+  size: 'M',
+  placement: 'Front Side',
+  shirtColor: '',
+  text: ''
+};
+
+const images = [
+  "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800",
+  "https://images.unsplash.com/photo-1554568218-0f1715e72254?q=80&w=800",
+  "https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=800",
+  "https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800"
+];
 
 const CustomShirtForm = () => {
   const navigate = useNavigate();
-  
-  // Initial state for easy resetting
-  const initialState = {
-    name: '',
-    size: 'M',
-    placement: 'Front Side',
-    shirtColor: '', // Text input for color
-    text: ''
-  };
-
+  const [index, setIndex] = useState(0);
   const [formData, setFormData] = useState(initialState);
+
+  // Background Rotation Logic
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,117 +37,112 @@ const CustomShirtForm = () => {
   };
 
   const handleReset = () => {
-    setFormData(initialState);
+    setFormData(initialState); // Now this will work!
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Final Submission:', formData);
-    alert('Design Submitted successfully!');
+    console.log('Order Details:', formData);
+    alert('Design Submitted!');
   };
 
   return (
-    // pt-24 ensures the form starts below a standard navbar height
-    <div className="min-h-screen pt-24 pb-12 flex items-center justify-center bg-gradient-to-br from-[#6a82fb] to-[#fc5c7d] p-4">
-      <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2rem] shadow-2xl w-full max-w-md text-white">
+    <div className="min-h-screen pt-24 pb-12 flex items-center justify-center bg-gradient-to-br from-[#6a82fb] to-[#fc5c7d] p-4 font-sans">
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden bg-black/60 backdrop-blur-2xl border border-white/20 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md text-white"
+      >
         
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold tracking-tight">Design Form ✨</h2>
-          <p className="text-white/70 text-sm mt-2">Enter your custom details below</p>
+       
+
+        {/* Background Image Slideshow */}
+        <div className="absolute inset-0 z-0">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 0.3, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.2 }}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${images[index]})` }}
+            />
+          </AnimatePresence>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Name Field */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2 ml-1">Full Name</label>
-            <input 
-              type="text" 
-              name="name" 
-              value={formData.name}
-              placeholder="e.g. Alex Smith"
-              required
-              className="w-full p-3 rounded-xl bg-white/10 border border-white/20 focus:bg-white/20 focus:outline-none transition-all placeholder-white/40"
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Size Selector */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2 ml-1">Size</label>
-            <div className="flex gap-2">
-              {['M', 'L', 'XL', 'XXL'].map(s => (
-                <button 
-                  type="button"
-                  key={s} 
-                  onClick={() => setFormData({...formData, size: s})}
-                  className={`flex-1 py-2 rounded-lg border transition-all ${formData.size === s ? 'bg-white text-indigo-600 font-bold' : 'border-white/20 hover:bg-white/10'}`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Placement */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2 ml-1">Print Placement</label>
-            <select 
-              name="placement" 
-              value={formData.placement}
-              onChange={handleChange}
-              className="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white focus:bg-white/20 outline-none appearance-none cursor-pointer"
-            >
-              <option value="Front Side" className="text-black">Front Side</option>
-              <option value="Back Side" className="text-black">Back Side</option>
-            </select>
-          </div>
-
-          {/* Color Input (Text based) */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2 ml-1">Color (Name or Hex)</label>
-            <input 
-              type="text" 
-              name="shirtColor" 
-              value={formData.shirtColor}
-              placeholder="e.g. Royal Blue or #0000FF"
-              required
-              className="w-full p-3 rounded-xl bg-white/10 border border-white/20 focus:bg-white/20 focus:outline-none transition-all placeholder-white/40"
-              onChange={handleChange}
-            />
-          </div>
-
-          {/* Custom Text */}
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-2 ml-1">Text on Shirt</label>
-            <textarea 
-              name="text" 
-              value={formData.text}
-              rows="2" 
-              placeholder="Your custom message..."
-              className="w-full p-3 rounded-xl bg-white/10 border border-white/20 focus:outline-none resize-none placeholder-white/40"
-              onChange={handleChange}
-            ></textarea>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="pt-4 flex flex-col gap-3">
-            <button 
-              type="submit"
-              className="w-full py-4 bg-white text-indigo-600 font-bold rounded-full shadow-lg hover:shadow-white/20 hover:scale-[1.02] transition-all"
-            >
-              Submit Design
-            </button>
+        {/* Form Content */}
+        <div className="relative z-10">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold tracking-tight">Custom Order </h2>
             
-            <button 
-              type="button"
-              onClick={handleReset}
-              className="w-full py-3 bg-transparent border border-white/30 text-white font-medium rounded-full hover:bg-white/10 transition-all"
-            >
-              Reset Form
-            </button>
           </div>
-        </form>
-      </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1 ml-1 opacity-70">Client Name</label>
+              <input 
+                type="text" name="name" value={formData.name} required
+                placeholder="Full Name"
+                className="w-full p-3 rounded-xl bg-white/10 border border-white/20 focus:bg-white/20 outline-none transition-all placeholder:text-white/30"
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1 ml-1 opacity-70">Size</label>
+                <select 
+                  name="size" value={formData.size}
+                  className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none appearance-none cursor-pointer"
+                  onChange={handleChange}
+                >
+                  {['M', 'L', 'XL', 'XXL'].map(s => <option key={s} value={s} className="text-black">{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1 ml-1 opacity-70">Color Preference</label>
+                <input 
+                  type="text" name="shirtColor" value={formData.shirtColor} required
+                  placeholder="e.g. Navy Blue"
+                  className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none placeholder:text-white/30"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1 ml-1 opacity-70">Print Message</label>
+              <textarea 
+                name="text" value={formData.text} rows="2"
+                placeholder="Write your text here..."
+                className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none resize-none placeholder:text-white/30"
+                onChange={handleChange}
+              ></textarea>
+            </div>
+
+            <div className="pt-4 flex flex-col gap-3">
+              <motion.button 
+                whileHover={{ scale: 1.02, backgroundColor: "#ffffff" }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="w-full py-4 bg-white/90 text-indigo-900 font-extrabold rounded-full shadow-xl transition-colors"
+              >
+                SUBMIT DESIGN
+              </motion.button>
+              
+              <button 
+                type="button"
+                onClick={handleReset}
+                className="text-white/40 text-[10px] uppercase font-bold tracking-tighter hover:text-white transition-colors py-2"
+              >
+                Reset Information
+              </button>
+            </div>
+          </form>
+        </div>
+      </motion.div>
     </div>
   );
 };
