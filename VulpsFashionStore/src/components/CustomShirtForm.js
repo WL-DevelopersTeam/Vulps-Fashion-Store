@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from "axios";
 
 // 1. Define initialState outside the component so it's globally accessible
 const initialState = {
@@ -40,11 +41,30 @@ const CustomShirtForm = () => {
     setFormData(initialState); // Now this will work!
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Order Details:', formData);
-    alert('Design Submitted!');
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/api/custom-products", // SAME PC
+      // "http://10.191.17.135:8080/api/custom-products", // OTHER PCs
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    console.log("Saved successfully:", response.data);
+    alert("Design submitted successfully!");
+    setFormData(initialState);
+
+  } catch (error) {
+    console.error("Error saving design:", error);
+    alert("Server error. Please try again.");
+  }
+};
 
   return (
     <div className="min-h-screen pt-24 pb-12 flex items-center justify-center bg-gradient-to-br from-[#6a82fb] to-[#fc5c7d] p-4 font-sans">
@@ -83,7 +103,7 @@ const CustomShirtForm = () => {
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest mb-1 ml-1 opacity-70">Client Name</label>
               <input 
-                type="text" name="name" value={formData.name} required
+                type="text" name="clientName" value={formData.clientName} required
                 placeholder="Full Name"
                 className="w-full p-3 rounded-xl bg-white/10 border border-white/20 focus:bg-white/20 outline-none transition-all placeholder:text-white/30"
                 onChange={handleChange}
@@ -104,7 +124,7 @@ const CustomShirtForm = () => {
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-widest mb-1 ml-1 opacity-70">Color Preference</label>
                 <input 
-                  type="text" name="shirtColor" value={formData.shirtColor} required
+                  type="text" name="color" value={formData.color} required
                   placeholder="e.g. Navy Blue"
                   className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none placeholder:text-white/30"
                   onChange={handleChange}
@@ -115,7 +135,7 @@ const CustomShirtForm = () => {
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-widest mb-1 ml-1 opacity-70">Print Message</label>
               <textarea 
-                name="text" value={formData.text} rows="2"
+                name="message" value={formData.message} rows="2"
                 placeholder="Write your text here..."
                 className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none resize-none placeholder:text-white/30"
                 onChange={handleChange}
