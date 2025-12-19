@@ -16,13 +16,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+            // ✅ Enable CORS
+            .cors(cors -> {})
+
+            // ❌ Disable CSRF (REST API)
             .csrf(csrf -> csrf.disable())
+
+            // ✅ Authorization rules
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/images/**").permitAll()   // ✅ IMAGE ACCESS
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
                 .requestMatchers("/api/cart/**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/images/**").permitAll()
+
+                // ✅ DEV ONLY – allow everything
+                .anyRequest().permitAll()
             );
 
         return http.build();
