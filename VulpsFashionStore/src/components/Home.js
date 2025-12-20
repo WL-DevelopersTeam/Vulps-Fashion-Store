@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'; // 1. Added Link for navigation
 import '../App.css';
+import './Footer.css';
 import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -358,48 +359,36 @@ function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-section">
-              <h4>Menu</h4>
-              <ul>
-                {/* 2. Updated Links to use React Router */}
-                <li><Link to="/">Home</Link></li>
-                <li><a href="/About">About us</a></li>
-               <li><a href="/Blog">Blog</a></li>
-                <li><a href="#shop">Shop Now</a></li>
-                <li><a href="#terms">Terms & Conditions</a></li>
-                <li><a href="#forum">Forum</a></li>
-                <li><a href="#contact">Contact us</a></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h4>Contact to us</h4>
-              <ul>
-                <li><a href="#contact">Contact us</a></li>
-                <li><a href="mailto:vulpsfashion@gmail.com">vulpsfashion@gmail.com</a></li>
-                <li>+91 </li>
-                <li>+91 </li>
-                <li>+91 </li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h4>Connect with us</h4>
-              <div className="social-links">
-                <a href="#" className="social-icon"> <FaInstagram size={30} style={{ color: '#E1306C' }} /></a>
-                <a href="#" className="social-icon"><FaFacebookF size={30} style={{ color: '#1877F2' }} /></a>
-                <a href="#" className="social-icon"><FaWhatsapp size={30} style={{ color: '#25D366' }} /></a>
-              </div>
-              <h4 className="follow-title">Follow us</h4>
-            </div>
+      <footer className="footer-modern">
+      <div className="container">
+        <div className="footer-main">
+          <div className="brand-side">
+            <h2 className="footer-logo">VULPS<span>.</span></h2>
+            <p className="footer-tagline">Elevating your style, every day.</p>
           </div>
-          <div className="footer-bottom">
-            <p>Copyright - ©Vulps</p>
-            <p>Powered by <b><a href="https://wordlanetech.com/">WordLaneTech</a></b> -</p>
+
+          <nav className="footer-nav">
+            <Link to="/">Home</Link>
+            <Link to="/About">About</Link>
+            <Link to="/Blog">Blog</Link>
+            <a href="#contact">Contact</a>
+          </nav>
+
+          <div className="footer-socials">
+            <a href="#" className="s-icon ig"><FaInstagram /></a>
+            <a href="#" className="s-icon fb"><FaFacebookF /></a>
+            <a href="#" className="s-icon wa"><FaWhatsapp /></a>
           </div>
         </div>
-      </footer>
+
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
+          <p className="powered-by">
+            Powered by <a href="https://wordlanetech.com/">WordLaneTech</a>
+          </p>
+        </div>
+      </div>
+    </footer>
     </div>
   );
 }
