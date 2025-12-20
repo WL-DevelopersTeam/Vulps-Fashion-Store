@@ -23,6 +23,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/cart/**").permitAll()
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/api/custom-products/**").permitAll()
+                .requestMatchers("/api/latest-collections/**").permitAll()
                 .anyRequest().authenticated() // Everything else requires auth
             );
 

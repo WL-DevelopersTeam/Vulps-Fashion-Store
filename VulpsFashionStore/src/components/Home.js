@@ -103,6 +103,20 @@ function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [premiumBgIndex, setPremiumBgIndex] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false); 
+  const [latestCollections, setLatestCollections] = useState([]);
+
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/latest-collections")
+      .then(res => res.json())
+      .then(data => {
+        console.log("LATEST COLLECTION 👉", data);
+        setLatestCollections(Array.isArray(data) ? data : []);
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+
   const sectionRef = useRef(null);
   // Hero carousel timer
   useEffect(() => {
@@ -279,24 +293,54 @@ function Home() {
         </div>
       </section>
       {/* Latest Collections */}
-      <section className="latest-section">
-        <div className="container">
-          <div className="section-header fade-in">
-            <h2>Our latest Collections</h2>
-            <a href="#shop" className="see-all-link">See all →</a>
-          </div>
-          <div className="products-grid">
-            {['Unisex Printed Hoodie', 'Plain Men Hoodie', 'Printed Men Over Size -T', 'Men Plain Casual & Over Size -T', 'Women\'s Printed -T', 'Women\'s Casual Plain -T'].map((product, index) => (
-              <div key={index} className="product-card slide-up">
-                <div className="product-image">
-                  <div className="image-placeholder">{product}</div>
-                </div>
-                <h4>{product}</h4>
-              </div>
-            ))}
-          </div>
+        <section className="latest-section" style={{ padding: "50px 0" }}>
+        <h2 style={{ textAlign: "center", color: "white" }}>
+          Our Latest Collections
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "10px",
+            padding: "20px"
+          }}
+        >
+          {latestCollections.map(item => (
+            <div
+              key={item.id}
+              style={{
+                background: "#111",
+                padding: "15px",
+                borderRadius: "10px",
+                color: "white"
+              }}
+            >
+              <img
+                src={item.imageUrl}
+                alt={item.title}
+                style={{
+                  width: "50%",
+                  height: "250px",
+                  objectFit: "cover",
+                  borderRadius: "5px"
+                }}
+              />
+              <h4>{item.title}</h4>
+              <p>{item.description}</p>
+            </div>
+          ))}
         </div>
+
+        {latestCollections.length === 0 && (
+          <p style={{ textAlign: "center", color: "white" }}>
+            No latest collections available
+          </p>
+        )}
       </section>
+
+
+
 
       {/* Custom Design Section */}
       <section className="custom-design-section">
