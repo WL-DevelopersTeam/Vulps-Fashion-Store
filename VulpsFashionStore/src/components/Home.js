@@ -100,10 +100,26 @@ const ProcessSection = () => {
   );
 };
 function Home() {
+
+  const ITEMS_PER_PAGE = 4;
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [premiumBgIndex, setPremiumBgIndex] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false); 
   const [latestCollections, setLatestCollections] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleNext = () => {
+  if (currentIndex + ITEMS_PER_PAGE < latestCollections.length) {
+    setCurrentIndex(prev => prev + ITEMS_PER_PAGE);
+  }
+};
+
+const handlePrev = () => {
+  if (currentIndex - ITEMS_PER_PAGE >= 0) {
+    setCurrentIndex(prev => prev - ITEMS_PER_PAGE);
+  }
+}
 
 
   useEffect(() => {
@@ -293,54 +309,59 @@ function Home() {
         </div>
       </section>
       {/* Latest Collections */}
-        <section className="latest-section" style={{ padding: "50px 0" }}>
-        <h2 style={{ textAlign: "center", color: "white" }}>
-          Our Latest Collections
-        </h2>
+      <section className="latest-section">
+          <div className="container">
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "10px",
-            padding: "20px"
-          }}
-        >
-          {latestCollections.map(item => (
-            <div
-              key={item.id}
-              style={{
-                background: "#111",
-                padding: "15px",
-                borderRadius: "10px",
-                color: "white"
-              }}
-            >
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                style={{
-                  width: "50%",
-                  height: "250px",
-                  objectFit: "cover",
-                  borderRadius: "5px"
-                }}
-              />
-              <h4>{item.title}</h4>
-              <p>{item.description}</p>
+            {/* Header */}
+            <div className="latest-header">
+              <h2>Our latest Collections</h2>
+              <span className="see-all">See all →</span>
             </div>
-          ))}
-        </div>
 
-        {latestCollections.length === 0 && (
-          <p style={{ textAlign: "center", color: "white" }}>
-            No latest collections available
-          </p>
-        )}
+            {/* Slider Wrapper */}
+            <div className="latest-slider-wrapper">
+
+              {/* LEFT ARROW */}
+              <button
+                className="slider-arrow left"
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+              >
+                ❮
+              </button>
+
+              {/* SLIDER */}
+              <div className="latest-slider">
+                <div
+                  className="latest-track"
+                  style={{
+                    transform: `translateX(-${(currentIndex / ITEMS_PER_PAGE) * 100}%)`
+                  }}
+                >
+                  {latestCollections.map((item) => (
+                    <div className="latest-card" key={item.id}>
+                      <img src={item.imageUrl} alt={item.title} />
+                      <div className="card-info">
+                        <span className="rating">⭐ 0.0</span>
+                        <span className="price">₹ {item.price}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* RIGHT ARROW */}
+              <button
+                className="slider-arrow right"
+                onClick={handleNext}
+                disabled={currentIndex + ITEMS_PER_PAGE >= latestCollections.length}
+              >
+                ❯
+              </button>
+
+            </div>
+          </div>
       </section>
-
-
-
 
       {/* Custom Design Section */}
       <section className="custom-design-section">

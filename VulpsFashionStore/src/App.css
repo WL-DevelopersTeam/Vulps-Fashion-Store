@@ -1225,3 +1225,146 @@ html {
   opacity: 1;
   transform: translateX(0);
 }
+
+.latest-collection-premium {
+  padding: 80px 40px;
+  background: linear-gradient(90deg, #f6d64a, #8a5c0c);
+}
+
+.latest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.latest-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+}
+
+.see-all {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.latest-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+}
+
+.latest-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.latest-card {
+  min-width: 260px;
+  
+  border-radius: 14px;
+  padding: 10px;
+  transition: transform 0.3s ease;
+}
+
+.latest-card:hover {
+  transform: translateY(-6px);
+}
+
+.latest-card img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.latest-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.no-data {
+  text-align: center;
+  margin-top: 20px;
+  color: #000;
+}
+
+.latest-section {
+  background: linear-gradient(90deg, #f6d84c, #8a6514);
+  padding: 60px 0;
+}
+
+.latest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #000;
+  margin-bottom: 30px;
+}
+
+.latest-slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.latest-slider {
+  overflow: hidden;
+  width: 100%;
+}
+
+.latest-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.latest-card {
+  min-width: 25%; /* 4 cards exactly */
+  padding: 12px;
+}
+
+.latest-card img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.card-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  color: #000;
+  font-weight: 600;
+}
+
+/* ARROWS */
+.slider-arrow {
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  z-index: 10;
+}
+
+.slider-arrow.left {
+  left: -22px;
+}
+
+.slider-arrow.right {
+  right: -22px;
+}
+
+.slider-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
