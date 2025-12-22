@@ -440,7 +440,7 @@ const handlePrev = () => {
           </nav>
 
           <div className="footer-socials">
-            <a href="#" className="s-icon ig"><FaInstagram /></a>
+            <a href="https://www.instagram.com/word_lane_tech/?hl=en" className="s-icon ig"><FaInstagram /></a>
             <a href="#" className="s-icon fb"><FaFacebookF /></a>
             <a href="#" className="s-icon wa"><FaWhatsapp /></a>
           </div>
