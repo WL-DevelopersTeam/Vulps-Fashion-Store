@@ -26,7 +26,8 @@ public class ProductService
 
     // ✅ ALWAYS points to backend/images
     private final String uploadDir =
-            System.getProperty("user.dir") + "/images/";
+        System.getProperty("user.dir") + "/backend/images/product-images/";
+
 
     // Add product
     public ProductResponse addProduct(ProductRequest request) throws IOException {
@@ -51,7 +52,7 @@ public class ProductService
         product.setSizes(request.getSizes());
 
         // ✅ Correct image URL
-        product.setImageUrl("/images/" + fileName);
+        product.setImageUrl("/images/product-images/" + fileName);
 
         productRepository.save(product);
 

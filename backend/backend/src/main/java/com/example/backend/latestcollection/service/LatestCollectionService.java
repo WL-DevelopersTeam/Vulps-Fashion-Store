@@ -19,7 +19,9 @@ public class LatestCollectionService {
     @Autowired
     private LatestCollectionRepository repository;
 
-    private final String uploadDir = "images/latest/";
+    private final String uploadDir =
+        System.getProperty("user.dir") + "/backend/images/latest/";
+
 
     // Admin adds latest collection
     public void add(LatestCollectionRequest request) throws IOException {
@@ -40,8 +42,7 @@ public class LatestCollectionService {
         LatestCollection lc = new LatestCollection();
         lc.setTitle(request.getTitle());
         lc.setDescription(request.getDescription());
-        lc.setImageUrl("http://localhost:8080/images/latest/" + fileName);
-
+        lc.setImageUrl("/images/latest/" + fileName);
         repository.save(lc);
     }
 
