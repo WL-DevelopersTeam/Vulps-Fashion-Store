@@ -100,39 +100,9 @@ const ProcessSection = () => {
   );
 };
 function Home() {
-
-  const ITEMS_PER_PAGE = 4;
-
   const [currentSlide, setCurrentSlide] = useState(0);
   const [premiumBgIndex, setPremiumBgIndex] = useState(0);
   const [isAnimated, setIsAnimated] = useState(false); 
-  const [latestCollections, setLatestCollections] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const handleNext = () => {
-  if (currentIndex + ITEMS_PER_PAGE < latestCollections.length) {
-    setCurrentIndex(prev => prev + ITEMS_PER_PAGE);
-  }
-};
-
-const handlePrev = () => {
-  if (currentIndex - ITEMS_PER_PAGE >= 0) {
-    setCurrentIndex(prev => prev - ITEMS_PER_PAGE);
-  }
-}
-
-
-  useEffect(() => {
-    fetch("http://localhost:8080/api/latest-collections")
-      .then(res => res.json())
-      .then(data => {
-        console.log("LATEST COLLECTION 👉", data);
-        setLatestCollections(Array.isArray(data) ? data : []);
-      })
-      .catch(err => console.error(err));
-  }, []);
-
-
   const sectionRef = useRef(null);
   // Hero carousel timer
   useEffect(() => {
@@ -193,7 +163,7 @@ const handlePrev = () => {
               <h1>Elevate Your Everyday Style</h1>
               <p>Effortless Fashion for Every Occasion</p>
               <p className="hero-subtitle">At Vulps, we believe your wardrobe should work as hard as you do. Our collection of premium T-shirts and hoodies is designed to seamlessly transition from casual outings to relaxed evenings.</p>
-              <button className="cta-button">Shop Now</button>
+              <a  href="/Shop"><button className="cta-button">Shop Now</button></a> 
             </div>
           </div>
           <div className={`hero-slide ${currentSlide === 1 ? 'active' : ''}`} style={{ backgroundImage: `url('https://unsplash.com/photos/person-leaning-on-wall-while-holding-gray-hat-qnKhZJPKFD8')` }}>
@@ -310,57 +280,22 @@ const handlePrev = () => {
       </section>
       {/* Latest Collections */}
       <section className="latest-section">
-          <div className="container">
-
-            {/* Header */}
-            <div className="latest-header">
-              <h2>Our latest Collections</h2>
-              <span className="see-all">See all →</span>
-            </div>
-
-            {/* Slider Wrapper */}
-            <div className="latest-slider-wrapper">
-
-              {/* LEFT ARROW */}
-              <button
-                className="slider-arrow left"
-                onClick={handlePrev}
-                disabled={currentIndex === 0}
-              >
-                ❮
-              </button>
-
-              {/* SLIDER */}
-              <div className="latest-slider">
-                <div
-                  className="latest-track"
-                  style={{
-                    transform: `translateX(-${(currentIndex / ITEMS_PER_PAGE) * 100}%)`
-                  }}
-                >
-                  {latestCollections.map((item) => (
-                    <div className="latest-card" key={item.id}>
-                      <img src={item.imageUrl} alt={item.title} />
-                      <div className="card-info">
-                        <span className="rating">⭐ 0.0</span>
-                        <span className="price">₹ {item.price}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* RIGHT ARROW */}
-              <button
-                className="slider-arrow right"
-                onClick={handleNext}
-                disabled={currentIndex + ITEMS_PER_PAGE >= latestCollections.length}
-              >
-                ❯
-              </button>
-
-            </div>
+        <div className="container">
+          <div className="section-header fade-in">
+            <h2>Our latest Collections</h2>
+            <a href="#shop" className="see-all-link">See all →</a>
           </div>
+          <div className="products-grid">
+            {['Unisex Printed Hoodie', 'Plain Men Hoodie', 'Printed Men Over Size -T', 'Men Plain Casual & Over Size -T', 'Women\'s Printed -T', 'Women\'s Casual Plain -T'].map((product, index) => (
+              <div key={index} className="product-card slide-up">
+                <div className="product-image">
+                  <div className="image-placeholder">{product}</div>
+                </div>
+                <h4>{product}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Custom Design Section */}
@@ -424,33 +359,35 @@ const handlePrev = () => {
       </section>
 
       {/* Footer */}
-      <footer className="footer-modern">
-      <div className="container">
-        <div className="footer-main">
-          <div className="brand-side">
-            <h2 className="footer-logo">VULPS<span>.</span></h2>
-            <p className="footer-tagline">Elevating your style, every day.</p>
+      <footer className="footer-slim">
+      <div className="container-slim">
+        <div className="footer-top-row">
+          {/* Logo or Brand Name */}
+          <div className="footer-brand">
+            <h3>Vulps<span>.</span></h3>
           </div>
 
-          <nav className="footer-nav">
-            <Link to="/">Home</Link>
-            <Link to="/About">About</Link>
-            <Link to="/Blog">Blog</Link>
-            <a href="#contact">Contact</a>
-          </nav>
+          {/* Minimal Menu */}
+          <ul className="footer-links-slim">
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/About">About</Link></li>
+            <li><Link to="/Blog">Blog</Link></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
 
-          <div className="footer-socials">
-            <a href="https://www.instagram.com/word_lane_tech/?hl=en" className="s-icon ig"><FaInstagram /></a>
-            <a href="#" className="s-icon fb"><FaFacebookF /></a>
-            <a href="#" className="s-icon wa"><FaWhatsapp /></a>
+          {/* Animated Social Icons */}
+          <div className="social-links-slim">
+            <a href="#" className="social-icon-box ig"><FaInstagram /></a>
+            <a href="#" className="social-icon-box fb"><FaFacebookF /></a>
+            <a href="#" className="social-icon-box wa"><FaWhatsapp /></a>
           </div>
         </div>
 
-        <div className="footer-bottom">
+        <hr className="footer-divider" />
+
+        <div className="footer-bottom-slim">
           <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
-          <p className="powered-by">
-            Powered by <a href="https://wordlanetech.com/">WordLaneTech</a>
-          </p>
+          <p>Powered by <a href="https://wordlanetech.com/" target="_blank" rel="noreferrer">WordLaneTech</a></p>
         </div>
       </div>
     </footer>
