@@ -5,11 +5,10 @@ import axios from "axios";
 
 // 1. Define initialState outside the component so it's globally accessible
 const initialState = {
-  name: '',
+  clientName: '', // Changed from 'name'
   size: 'M',
-  placement: 'Front Side',
-  shirtColor: '',
-  text: ''
+  color: '',      // Changed from 'shirtColor' to match name="color"
+  message: ''     // Changed from 'text' to match name="message"
 };
 
 const images = [

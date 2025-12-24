@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom'; // 1. Added Link for navigation
 import '../App.css';
 import './Footer.css';
+import './CustomDesign.css';
 import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -51,24 +52,24 @@ const ProcessSection = () => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        setIsAnimated(true);
-      } else {
-        // Reset the animation when the user scrolls away
-        setIsAnimated(false); 
-      }
-    },
-    { threshold: 0.2 } // Starts when 20% of the section is visible
-  );
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsAnimated(true);
+        } else {
+          // Reset the animation when the user scrolls away
+          setIsAnimated(false);
+        }
+      },
+      { threshold: 0.2 } // Starts when 20% of the section is visible
+    );
 
-  if (sectionRef.current) observer.observe(sectionRef.current);
-  
-  return () => {
-    if (sectionRef.current) observer.disconnect();
-  };
-}, []);
+    if (sectionRef.current) observer.observe(sectionRef.current);
+
+    return () => {
+      if (sectionRef.current) observer.disconnect();
+    };
+  }, []);
   const steps = [
     { title: "Sign in", desc: "Create an account to track." },
     { title: "Add to cart", desc: "Select size and quantity." },
@@ -86,8 +87,8 @@ const ProcessSection = () => {
           </div>
           <div className="process-steps">
             {steps.map((step, index) => (
-              <div key={index} className={`process-step ${isAnimated ? 'fade-up' : ''}`} 
-                   style={{ transitionDelay: `${index * 0.4}s` }}>
+              <div key={index} className={`process-step ${isAnimated ? 'fade-up' : ''}`}
+                style={{ transitionDelay: `${index * 0.4}s` }}>
                 <div className="step-circle">{index + 1}</div>
                 <h3>{step.title}</h3>
                 <p>{step.desc}</p>
@@ -102,7 +103,7 @@ const ProcessSection = () => {
 function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [premiumBgIndex, setPremiumBgIndex] = useState(0);
-  const [isAnimated, setIsAnimated] = useState(false); 
+  const [isAnimated, setIsAnimated] = useState(false);
   const sectionRef = useRef(null);
   // Hero carousel timer
   useEffect(() => {
@@ -139,7 +140,7 @@ function Home() {
       },
       { threshold: 0.1 }
     );
-    
+
 
     const elements = document.querySelectorAll('.fade-in, .slide-up, .slide-left, .slide-right');
     elements.forEach((el) => observer.observe(el));
@@ -147,11 +148,11 @@ function Home() {
     return () => {
       elements.forEach((el) => observer.unobserve(el));
     };
-    
-    
+
+
   }, []);
 
-  
+
 
   return (
     <div className="home-page">
@@ -163,7 +164,7 @@ function Home() {
               <h1>Elevate Your Everyday Style</h1>
               <p>Effortless Fashion for Every Occasion</p>
               <p className="hero-subtitle">At Vulps, we believe your wardrobe should work as hard as you do. Our collection of premium T-shirts and hoodies is designed to seamlessly transition from casual outings to relaxed evenings.</p>
-              <a  href="/Shop"><button className="cta-button">Shop Now</button></a> 
+              <a href="/Shop"><button className="cta-button">Shop Now</button></a>
             </div>
           </div>
           <div className={`hero-slide ${currentSlide === 1 ? 'active' : ''}`} style={{ backgroundImage: `url('https://unsplash.com/photos/person-leaning-on-wall-while-holding-gray-hat-qnKhZJPKFD8')` }}>
@@ -198,7 +199,7 @@ function Home() {
         </div>
       </section>
 
-   {/* Premium Collections Section */}
+      {/* Premium Collections Section */}
       <section className="collections-section relative py-24 bg-gray-900">
         {/* ENHANCED BACKGROUND ANIMATION */}
         <div className="absolute inset-0 z-0">
@@ -218,7 +219,7 @@ function Home() {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -229,16 +230,16 @@ function Home() {
 
           {/* GRID SYSTEM: Aligns all cards to the same height */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
-            
+
             {/* 1. Custom Shirt Card */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className="flex flex-col bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-[2rem] text-white shadow-2xl transition-all hover:border-white/40"
             >
               <div className="h-50 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center text-center p-6 mb-6">
-                <span className="text-xl font-bold mb-2">YOUR ART<br/>OUR PRINT</span>
+                <span className="text-xl font-bold mb-2">YOUR ART<br />OUR PRINT</span>
               </div>
               <div className="flex flex-col flex-grow text-center">
                 <h3 className="text-xl font-bold mb-2">Custom Shirt Design</h3>
@@ -255,7 +256,7 @@ function Home() {
               { title: "Printed Men T-shirt", label: "Men T-shirt" },
               { title: "Printed Women T-shirt", label: "Women T-shirt" }
             ].map((item, idx) => (
-              <motion.div 
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -304,47 +305,54 @@ function Home() {
           <div className="custom-design-content fade-in">
             <h2> Your Design, Our Print </h2>
             <p className="custom-subtitle">Turn your ideas into custom T-shirts & Hoodies</p>
+
             <div className="custom-steps">
-              <div className="step-item slide-left">
+              {/* Step 1 */}
+              <div className="step-item">
                 <span className="step-number">1</span>
-                <p>Fill out the form</p>
+                <p className="text-gray-300">Fill out the form</p>
               </div>
-              <div className="step-item slide-left">
+
+              {/* Step 2 */}
+              <div className="step-item">
                 <span className="step-number">2</span>
-                <p>Upload your design & submit it</p>
+                <p className="text-gray-300">Upload your design Information & submit</p>
               </div>
             </div>
-            <a href="/CustomShirtForm"><button className="cta-button">Fill the Form</button></a>
+
+            <Link to="/CustomShirtForm">
+              <button className="cta-button">Fill the Form Now</button>
+            </Link>
           </div>
         </div>
       </section>
       {/* Testimonials Section */}
-     <section className="testimonials-section">
-      <div className="container">
-        <h2 className="section-title">What Our Customers Say</h2>
-        
-        <div className="marquee-wrapper">
-          <div className="marquee-content">
-            {/* Render two sets of items for seamless looping */}
-            {[...testimonials, ...testimonials].map((t, index) => (
-              <div key={index} className="testimonial-card">
-                <div className="card-header">
-                  <img src={t.image} alt={t.author} className="author-img" />
-                  <div className="stars">{t.stars}</div>
+      <section className="testimonials-section">
+        <div className="container">
+          <h2 className="section-title">What Our Customers Say</h2>
+
+          <div className="marquee-wrapper">
+            <div className="marquee-content">
+              {/* Render two sets of items for seamless looping */}
+              {[...testimonials, ...testimonials].map((t, index) => (
+                <div key={index} className="testimonial-card">
+                  <div className="card-header">
+                    <img src={t.image} alt={t.author} className="author-img" />
+                    <div className="stars">{t.stars}</div>
+                  </div>
+                  <p className="testimonial-text">"{t.text}"</p>
+                  <div className="author-info">
+                    <h4 className="author-name">{t.author}</h4>
+                    <p className="author-role">{t.role}</p>
+                  </div>
                 </div>
-                <p className="testimonial-text">"{t.text}"</p>
-                <div className="author-info">
-                  <h4 className="author-name">{t.author}</h4>
-                  <p className="author-role">{t.role}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-    {/* {<ProcessSection />} */}
-<ProcessSection />
+      </section>
+      {/* {<ProcessSection />} */}
+      <ProcessSection />
 
       {/* Classified Collection */}
       <section className="classified-section">
@@ -360,37 +368,37 @@ function Home() {
 
       {/* Footer */}
       <footer className="footer-slim">
-      <div className="container-slim">
-        <div className="footer-top-row">
-          {/* Logo or Brand Name */}
-          <div className="footer-brand">
-            <h3>Vulps<span>.</span></h3>
+        <div className="container-slim">
+          <div className="footer-top-row">
+            {/* Logo or Brand Name */}
+            <div className="footer-brand">
+              <h3>Vulps<span>.</span></h3>
+            </div>
+
+            {/* Minimal Menu */}
+            <ul className="footer-links-slim">
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/About">About</Link></li>
+              <li><Link to="/Blog">Blog</Link></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+
+            {/* Animated Social Icons */}
+            <div className="social-links-slim">
+              <a href="#" className="social-icon-box ig"><FaInstagram /></a>
+              <a href="#" className="social-icon-box fb"><FaFacebookF /></a>
+              <a href="#" className="social-icon-box wa"><FaWhatsapp /></a>
+            </div>
           </div>
 
-          {/* Minimal Menu */}
-          <ul className="footer-links-slim">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/About">About</Link></li>
-            <li><Link to="/Blog">Blog</Link></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
+          <hr className="footer-divider" />
 
-          {/* Animated Social Icons */}
-          <div className="social-links-slim">
-            <a href="#" className="social-icon-box ig"><FaInstagram /></a>
-            <a href="#" className="social-icon-box fb"><FaFacebookF /></a>
-            <a href="#" className="social-icon-box wa"><FaWhatsapp /></a>
+          <div className="footer-bottom-slim">
+            <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
+            <p>Powered by <a href="https://wordlanetech.com/" target="_blank" rel="noreferrer">WordLaneTech</a></p>
           </div>
         </div>
-
-        <hr className="footer-divider" />
-
-        <div className="footer-bottom-slim">
-          <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
-          <p>Powered by <a href="https://wordlanetech.com/" target="_blank" rel="noreferrer">WordLaneTech</a></p>
-        </div>
-      </div>
-    </footer>
+      </footer>
     </div>
   );
 }
