@@ -1,122 +1,134 @@
-.footer-modern {
-  /* Modern Dark Gradient */
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #f1f5f9;
-  padding: 60px 0 30px 0;
-  font-family: 'Poppins', sans-serif;
+/* Footer Container */
+.footer-slim {
+  background-color: #0b1120; /* Deep dark blue-black */
+  color: #ffffff;
+  padding: 40px 24px;
+  font-family: 'Inter', sans-serif;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.container {
+.container-slim {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 25px;
 }
 
-.footer-main {
+/* Top Row Layout */
+.footer-top-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 40px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-bottom: 32px;
 }
 
-/* Brand Section */
-.footer-logo {
-  font-size: 1.8rem;
+/* Brand/Logo */
+.footer-brand h3 {
+  font-size: 24px;
   font-weight: 800;
-  letter-spacing: 2px;
+  text-transform: uppercase;
+  letter-spacing: -1px;
   margin: 0;
 }
-.footer-logo span { color: #ff4d4d; }
-.footer-tagline {
-  font-size: 0.85rem;
-  color: #94a3b8;
-  margin-top: 5px;
+
+.footer-brand span {
+  color: #ff4d4d; /* Sharp red dot */
 }
 
-/* Modern Navigation Links */
-.footer-nav {
+/* Navigation Links */
+.footer-links-slim {
   display: flex;
-  gap: 30px;
+  list-style: none;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
 }
 
-.footer-nav a {
+.footer-links-slim a {
   text-decoration: none;
-  color: #cbd5e1;
-  font-size: 0.9rem;
+  color: #9ca3af; /* Gray text */
+  font-size: 14px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
-.footer-nav a:hover {
+.footer-links-slim a:hover {
   color: #ffffff;
-  transform: translateY(-2px);
 }
 
-/* Social Icon Circles */
-.footer-socials {
+/* Social Icon Boxes */
+.social-links-slim {
   display: flex;
-  gap: 15px;
+  gap: 12px;
 }
 
-.s-icon {
-  width: 45px;
-  height: 45px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px; /* Squircle look */
+.social-icon-box {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 18px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy transition */
 }
 
-.s-icon:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.1) rotate(5deg);
+/* ICON ANIMATIONS */
+.social-icon-box:hover {
+  transform: translateY(-5px) scale(1.1);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
-/* Custom colors on hover only to keep it clean */
-.ig:hover { color: #E1306C; border-color: #E1306C; }
-.fb:hover { color: #1877F2; border-color: #1877F2; }
-.wa:hover { color: #25D366; border-color: #25D366; }
+/* Specific Brand Hover Colors (Optional) */
+.social-icon-box.ig:hover { box-shadow: 0 5px 15px rgba(225, 48, 108, 0.3); color: #e1306c; }
+.social-icon-box.fb:hover { box-shadow: 0 5px 15px rgba(24, 119, 242, 0.3); color: #1877f2; }
+.social-icon-box.wa:hover { box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); color: #25d366; }
+
+/* Divider */
+.footer-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  margin-bottom: 24px;
+}
 
 /* Bottom Bar */
-.footer-bottom {
+.footer-bottom-slim {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 25px;
-  font-size: 0.8rem;
-  color: #64748b;
+  font-size: 11px;
+  color: #4b5563;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.powered-by a {
-  color: #94a3b8;
+.footer-bottom-slim a {
+  color: #9ca3af;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s;
 }
 
-.powered-by a:hover {
-  color: #fff;
+.footer-bottom-slim a:hover {
+  color: #ffffff;
 }
 
-/* Responsive */
+/* Responsive for Mobile */
 @media (max-width: 768px) {
-  .footer-main {
+  .footer-top-row {
     flex-direction: column;
     text-align: center;
-    gap: 30px;
   }
-  .footer-nav {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px 25px;
-  }
-  .footer-bottom {
+  
+  .footer-bottom-slim {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 }
