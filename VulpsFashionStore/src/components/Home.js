@@ -45,6 +45,7 @@ const testimonials = [
     role: "Content Creator",
     image: "https://i.pravatar.cc/150?u=rahul"
   }
+  
 ];
 // We define this separately so it's easy to manage
 const ProcessSection = () => {
@@ -180,7 +181,7 @@ function Home() {
               <h1>Custom Designs</h1>
               <p>Your Design, Our Print</p>
               <p className="hero-subtitle">Turn your ideas into custom T-shirts & Hoodies. Upload your design and make it reality.</p>
-              <button className="cta-button">Get Started</button>
+           <a href='/SignIn'><button className="cta-button">Get Started</button></a>   
             </div>
           </div>
         </div>
@@ -361,7 +362,7 @@ function Home() {
           <div className="classified-content slide-up">
             <p className="classified-subtitle">Experience the finest in fashion with our carefully curated collections. Whether you're looking for casual wear, formal attire, or accessories, our offerings are sure to impress.</p>
             <p className="classified-subtitle">Discover the difference in every piece.</p>
-            <button className="cta-button">Shop Now</button>
+           <a href='/Shop'><button className="cta-button">Shop Now</button></a>
           </div>
         </div>
       </section>
