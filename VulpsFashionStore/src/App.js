@@ -237,6 +237,7 @@ import Blog from './components/Blog';
 // import Shop from './components/Shop';
 import SuccessStories from './components/SuccessStories';
 import CustomShirtForm from './components/CustomShirtForm';
+ import AdressForm from './components/AdressForm';
 import './App.css';
 
 /* Admin */
@@ -245,6 +246,7 @@ import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import Products from "./pages/Products";
 import OrderDetails from "./pages/OrderDetails";
+import AddressForm from "./components/AdressForm";
 
 function Layout() {
   const location = useLocation();
@@ -308,6 +310,7 @@ function Layout() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/successstories" element={<SuccessStories />} />
           <Route path="/customshirtform" element={<CustomShirtForm />} />
+          <Route path="/AdressForm" element={<AdressForm />} />
       </Routes>
     </>
   );

@@ -1,0 +1,140 @@
+:root {
+  --vulps-teal: #00767c;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --text-light: #ffffff;
+  --text-dim: #b0b0b0;
+}
+
+.page-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #050505; /* Deep Black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 80px;
+  overflow: hidden;
+}
+
+/* Aurora Animations */
+.aurora-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
+  filter: blur(100px);
+}
+
+.aurora {
+  position: absolute;
+  width: 40vw;
+  height: 40vw;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: drift 20s infinite alternate;
+}
+
+.aurora-1 { background: var(--vulps-teal); top: -10%; left: -10%; }
+.aurora-2 { background: #5c2d91; bottom: -10%; right: -10%; animation-delay: -5s; }
+.aurora-3 { background: #1a1a1a; top: 40%; left: 30%; }
+
+@keyframes drift {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(10%, 15%) scale(1.2); }
+}
+
+/* Glassmorphism Card */
+.glass-card {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 600px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  padding: 45px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.header-section h2 { color: var(--text-light); font-size: 1.8rem; margin-bottom: 5px; }
+.header-section p { color: var(--text-dim); margin-bottom: 35px; }
+
+/* Inputs */
+.floating-group {
+  position: relative;
+  margin-bottom: 30px;
+  flex: 1;
+}
+
+.floating-group input {
+  width: 100%;
+  padding: 12px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.floating-group label {
+  position: absolute;
+  left: 0; top: 12px;
+  color: var(--text-dim);
+  transition: 0.3s;
+  pointer-events: none;
+}
+
+.floating-group input:focus + label,
+.floating-group input:valid + label {
+  top: -15px;
+  font-size: 0.8rem;
+  color: var(--vulps-teal);
+}
+
+.floating-group input:focus {
+  border-bottom-color: var(--vulps-teal);
+}
+
+/* Layout helpers */
+.input-row-group, .form-row {
+  display: flex;
+  gap: 25px;
+}
+
+.prime-button {
+  width: 100%;
+  padding: 18px;
+  background: var(--vulps-teal);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.prime-button:hover {
+  background: #008a91;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 118, 124, 0.4);
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 600px) {
+  .input-row-group, .form-row { flex-direction: column; gap: 0; }
+  .glass-card { padding: 25px; }
+}
