@@ -4,7 +4,8 @@ import '../App.css';
 import './Footer.css';
 import './CustomDesign.css';
 import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, color } from 'framer-motion';
+import { Weight } from 'lucide-react';
 
 // Removed: import './About.jsx'; (Not needed here)
 const premiumBgImages = [
@@ -45,7 +46,7 @@ const testimonials = [
     role: "Content Creator",
     image: "https://i.pravatar.cc/150?u=rahul"
   }
-  
+
 ];
 // We define this separately so it's easy to manage
 const ProcessSection = () => {
@@ -81,6 +82,7 @@ const ProcessSection = () => {
   return (
     <section className="process-section" ref={sectionRef}>
       <div className="container">
+        <h1 style={{ color: 'white', textAlign: 'center', fontFamily: 'Arial, sans-serif', fontSize: '4rem' }}>Process ...!</h1>
         <h2 className="section-title">How It Works</h2>
         <div className="process-container">
           <div className="road-line">
@@ -168,7 +170,7 @@ function Home() {
               <a href="/Shop"><button className="cta-button">Shop Now</button></a>
             </div>
           </div>
-          <div className={`hero-slide ${currentSlide === 1 ? 'active' : ''}`} style={{ backgroundImage: `url('https://unsplash.com/photos/person-leaning-on-wall-while-holding-gray-hat-qnKhZJPKFD8')` }}>
+          <div className={`hero-slide ${currentSlide === 1 ? 'active' : ''}`} style={{ backgroundImage: `url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1950&q=80')` }}>
             <div className="hero-content fade-in">
               <h1>Premium Quality</h1>
               <p>Organic Cotton & Sustainable Fashion</p>
@@ -181,7 +183,7 @@ function Home() {
               <h1>Custom Designs</h1>
               <p>Your Design, Our Print</p>
               <p className="hero-subtitle">Turn your ideas into custom T-shirts & Hoodies. Upload your design and make it reality.</p>
-           <a href='/SignIn'><button className="cta-button">Get Started</button></a>   
+              <a href='/SignIn'><button className="cta-button">Get Started</button></a>
             </div>
           </div>
         </div>
@@ -201,85 +203,85 @@ function Home() {
       </section>
 
       {/* Premium Collections Section */}
-      <section className="collections-section relative py-24 bg-gray-900">
-        {/* ENHANCED BACKGROUND ANIMATION */}
-        <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={premiumBgIndex}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 0.8, scale: 1 }} // Increased opacity for better visibility
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.5 }}
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${premiumBgImages[premiumBgIndex]})` }}
+<section className="py-28 bg-white">
+  <div className="max-w-7xl mx-auto px-6">
+
+    <motion.h2
+      initial={{ opacity: 0, y: 25 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="text-4xl font-semibold text-center mb-20 text-[#00053f]"
+    >
+      Our Premium Collections
+    </motion.h2>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+      {[
+        {
+          title: "Custom Shirt Design",
+          label: "YOUR ART, OUR PRINT",
+          img: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQ8gYYxOkQkYT2L4avx1LXd55kg2pPTa5g4DEQkUHFwLbhzlVXTcqFYbs1vpYQLBjA2AyyRqyUTj1oCYBW0JMsTDghSEmCq_m1fDCap2CTEmON9PLkC3TG2iA",
+          btn: "Fill the Form",
+          link: "/CustomShirtForm"
+        },
+        {
+          title: "Premium Unisex Hoodie",
+          label: "HOODIE",
+          img: "https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg"
+        },
+        {
+          title: "Printed Men T-shirt",
+          label: "MEN T-SHIRT",
+          img: "https://images.pexels.com/photos/428340/pexels-photo-428340.jpeg"
+        },
+        {
+          title: "Printed Women T-shirt",
+          label: "WOMEN T-SHIRT",
+          img: "https://images.pexels.com/photos/1462637/pexels-photo-1462637.jpeg"
+        }
+      ].map((item, idx) => (
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: idx * 0.1 }}
+          className="bg-[#f9f9fc] rounded-2xl shadow-md hover:shadow-xl overflow-hidden transition"
+        >
+          {/* Fixed image height */}
+          <div className="h-56 bg-gradient-to-br from-[#eaeaf5] to-[#ffffff]">
+            <img
+              src={item.img}
+              alt={item.title}
+              onError={(e)=> e.target.style.display='none'}
+              className="w-full h-full object-cover"
             />
-          </AnimatePresence>
-          {/* Darker Overlay to make images visible but keep text sharp */}
-          <div className="absolute inset-0 bg-black/40 backdrop-brightness-50" />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl font-bold text-center text-white mb-16 tracking-tight"
-          >
-            Our Premium Collections
-          </motion.h2>
-
-          {/* GRID SYSTEM: Aligns all cards to the same height */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
-
-            {/* 1. Custom Shirt Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex flex-col bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-[2rem] text-white shadow-2xl transition-all hover:border-white/40"
-            >
-              <div className="h-50 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center text-center p-6 mb-6">
-                <span className="text-xl font-bold mb-2">YOUR ART<br />OUR PRINT</span>
-              </div>
-              <div className="flex flex-col flex-grow text-center">
-                <h3 className="text-xl font-bold mb-2">Custom Shirt Design</h3>
-                <p className="text-sm text-white/60 mb-6 flex-grow">Create a look that is uniquely yours with our high-quality printing service.</p>
-                <Link to="/CustomShirtForm" className="mt-auto">
-                  <button className="w-full py-3 bg-white text-indigo-900 font-bold rounded-full hover:bg-indigo-50 transition-colors">Fill the Form</button>
-                </Link>
-              </div>
-            </motion.div>
-
-            {/* Standard Collection Cards */}
-            {[
-              { title: "Premium Unisex Hoodie", label: "Hoodie" },
-              { title: "Printed Men T-shirt", label: "Men T-shirt" },
-              { title: "Printed Women T-shirt", label: "Women T-shirt" }
-            ].map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="flex flex-col bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-[2rem] text-white shadow-2xl transition-all hover:border-white/40"
-              >
-                <div className="h-50 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center text-center p-6 mb-6">
-                  <span className="text-white-100 italic font-medium">{item.label}</span>
-                </div>
-                <div className="flex flex-col flex-grow text-center">
-                  <h3 className="text-xl font-bold mb-2 text-white-900">{item.title}</h3>
-                  <p className="text-sm text-white/60 mb-6 flex-grow">Experience ultimate comfort with our premium {item.label.toLowerCase()} collection.</p>
-                  <button className="w-full py-3 bg-white text-indigo-900 font-bold rounded-full hover:bg-indigo-50 transition-colors">
-                    Shop Now
-                  </button>
-                </div>
-              </motion.div>
-            ))}
           </div>
-        </div>
-      </section>
+
+          <div className="p-6 text-center">
+            <p className="text-xs tracking-widest text-[#d59f35] mb-2">{item.label}</p>
+            <h3 className="text-lg font-semibold text-[#00053f] mb-4">{item.title}</h3>
+
+            {item.link ? (
+              <Link to={item.link}>
+                <button className="px-8 py-2 rounded-full bg-[#00053f] text-white hover:bg-[#d59f35] transition">
+                  {item.btn}
+                </button>
+              </Link>
+            ) : (
+              <button className="px-8 py-2 rounded-full bg-[#00053f] text-white hover:bg-[#d59f35] transition">
+                Shop Now
+              </button>
+            )}
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
+
+
       {/* Latest Collections */}
       <section className="latest-section">
         <div className="container">
@@ -330,8 +332,8 @@ function Home() {
       {/* Testimonials Section */}
       <section className="testimonials-section">
         <div className="container">
-          <h2 className="section-title">What Our Customers Say</h2>
-
+          <h2 style={{ color: 'black', fontSize: '2rem', textAlign: 'center' }}>What Our Customers Say</h2>
+           
           <div className="marquee-wrapper">
             <div className="marquee-content">
               {/* Render two sets of items for seamless looping */}
@@ -355,17 +357,6 @@ function Home() {
       {/* {<ProcessSection />} */}
       <ProcessSection />
 
-      {/* Classified Collection */}
-      <section className="classified-section">
-        <div className="container">
-          <h2 className="section-title fade-in">Our Classified Collection</h2>
-          <div className="classified-content slide-up">
-            <p className="classified-subtitle">Experience the finest in fashion with our carefully curated collections. Whether you're looking for casual wear, formal attire, or accessories, our offerings are sure to impress.</p>
-            <p className="classified-subtitle">Discover the difference in every piece.</p>
-           <a href='/Shop'><button className="cta-button">Shop Now</button></a>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="footer-slim">
@@ -395,8 +386,9 @@ function Home() {
           <hr className="footer-divider" />
 
           <div className="footer-bottom-slim">
-            <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
             <p>Powered by <a href="https://wordlanetech.com/" target="_blank" rel="noreferrer">WordLaneTech</a></p>
+            <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
+            
           </div>
         </div>
       </footer>

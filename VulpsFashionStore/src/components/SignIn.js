@@ -190,19 +190,6 @@ function SignIn() {
               </Link>
             </p>
           </div>
-
-          <div className="auth-divider">
-            <span>Or continue with</span>
-          </div>
-
-          <div className="social-auth">
-            <button type="button" className="social-btn google" disabled={isLoading}>
-              <span>🔍</span> Google
-            </button>
-            <button type="button" className="social-btn facebook" disabled={isLoading}>
-              <span>📘</span> Facebook
-            </button>
-          </div>
         </div>
       </div>
     </div>
