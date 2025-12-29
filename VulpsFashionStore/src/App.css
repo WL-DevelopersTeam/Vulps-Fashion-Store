@@ -78,9 +78,10 @@
   gap: 30px;
   margin: 0;
   padding: 0;
-  flex-grow: 1; /* This pushes the icons to the right */
+  margin-right: 30px;
+  /* ADD THIS: */
+  margin-left: auto; 
 }
-
 .nav-menu a {
   text-decoration: none;
   color: #ffffff; /* Changed from #333 to White */

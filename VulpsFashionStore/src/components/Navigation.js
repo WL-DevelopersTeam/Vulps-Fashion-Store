@@ -35,7 +35,7 @@ function Navigation() {
         </ul>
 
         <div className="nav-icons">
-          <button
+          {/* <button
             className="nav-icon-btn wishlist-icon-btn"
             onClick={() => navigate('/wishlist')}
             title="Wishlist"
@@ -43,7 +43,7 @@ function Navigation() {
           >
             <WishlistIcon className="icon-svg" />
             {wishlistCount > 0 && <span className="badge">{wishlistCount}</span>}
-          </button>
+          </button> */}
           <button
             className="nav-icon-btn cart-icon-btn"
             onClick={() => navigate('/cart')}

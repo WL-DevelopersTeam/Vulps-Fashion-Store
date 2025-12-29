@@ -228,7 +228,7 @@ import Navigation from "./components/Navigation";
 import Home from "./components/Home";
 import Shop from "./components/Shop";
 import Cart from "./components/Cart";
-import Wishlist from './components/Wishlist';
+// import Wishlist from './components/Wishlist';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 // Import the new components
@@ -300,7 +300,7 @@ function Layout() {
         />
         <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/wishlist" element={<Wishlist />} />
+          {/* <Route path="/wishlist" element={<Wishlist />} /> */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
 
