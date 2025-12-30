@@ -153,7 +153,7 @@ const Shop = () => {
                                 : "grid-cols-1"
                         )}
                     >
-                        {paginatedProducts.map((product) => (
+                        {/* {paginatedProducts.map((product) => (
                             <div key={product.id} className="border p-4">
                                 <img
                                     src={product.image}
@@ -170,7 +170,87 @@ const Shop = () => {
                                     </div>
                                 )}
                             </div>
+                        ))} */}
+
+                        {paginatedProducts.map((product) => (
+                            <div
+                                key={product.id}
+                                className="border p-4 flex flex-col justify-between hover:shadow-lg transition"
+                            >
+                                {/* Image */}
+                                <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="w-full h-48 object-cover rounded"
+                                />
+
+                                {/* Info */}
+                                <div className="mt-3">
+                                    <h3 className="font-semibold">{product.name}</h3>
+
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <span className="text-lg font-bold">
+                                            ₹ {product.price.toLocaleString()}
+                                        </span>
+
+                                        {product.originalPrice && (
+                                            <span className="text-sm line-through text-gray-500">
+                                                ₹ {product.originalPrice.toLocaleString()}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Buttons */}
+                                <div className="mt-4 grid grid-cols-2 gap-3">
+
+                                    {/* Add to Cart */}
+                                    <button
+                                        onClick={() => console.log("Add to cart", product)}
+                                        className="
+      flex items-center justify-center gap-2
+      border-2 border-[#d59f35]
+      text-[#00053f] font-bold
+      py-2 text-sm
+      rounded-xl
+      bg-white
+      transition-all duration-300 ease-in-out
+      hover:bg-[#26ffb6]
+      hover:scale-[1.03]
+      hover:shadow-md
+      active:scale-95
+    "
+                                    >
+                                        Add to Cart
+                                    </button>
+
+                                    {/* Buy Now */}
+                                    <button
+                                        onClick={() => console.log("Buy now", product)}
+                                        className="
+      flex items-center justify-center gap-2
+      bg-[#d59f35]
+      text-black font-bold
+      py-2 text-sm
+      rounded-xl
+      transition-all duration-300 ease-in-out
+      hover:bg-[#ff0062]
+      hover:text-white
+      hover:scale-[1.03]
+      hover:shadow-lg
+      active:scale-95
+    "
+                                    >
+                                        Buy Now
+                                    </button>
+
+                                </div>
+
+
+
+                            </div>
                         ))}
+
                     </div>
 
                     {/* Pagination */}
