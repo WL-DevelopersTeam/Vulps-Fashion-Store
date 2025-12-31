@@ -13,40 +13,67 @@ const colors = [
 ];
 const sizes = ["S", "M", "L", "XL"];
 
+const CATEGORY_API_MAP = {
+  "All Products": null,
+  "Men": "Mens",
+  "Women": "Women",
+  "Kids": "Kids",
+};
+
+
 const Shop = () => {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All Products");
-  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [viewMode, setViewMode] = useState("grid");
   const [sortBy, setSortBy] = useState("Featured");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+ useEffect(() => {
+  fetchProducts(selectedCategory, selectedColor);
+}, [selectedCategory, selectedColor]);
 
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("http://localhost:8080/api/products");
-      const mappedProducts = res.data.map((p) => ({
-        id: p.id,
-        name: p.name,
-        description: p.description,
-        price: p.price,
-        category: p.category,
-        colors: p.colors,
-        sizes: p.sizes,
-        image: `http://localhost:8080${p.imageUrl}`,
-      }));
-      setProducts(mappedProducts);
-    } catch (err) {
-      console.error("Failed to fetch products", err);
+;
+
+  const fetchProducts = async (category, color) => {
+  try {
+    let url = "http://localhost:8080/api/products";
+
+    // CATEGORY FILTER
+    if (category && category !== "All Products") {
+      const apiCategory = CATEGORY_API_MAP[category];
+      url = `http://localhost:8080/api/products/category/${apiCategory}`;
     }
-  };
+
+    // COLOR FILTER (overrides category if selected)
+    if (color) {
+      url = `http://localhost:8080/api/products/color/${color}`;
+    }
+
+    const res = await axios.get(url);
+
+    const mappedProducts = res.data.map((p) => ({
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      price: p.price,
+      category: p.category,
+      colors: p.colors,
+      sizes: p.sizes,
+      image: `http://localhost:8080${p.imageUrl}`,
+    }));
+
+    setProducts(mappedProducts);
+    setPage(1);
+  } catch (err) {
+    console.error("Failed to fetch products", err);
+  }
+};
+
 
   // Add to cart with login check
   const addToCart = async (product) => {
@@ -80,15 +107,7 @@ const Shop = () => {
     .filter((product) =>
       !searchQuery || product.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .filter(
-      (product) =>
-        selectedCategory === "All Products" || product.category === selectedCategory
-    )
-    .filter(
-      (product) =>
-        selectedColors.length === 0 ||
-        product.colors?.some((c) => selectedColors.includes(c))
-    )
+    
     .filter(
       (product) =>
         selectedSizes.length === 0 ||
@@ -115,32 +134,46 @@ const Shop = () => {
             <h3 className="font-semibold mb-2">Categories</h3>
             {categories.map((cat) => (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={cn(
-                  "block w-full text-left py-1 text-sm hover:text-primary",
-                  selectedCategory === cat && "font-bold text-primary"
-                )}
-              >
-                {cat}
-              </button>
+  key={cat}
+  onClick={() => setSelectedCategory(cat)}
+  className={cn(
+    "block w-full text-left py-1 text-sm hover:text-primary",
+    selectedCategory === cat && "font-bold text-primary"
+  )}
+>
+  {cat}
+</button>
+
             ))}
           </div>
 
           <div>
-            <h3 className="font-semibold mb-2">Colors</h3>
-            <div className="flex flex-wrap gap-2">
-              {colors.map((c) => (
-                <button
-                  key={c.name}
-                  onClick={() => setSelectedColors([c.name])}
-                  className="w-6 h-6 rounded-full"
-                  style={{ backgroundColor: c.value }}
-                  title={c.name}
-                />
-              ))}
-            </div>
-          </div>
+  <h3 className="font-semibold mb-2">Colors</h3>
+
+  <div className="flex flex-wrap gap-2">
+    {colors.map((c) => (
+  <button
+    key={c.name}
+    onClick={() => setSelectedColor(c.value)} // ✅ FIXED
+    className="w-6 h-6 rounded-full"
+    style={{ backgroundColor: c.value }}
+    title={c.name}
+  />
+))}
+
+  </div>
+
+  {/* ✅ CLEAR COLOR FILTER BUTTON */}
+  {selectedColor && (
+    <button
+      onClick={() => setSelectedColor(null)}
+      className="text-xs underline mt-2 text-gray-600 hover:text-black"
+    >
+      Clear Color Filter
+    </button>
+  )}
+</div>
+
 
           <div>
             <h3 className="font-semibold mb-2">Sizes</h3>

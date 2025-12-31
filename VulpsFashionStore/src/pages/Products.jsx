@@ -10,8 +10,9 @@ export default function Products() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
-  const [sizes, setSizes] = useState("");
-  const [colors, setColors] = useState("");
+  const [sizes, setSizes] = useState([]);
+
+  const [colors, setColors] = useState([]);
   const [image, setImage] = useState(null);
 
   // Latest product state (❌ DO NOT TOUCH – AS REQUESTED)
@@ -20,8 +21,41 @@ export default function Products() {
   const [latestDescription, setLatestDescription] = useState("");
   const [latestImage, setLatestImage] = useState(null);
 
+    const AVAILABLE_COLORS = [
+    { name: "Red", value: "#ef4444" },
+    { name: "Blue", value: "#3b82f6" },
+    { name: "Green", value: "#22c55e" },
+    { name: "Black", value: "#000000" },
+    { name: "White", value: "#ffffff" },
+    { name: "Purple", value: "#a855f7" },
+    { name: "Yellow", value: "#eab308" },
+  ];
+
+  const AVAILABLE_SIZES = ["S", "M", "L", "XL"];
+
+
   // ✅ ADD PRODUCT → BACKEND
+  const handleColorChange = (color) => {
+  setColors((prevColors) =>
+    prevColors.includes(color)
+      ? prevColors.filter((c) => c !== color) // remove
+      : [...prevColors, color] // add
+  );
+};
+
+const handleSizeChange = (size) => {
+  setSizes((prev) =>
+    prev.includes(size)
+      ? prev.filter((s) => s !== size)
+      : [...prev, size]
+  );
+};
+
+
   const addProduct = async () => {
+
+    
+
     if (!name || !price || !image) {
       alert("Please fill all fields");
       return;
@@ -34,7 +68,7 @@ export default function Products() {
       formData.append("price", price);
       formData.append("category", category);
       formData.append("sizes", sizes);
-      formData.append("colors", colors);
+      formData.append("colors", colors.join(","));
       formData.append("image", image);
 
       const response = await axios.post(
@@ -147,19 +181,62 @@ export default function Products() {
             className="border rounded px-3 py-2"
           />
 
-          <input
-            value={sizes}
-            onChange={(e) => setSizes(e.target.value)}
-            placeholder="Sizes (S,M,L)"
-            className="border rounded px-3 py-2"
-          />
+          <div>
+  <p className="text-sm font-medium mb-2">Sizes</p>
 
-          <input
-            value={colors}
-            onChange={(e) => setColors(e.target.value)}
-            placeholder="Colors (Red,Blue)"
-            className="border rounded px-3 py-2"
-          />
+  <div className="flex gap-3">
+    {AVAILABLE_SIZES.map((size) => {
+      const isSelected = sizes.includes(size);
+
+      return (
+        <button
+          key={size}
+          type="button"
+          onClick={() => handleSizeChange(size)}
+          className={`w-10 h-10 rounded-lg border font-semibold transition
+            ${
+              isSelected
+                ? "bg-black text-white border-black"
+                : "border-gray-300 hover:border-black"
+            }
+          `}
+        >
+          {size}
+        </button>
+      );
+    })}
+  </div>
+</div>
+
+
+          <div>
+  <p className="text-sm font-medium mb-2">Colors</p>
+
+  <div className="flex flex-wrap gap-3">
+    {AVAILABLE_COLORS.map((color) => {
+      const isSelected = colors.includes(color.name);
+
+      return (
+        <button
+          key={color.name}
+          type="button"
+          onClick={() => handleColorChange(color.name)}
+          className={`w-8 h-8 rounded-full border-2 transition
+            ${isSelected ? "border-black scale-110" : "border-gray-300"}
+          `}
+          style={{ backgroundColor: color.value }}
+          title={color.name}
+        >
+          {isSelected && (
+            <span className="block w-full h-full rounded-full border-2 border-white"></span>
+          )}
+        </button>
+      );
+    })}
+  </div>
+</div>
+
+
 
           <input
             type="file"
