@@ -15,14 +15,15 @@ public class ProductRequest
 
     private double price;
 
-    private String category;
+    private MultipartFile image; // image file uploaded
+
 
     private List<String> sizes;   
 
     private List<String> colors;
 
-    private MultipartFile image; // image file uploaded
-
+    private String category;
+    
     
 
     

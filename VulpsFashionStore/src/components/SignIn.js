@@ -14,6 +14,12 @@ function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const ADMIN_EMAILS = [
+  "sandesh@gmail.com",
+  "pranay@gmail.com"
+];
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -81,7 +87,14 @@ function SignIn() {
     localStorage.setItem('user', JSON.stringify(response.data.user));
 
     // Redirect to home/dashboard
-    navigate('/');
+    const userEmail = formData.email;
+
+
+if (ADMIN_EMAILS.includes(userEmail)) {
+  navigate('/admin');
+} else {
+  navigate('/');
+}
 
   } catch (error) {
     console.error('Login error:', error);

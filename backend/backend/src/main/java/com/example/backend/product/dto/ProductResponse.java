@@ -17,12 +17,14 @@ public class ProductResponse
 
     private double price;
 
-    private String category;
+   private String imageUrl;
     
     private List<String> sizes;   
 
     private List<String> colors;
 
-    private String imageUrl;
+
+     private String category;
+    
 
 }

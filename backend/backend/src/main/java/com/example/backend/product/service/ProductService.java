@@ -25,8 +25,10 @@ public class ProductService
     private ProductRepository productRepository;
 
     // ✅ ALWAYS points to backend/images
-    private final String uploadDir =
-        System.getProperty("user.dir") + "/backend/images/product-images/";
+   private final String uploadDir =
+    System.getProperty("user.dir") + "/backend/images/product-images/";
+
+
 
 
     // Add product
@@ -52,8 +54,7 @@ public class ProductService
         product.setSizes(request.getSizes());
 
         // ✅ Correct image URL
-        product.setImageUrl("/images/product-images/" + fileName);
-
+       product.setImageUrl("/images/product-images/" + fileName);
         productRepository.save(product);
 
         return new ProductResponse(
@@ -115,15 +116,14 @@ public List<ProductResponse> getProductsBySize(String size) {
                     p.getName(),
                     p.getDescription(),
                     p.getPrice(),
-                    p.getCategory(),
+                    p.getImageUrl(),  // ✅ Correct
                     p.getSizes(),
                     p.getColors(),
-                    p.getImageUrl()
+                    p.getCategory()   // ✅ Correct
             ))
             .toList();
 }
 
-// Get products by color
 public List<ProductResponse> getProductsByColor(String color) {
     return productRepository.findByColor(color)
             .stream()
@@ -132,13 +132,14 @@ public List<ProductResponse> getProductsByColor(String color) {
                     p.getName(),
                     p.getDescription(),
                     p.getPrice(),
-                    p.getCategory(),
+                    p.getImageUrl(),  // ✅ Correct
                     p.getSizes(),
                     p.getColors(),
-                    p.getImageUrl()
+                    p.getCategory()   // ✅ Correct
             ))
             .toList();
 }
+
 
 
 }

@@ -7,14 +7,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Override
+     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
         registry.addResourceHandler("/images/**")
-               .addResourceLocations("file:" + System.getProperty("user.dir") + "/backend/images/");
-
-               // Latest collections
-        registry.addResourceHandler("/images/latest/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/backend/images/latest/");
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/backend/images/");
     }
 }
