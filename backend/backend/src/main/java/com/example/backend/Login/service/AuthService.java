@@ -1,5 +1,8 @@
 package com.example.backend.Login.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,7 +51,7 @@ public class AuthService
 
     // SIGN IN
 
-    public String signin(SigninRequest request)
+    public Map<String, Object>  signin(SigninRequest request)
     {
 
         User user = userRepository.findByEmail(request.getEmail())
@@ -61,7 +64,10 @@ public class AuthService
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
+        Map<String, Object> response = new HashMap<>();
+    response.put("message", "Login successful");
+    response.put("user", user); 
 
-        return "Login successful";
+        return response;
     }
 }

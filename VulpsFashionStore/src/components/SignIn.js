@@ -19,6 +19,13 @@ function SignIn() {
   "pranay@gmail.com"
 ];
 
+React.useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      navigate('/'); // redirect to home/dashboard if user exists
+    }
+  }, [navigate])
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,6 +92,7 @@ function SignIn() {
     // ✅ Save token (VERY IMPORTANT)
     localStorage.setItem('token', response.data.token);
     localStorage.setItem('user', JSON.stringify(response.data.user));
+    localStorage.setItem('userId', response.data.user.id);
 
     // Redirect to home/dashboard
     const userEmail = formData.email;
