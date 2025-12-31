@@ -52,7 +52,7 @@ const Shop = () => {
   const addToCart = async (product) => {
     const user = JSON.parse(localStorage.getItem("user")); // check login
     if (!user) {
-      navigate("/login"); // redirect to login page if not logged in
+      navigate("/signin"); // redirect to login page if not logged in
       return;
     }
 

@@ -246,7 +246,9 @@ import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
 import Products from "./pages/Products";
 import OrderDetails from "./pages/OrderDetails";
-import AddressForm from "./components/AdressForm";
+// import AddressForm from "./components/AdressForm";
+import AdminProtectedRoute from "./routes/AdminProtectedRoute";
+
 
 function Layout() {
   const location = useLocation();
@@ -264,40 +266,49 @@ function Layout() {
 
         {/* ADMIN */}
         <Route
-          path="/admin"
-          element={
-            <AdminLayout>
-              <Dashboard />
-            </AdminLayout>
-          }
-        />
+  path="/admin"
+  element={
+    <AdminProtectedRoute>
+      <AdminLayout>
+        <Dashboard />
+      </AdminLayout>
+    </AdminProtectedRoute>
+  }
+/>
 
-        <Route
-          path="/admin/orders"
-          element={
-            <AdminLayout>
-              <Orders />
-            </AdminLayout>
-          }
-        />
+<Route
+  path="/admin/orders"
+  element={
+    <AdminProtectedRoute>
+      <AdminLayout>
+        <Orders />
+      </AdminLayout>
+    </AdminProtectedRoute>
+  }
+/>
 
-        <Route
-          path="/admin/products"
-          element={
-            <AdminLayout>
-              <Products />
-            </AdminLayout>
-          }
-        />
+<Route
+  path="/admin/products"
+  element={
+    <AdminProtectedRoute>
+      <AdminLayout>
+        <Products />
+      </AdminLayout>
+    </AdminProtectedRoute>
+  }
+/>
 
-        <Route
-          path="/admin/orders/:id"
-          element={
-            <AdminLayout>
-              <OrderDetails />
-            </AdminLayout>
-          }
-        />
+<Route
+  path="/admin/orders/:id"
+  element={
+    <AdminProtectedRoute>
+      <AdminLayout>
+        <OrderDetails />
+      </AdminLayout>
+    </AdminProtectedRoute>
+  }
+/>
+
         <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
           {/* <Route path="/wishlist" element={<Wishlist />} /> */}
