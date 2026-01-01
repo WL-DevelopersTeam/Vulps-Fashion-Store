@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // 1. Added Link for navigation
 import '../App.css';
 import './Footer.css';
 import './CustomDesign.css';
-import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
-import { motion, AnimatePresence, color } from 'framer-motion';
-import { Weight } from 'lucide-react';
+// import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+
 
 // Removed: import './About.jsx'; (Not needed here)
 const premiumBgImages = [
@@ -51,27 +51,7 @@ const testimonials = [
 // We define this separately so it's easy to manage
 const ProcessSection = () => {
   const [isAnimated, setIsAnimated] = useState(false);
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsAnimated(true);
-        } else {
-          // Reset the animation when the user scrolls away
-          setIsAnimated(false);
-        }
-      },
-      { threshold: 0.2 } // Starts when 20% of the section is visible
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-
-    return () => {
-      if (sectionRef.current) observer.disconnect();
-    };
-  }, []);
+  
   const steps = [
     { title: "Sign in", desc: "Create an account to track." },
     { title: "Add to cart", desc: "Select size and quantity." },
@@ -80,7 +60,8 @@ const ProcessSection = () => {
   ];
 
   return (
-    <section className="process-section" ref={sectionRef}>
+    <section className="process-section">
+
       <div className="container">
         <h1 style={{ color: 'white', textAlign: 'center', fontFamily: 'Arial, sans-serif', fontSize: '4rem' }}>Process ...!</h1>
         <h2 className="section-title">How It Works</h2>
@@ -105,24 +86,44 @@ const ProcessSection = () => {
 };
 function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [premiumBgIndex, setPremiumBgIndex] = useState(0);
-  const [isAnimated, setIsAnimated] = useState(false);
-  const sectionRef = useRef(null);
+  // const [premiumBgIndex, setPremiumBgIndex] = useState(0);
+  // const [isAnimated, setIsAnimated] = useState(false);
+  // const sectionRef = useRef(null);
+  const [latestCollections, setLatestCollections] = useState([]);
+
+
+ useEffect(() => {
+  fetchLatestCollections();
+}, []);
+
+const fetchLatestCollections = async () => {
+  try {
+    const res = await fetch("http://localhost:8080/api/latest-collections");
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch latest collections");
+    }
+
+    const data = await res.json();
+    console.log("Latest collections data:", data); // 🔍 DEBUG
+    setLatestCollections(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   // Hero carousel timer
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+ 
 
   // Premium Background slideshow timer (3 seconds)
-  useEffect(() => {
-    const bgInterval = setInterval(() => {
-      setPremiumBgIndex((prev) => (prev + 1) % premiumBgImages.length);
-    }, 3000);
-    return () => clearInterval(bgInterval);
-  }, []);
+  // useEffect(() => {
+  //   const bgInterval = setInterval(() => {
+  //     setPremiumBgIndex((prev) => (prev + 1) % premiumBgImages.length);
+  //   }, 3000);
+  //   return () => clearInterval(bgInterval);
+  // }, []);
+
+  
   // Hero carousel
   useEffect(() => {
     const interval = setInterval(() => {
@@ -283,24 +284,43 @@ function Home() {
 
 
       {/* Latest Collections */}
-      <section className="latest-section">
-        <div className="container">
-          <div className="section-header fade-in">
-            <h2>Our latest Collections</h2>
-            <a href="#shop" className="see-all-link">See all →</a>
+      {/* Latest Collections */}
+<section className="latest-section">
+  <div className="container">
+    <div className="section-header fade-in">
+      <h2>Our Latest Collections</h2>
+      <Link to="/shop" className="see-all-link">See all →</Link>
+    </div>
+
+    <div className="products-grid">
+      {latestCollections.length === 0 ? (
+        <p style={{ textAlign: "center" }}>No latest collections found</p>
+      ) : (
+        latestCollections.map((item) => (
+          <div key={item.id} className="product-card slide-up animate-in">
+
+            
+            <div className="product-image">
+              <img
+                src={`http://localhost:8080${item.imageUrl}`}
+                alt={item.title}
+                onError={(e) => {
+                  e.target.src = "/placeholder.png"; // optional fallback
+                }}
+              />
+            </div>
+
+            <h4>{item.title}</h4>
+            <p className="text-sm text-gray-500">{item.description}</p>
+
           </div>
-          <div className="products-grid">
-            {['Unisex Printed Hoodie', 'Plain Men Hoodie', 'Printed Men Over Size -T', 'Men Plain Casual & Over Size -T', 'Women\'s Printed -T', 'Women\'s Casual Plain -T'].map((product, index) => (
-              <div key={index} className="product-card slide-up">
-                <div className="product-image">
-                  <div className="image-placeholder">{product}</div>
-                </div>
-                <h4>{product}</h4>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        ))
+      )}
+    </div>
+  </div>
+</section>
+
+
 
       {/* Custom Design Section */}
       <section className="custom-design-section">
@@ -376,11 +396,11 @@ function Home() {
             </ul>
 
             {/* Animated Social Icons */}
-            <div className="social-links-slim">
+            {/* <div className="social-links-slim">
               <a href="#" className="social-icon-box ig"><FaInstagram /></a>
               <a href="#" className="social-icon-box fb"><FaFacebookF /></a>
               <a href="#" className="social-icon-box wa"><FaWhatsapp /></a>
-            </div>
+            </div> */}
           </div>
 
           <hr className="footer-divider" />
