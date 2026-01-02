@@ -67,19 +67,20 @@ const handleSizeChange = (size) => {
       formData.append("description", description);
       formData.append("price", price);
       formData.append("category", category);
-      formData.append("sizes", sizes);
+      formData.append("sizes", sizes.join(","));
       formData.append("colors", colors.join(","));
       formData.append("image", image);
 
-      const response = await axios.post(
-        "https://vulps-fashion-store.onrender.com/api/products",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      axios.post(
+  "https://vulps-fashion-store.onrender.com/api/products",
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }
+);
+
 
       // Add product to UI table
       setProducts([...products, response.data]);
