@@ -16,7 +16,8 @@ function SignIn() {
 
   const ADMIN_EMAILS = [
   "sandesh@gmail.com",
-  "pranay@gmail.com"
+  "pranay@gmail.com",
+  "riteshkmali007@gmail.com"
 ];
 
 React.useEffect(() => {
