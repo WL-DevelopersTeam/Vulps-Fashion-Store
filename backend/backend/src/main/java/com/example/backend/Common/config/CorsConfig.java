@@ -12,23 +12,24 @@ import java.util.List;
 public class CorsConfig {
 
     @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
+public CorsFilter corsFilter() {
+    CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowCredentials(true);
+    config.setAllowCredentials(true);
 
-        // ✅ Explicitly allow your frontend(s)
-        config.setAllowedOriginPatterns(List.of(
-            "https://vulps-fashion-store.vercel.app",
-            "http://192.168.1.*:3000"  // optional: allow team members on LAN
-        ));
+    config.setAllowedOriginPatterns(List.of(
+        "https://vulps-fashion-store.vercel.app"
+    ));
 
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+    // 🔥 IMPORTANT
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setExposedHeaders(List.of("Authorization"));
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
 
-        return new CorsFilter(source);
-    }
+    return new CorsFilter(source);
+}
+
 }

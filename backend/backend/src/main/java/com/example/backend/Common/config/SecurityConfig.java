@@ -14,23 +14,28 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> {})
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-    .requestMatchers("/api/auth/**").permitAll()
-    .requestMatchers("/api/products/**").permitAll() // allow all GET/POST
-    .requestMatchers("/api/cart/**").permitAll()
-    .requestMatchers("/api/custom-products/**").permitAll()
-    .requestMatchers("/api/latest-collections/**").permitAll()
-    .requestMatchers("/images/**").permitAll()
-    .anyRequest().authenticated()
-);
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> {})
+        .authorizeHttpRequests(auth -> auth
+            // ✅ ALLOW CORS PREFLIGHT
+            .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
+            // ✅ PUBLIC APIs
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/api/products/**").permitAll()
+            .requestMatchers("/api/cart/**").permitAll()
+            .requestMatchers("/api/custom-products/**").permitAll()
+            .requestMatchers("/api/latest-collections/**").permitAll()
+            .requestMatchers("/images/**").permitAll()
 
-        return http.build();
-    }
+            .anyRequest().authenticated()
+        );
+
+    return http.build();
+}
+
 
     // 🔥 THIS IS THE MOST IMPORTANT PART
     @Bean
