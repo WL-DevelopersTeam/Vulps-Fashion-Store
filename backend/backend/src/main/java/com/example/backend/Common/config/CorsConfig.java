@@ -19,7 +19,7 @@ public class CorsConfig {
 
         // ✅ Explicitly allow your frontend(s)
         config.setAllowedOriginPatterns(List.of(
-            "http://localhost:3000",
+            "https://vulps-fashion-store.vercel.app",
             "http://192.168.1.*:3000"  // optional: allow team members on LAN
         ));
 
