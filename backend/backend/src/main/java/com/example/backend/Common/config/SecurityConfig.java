@@ -19,14 +19,15 @@ public class SecurityConfig {
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/api/cart/**").permitAll()
-                .requestMatchers("/api/custom-products/**").permitAll()
-                .requestMatchers("/api/latest-collections/**").permitAll()
-                .requestMatchers("/images/**").permitAll()
-                .anyRequest().authenticated()
-            );
+    .requestMatchers("/api/auth/**").permitAll()
+    .requestMatchers("/api/products/**").permitAll() // allow all GET/POST
+    .requestMatchers("/api/cart/**").permitAll()
+    .requestMatchers("/api/custom-products/**").permitAll()
+    .requestMatchers("/api/latest-collections/**").permitAll()
+    .requestMatchers("/images/**").permitAll()
+    .anyRequest().authenticated()
+)
+
 
         return http.build();
     }
