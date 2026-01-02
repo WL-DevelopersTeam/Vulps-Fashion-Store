@@ -1,18 +1,20 @@
 package com.example.backend.product.service;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+// import java.nio.file.Files;
+// import java.nio.file.Path;
+// import java.nio.file.Paths;
+// import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+// import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
 import com.example.backend.product.dto.ProductRequest;
 import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.model.Product;
@@ -24,26 +26,25 @@ public class ProductService
     @Autowired
     private ProductRepository productRepository;
 
-    // ✅ ALWAYS points to backend/images
-   private final String uploadDir =
-        "src/main/resources/static/images/product-images/";
-
 
 
 
     // Add product
-    public ProductResponse addProduct(ProductRequest request) throws IOException {
+    @Autowired
+private Cloudinary cloudinary;
+
+public ProductResponse addProduct(ProductRequest request) throws IOException {
 
     MultipartFile image = request.getImage();
-    String fileName = StringUtils.cleanPath(image.getOriginalFilename());
 
-    Path uploadPath = Paths.get(uploadDir);
-    if (!Files.exists(uploadPath)) {
-        Files.createDirectories(uploadPath);
-    }
+    // Upload to Cloudinary
+    Map uploadResult = cloudinary.uploader().upload(
+            image.getBytes(),
+            Map.of("folder", "fashion-store/products")
+    );
 
-    Path filePath = uploadPath.resolve(fileName);
-    Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    // Get the public URL from Cloudinary
+    String imageUrl = uploadResult.get("secure_url").toString();
 
     Product product = new Product();
     product.setName(request.getName());
@@ -53,8 +54,8 @@ public class ProductService
     product.setColors(request.getColors());
     product.setSizes(request.getSizes());
 
-    // ✅ PUBLIC IMAGE URL
-    product.setImageUrl("/images/product-images/" + fileName);
+    // Save Cloudinary URL
+    product.setImageUrl(imageUrl);
 
     productRepository.save(product);
 
@@ -63,12 +64,13 @@ public class ProductService
             product.getName(),
             product.getDescription(),
             product.getPrice(),
-            product.getImageUrl(),
+            imageUrl,
             product.getColors(),
             product.getSizes(),
             product.getCategory()
     );
 }
+
 
     // Get all products (Customer)
 
