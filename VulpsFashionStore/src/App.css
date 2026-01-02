@@ -517,7 +517,7 @@
 /* Custom Design Section */
 .custom-design-section {
   padding: 100px 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, rgb(0, 209, 219) 100%);
   color: white;
   text-align: center;
 }
@@ -1232,7 +1232,7 @@ html {
 }
 
 .latest-section {
-  background: linear-gradient(90deg, #f6d84c, #8a6514);
+  background: linear-gradient(90deg,#6945e8 , #21b0db);
   padding: 60px 0;
 }
 
