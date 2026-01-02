@@ -64,7 +64,7 @@ const Shop = () => {
       category: p.category,
       colors: p.colors,
       sizes: p.sizes,
-      image: `https://vulps-fashion-store.onrender.com${p.imageUrl}`,
+      image: p.imageUrl,
     }));
 
     setProducts(mappedProducts);
