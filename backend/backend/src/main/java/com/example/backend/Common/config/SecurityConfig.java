@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,19 +16,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> {})  // Enable CORS
-            .csrf(csrf -> csrf.disable())  // Disable CSRF for REST APIs
+            .cors(cors -> {})
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/products/**").permitAll()
                 .requestMatchers("/api/cart/**").permitAll()
-                .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/api/custom-products/**").permitAll()
                 .requestMatchers("/api/latest-collections/**").permitAll()
-                .anyRequest().authenticated() // Everything else requires auth
+                .requestMatchers("/images/**").permitAll()
+                .anyRequest().authenticated()
             );
 
         return http.build();
+    }
+
+    // 🔥 THIS IS THE MOST IMPORTANT PART
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+            "/images/**",
+            "/css/**",
+            "/js/**"
+        );
     }
 
     @Bean
