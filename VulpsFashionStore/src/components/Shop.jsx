@@ -41,17 +41,17 @@ const Shop = () => {
 
   const fetchProducts = async (category, color) => {
   try {
-    let url = "http://localhost:8080/api/products";
+    let url = "https://vulps-fashion-store.onrender.com/api/products";
 
     // CATEGORY FILTER
     if (category && category !== "All Products") {
       const apiCategory = CATEGORY_API_MAP[category];
-      url = `http://localhost:8080/api/products/category/${apiCategory}`;
+      url = `https://vulps-fashion-store.onrender.com/api/products/category/${apiCategory}`;
     }
 
     // COLOR FILTER (overrides category if selected)
     if (color) {
-      url = `http://localhost:8080/api/products/color/${color}`;
+      url = `https://vulps-fashion-store.onrender.com/api/products/color/${color}`;
     }
 
     const res = await axios.get(url);
@@ -64,7 +64,7 @@ const Shop = () => {
       category: p.category,
       colors: p.colors,
       sizes: p.sizes,
-      image: `http://localhost:8080${p.imageUrl}`,
+      image: `https://vulps-fashion-store.onrender.com${p.imageUrl}`,
     }));
 
     setProducts(mappedProducts);
@@ -92,7 +92,7 @@ const Shop = () => {
       };
 
       await axios.post(
-        `http://localhost:8080/api/cart/add?userId=${user.id}`,
+        `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
         requestBody
       );
 

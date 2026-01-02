@@ -329,7 +329,7 @@ const handleSizeChange = (size) => {
               <tr key={product.id} className="border-t">
                 <td className="p-3">
                   <img
-                    src={`http://localhost:8080${product.imageUrl}`}
+                    src={`https://vulps-fashion-store.onrender.com${product.imageUrl}`}
                     alt={product.name}
                     className="h-12 w-12 object-cover rounded"
                   />
