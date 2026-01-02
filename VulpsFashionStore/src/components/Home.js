@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useRef} from 'react';
 import { Link } from 'react-router-dom'; // 1. Added Link for navigation
 import '../App.css';
 import './Footer.css';
 import './CustomDesign.css';
-// import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
+import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 
@@ -50,17 +50,34 @@ const testimonials = [
 ];
 // We define this separately so it's easy to manage
 const ProcessSection = () => {
-  const [isAnimated, setIsAnimated] = useState(false);
-  
+  const [isAnimated, setIsAnimated] = useState(true);
+  const sectionRef = useRef(null);
   const steps = [
     { title: "Sign in", desc: "Create an account to track." },
     { title: "Add to cart", desc: "Select size and quantity." },
     { title: "Pay", desc: "UPI, Cards, or Net Banking." },
     { title: "Delivered", desc: "Quick shipping to your door." }
   ];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When the section comes into view, trigger the animation
+        if (entry.isIntersecting) {
+          setIsAnimated(true);
+        }
+      },
+      { threshold: 0.3 } // 30% of the section must be visible
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="process-section">
+    <section  ref={sectionRef} className="process-section">
 
       <div className="container">
         <h1 style={{ color: 'white', textAlign: 'center', fontFamily: 'Arial, sans-serif', fontSize: '4rem' }}>Process ...!</h1>
@@ -396,11 +413,11 @@ const fetchLatestCollections = async () => {
             </ul>
 
             {/* Animated Social Icons */}
-            {/* <div className="social-links-slim">
+            <div className="social-links-slim">
               <a href="#" className="social-icon-box ig"><FaInstagram /></a>
               <a href="#" className="social-icon-box fb"><FaFacebookF /></a>
               <a href="#" className="social-icon-box wa"><FaWhatsapp /></a>
-            </div> */}
+            </div>
           </div>
 
           <hr className="footer-divider" />
