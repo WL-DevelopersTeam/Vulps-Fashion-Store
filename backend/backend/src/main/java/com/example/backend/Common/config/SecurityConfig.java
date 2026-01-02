@@ -26,7 +26,7 @@ public class SecurityConfig {
     .requestMatchers("/api/latest-collections/**").permitAll()
     .requestMatchers("/images/**").permitAll()
     .anyRequest().authenticated()
-)
+);
 
 
         return http.build();
