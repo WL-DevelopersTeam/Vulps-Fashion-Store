@@ -1,91 +1,119 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Cart.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Cart.css";
 
 function Cart() {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Premium Unisex Hoodie',
-      price: 1999,
-      quantity: 1,
-      size: 'M',
-      image: 'https://via.placeholder.com/150'
-    },
-    {
-      id: 2,
-      name: 'Printed Men T-shirt',
-      price: 899,
-      quantity: 2,
-      size: 'L',
-      image: 'https://via.placeholder.com/150'
+
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  /* ---------------- GET LOGGED IN USER ---------------- */
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
+
+  /* ---------------- FETCH CART ---------------- */
+  useEffect(() => {
+    if (!userId) {
+      navigate("/SignIn");
+      return;
     }
-  ]);
 
-  const updateQuantity = (id, change) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id 
-        ? { ...item, quantity: Math.max(1, item.quantity + change) }
-        : item
-    ));
+    fetchCart();
+  }, [userId]);
+
+  const fetchCart = async () => {
+    try {
+      const res = await fetch(
+        `https://vulps-fashion-store.onrender.com/api/cart?userId=${userId}`
+      );
+
+      if (!res.ok) {
+        setCartItems([]);
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+      setCartItems(data);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  /* ---------------- REMOVE ITEM ---------------- */
+  const removeItem = async (itemId) => {
+    try {
+      await fetch(
+        `https://vulps-fashion-store.onrender.com/api/cart/remove/${itemId}`,
+        { method: "DELETE" }
+      );
+      fetchCart();
+    } catch (error) {
+      console.error("Remove failed:", error);
+    }
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const shipping = 100;
+  /* ---------------- CALCULATIONS ---------------- */
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const shipping = cartItems.length > 0 ? 100 : 0;
   const total = subtotal + shipping;
+
+  if (loading) {
+    return <h2 style={{ textAlign: "center" }}>Loading cart...</h2>;
+  }
 
   return (
     <div className="cart-page">
       <div className="cart-container">
-        <h1 className="cart-title fade-in">Shopping Cart</h1>
-        
+        <h1 className="cart-title">Shopping Cart</h1>
+
         {cartItems.length === 0 ? (
-          <div className="empty-cart fade-in">
+          <div className="empty-cart">
             <div className="empty-cart-icon">🛒</div>
             <h2>Your cart is empty</h2>
-            <p>Looks like you haven't added anything to your cart yet.</p>
-            <button className="cta-button" onClick={() => navigate('/')}>
+            <button className="cta-button" onClick={() => navigate("/shop")}>
               Continue Shopping
             </button>
           </div>
         ) : (
           <div className="cart-content">
+            {/* CART ITEMS */}
             <div className="cart-items">
               {cartItems.map((item) => (
-                <div key={item.id} className="cart-item slide-up">
+                <div key={item.productId} className="cart-item">
                   <div className="item-image">
-                    <div className="image-placeholder">{item.name}</div>
+                    <img
+                      src={`https://vulps-fashion-store.onrender.com${item.imageUrl}`}
+                      alt={item.name}
+                    />
                   </div>
+
                   <div className="item-details">
                     <h3>{item.name}</h3>
-                    <p className="item-size">Size: {item.size}</p>
-                    <p className="item-price">₹{item.price.toLocaleString()}</p>
+                    <p>Size: {item.size}</p>
+                    <p>Color: {item.color}</p>
+                    <p className="item-price">
+                      ₹{item.price.toLocaleString()}
+                    </p>
                   </div>
+
                   <div className="item-quantity">
-                    <button 
-                      className="quantity-btn" 
-                      onClick={() => updateQuantity(item.id, -1)}
-                    >
-                      −
-                    </button>
-                    <span className="quantity-value">{item.quantity}</span>
-                    <button 
-                      className="quantity-btn" 
-                      onClick={() => updateQuantity(item.id, 1)}
-                    >
-                      +
-                    </button>
+                    <span>Qty: {item.quantity}</span>
                   </div>
+
                   <div className="item-total">
-                    <p className="total-price">₹{(item.price * item.quantity).toLocaleString()}</p>
-                    <button 
-                      className="remove-btn" 
-                      onClick={() => removeItem(item.id)}
+                    <p>
+                      ₹{(item.price * item.quantity).toLocaleString()}
+                    </p>
+                    <button
+                      className="remove-btn"
+                      onClick={() => removeItem(item.productId)}
                     >
                       Remove
                     </button>
@@ -94,22 +122,33 @@ function Cart() {
               ))}
             </div>
 
-            <div className="cart-summary slide-left">
+            {/* ORDER SUMMARY */}
+            <div className="cart-summary">
               <h2>Order Summary</h2>
+
               <div className="summary-row">
                 <span>Subtotal</span>
                 <span>₹{subtotal.toLocaleString()}</span>
               </div>
+
               <div className="summary-row">
                 <span>Shipping</span>
                 <span>₹{shipping}</span>
               </div>
+
               <div className="summary-row total">
                 <span>Total</span>
                 <span>₹{total.toLocaleString()}</span>
               </div>
-              <button className="checkout-btn">Proceed to Checkout</button>
-              <button className="continue-shopping-btn" onClick={() => navigate('/')}>
+
+              <button className="checkout-btn">
+                Proceed to Checkout
+              </button>
+
+              <button
+                className="continue-shopping-btn"
+                onClick={() => navigate("/shop")}
+              >
                 Continue Shopping
               </button>
             </div>
@@ -121,4 +160,3 @@ function Cart() {
 }
 
 export default Cart;
-

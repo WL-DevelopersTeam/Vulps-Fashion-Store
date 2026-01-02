@@ -26,7 +26,7 @@ public class ProductService
 
     // ✅ ALWAYS points to backend/images
    private final String uploadDir =
-    System.getProperty("user.dir") + "/backend/images/product-images/";
+        "src/main/resources/static/images/product-images/";
 
 
 
@@ -34,40 +34,41 @@ public class ProductService
     // Add product
     public ProductResponse addProduct(ProductRequest request) throws IOException {
 
-        MultipartFile image = request.getImage();
-        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+    MultipartFile image = request.getImage();
+    String fileName = StringUtils.cleanPath(image.getOriginalFilename());
 
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        Path filePath = uploadPath.resolve(fileName);
-        Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        Product product = new Product();
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
-        product.setCategory(request.getCategory());
-        product.setColors(request.getColors());
-        product.setSizes(request.getSizes());
-
-        // ✅ Correct image URL
-       product.setImageUrl("/images/product-images/" + fileName);
-        productRepository.save(product);
-
-        return new ProductResponse(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getImageUrl(),
-                product.getColors(),
-                product.getSizes(),
-                product.getCategory()
-        );
+    Path uploadPath = Paths.get(uploadDir);
+    if (!Files.exists(uploadPath)) {
+        Files.createDirectories(uploadPath);
     }
+
+    Path filePath = uploadPath.resolve(fileName);
+    Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+    Product product = new Product();
+    product.setName(request.getName());
+    product.setDescription(request.getDescription());
+    product.setPrice(request.getPrice());
+    product.setCategory(request.getCategory());
+    product.setColors(request.getColors());
+    product.setSizes(request.getSizes());
+
+    // ✅ PUBLIC IMAGE URL
+    product.setImageUrl("/images/product-images/" + fileName);
+
+    productRepository.save(product);
+
+    return new ProductResponse(
+            product.getId(),
+            product.getName(),
+            product.getDescription(),
+            product.getPrice(),
+            product.getImageUrl(),
+            product.getColors(),
+            product.getSizes(),
+            product.getCategory()
+    );
+}
 
     // Get all products (Customer)
 
