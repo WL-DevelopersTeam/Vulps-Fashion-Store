@@ -1,19 +1,21 @@
-# -------- STAGE 1: Build the JAR --------
+# -------- STAGE 1: Build --------
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-# Copy pom.xml and download dependencies
-COPY pom.xml .
+# Copy pom.xml from backend folder
+COPY backend/pom.xml .
+
+# Download dependencies
 RUN mvn dependency:go-offline
 
 # Copy source code
-COPY src ./src
+COPY backend/src ./src
 
-# Build the Spring Boot jar
+# Build jar
 RUN mvn clean package -DskipTests
 
-# -------- STAGE 2: Run the JAR --------
+# -------- STAGE 2: Run --------
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
