@@ -83,7 +83,7 @@ function SignUp() {
 
   try {
     const response = await axios.post(
-      'http://localhost:8080/api/auth/signup',
+      'https://vulps-fashion-store.onrender.com/api/auth/signup',
       {
         name: formData.name,
         email: formData.email,

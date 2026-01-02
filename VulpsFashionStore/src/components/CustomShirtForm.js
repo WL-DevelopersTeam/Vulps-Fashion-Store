@@ -45,7 +45,7 @@ const CustomShirtForm = () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:8080/api/custom-products", // SAME PC
+      "https://vulps-fashion-store.onrender.com/api/custom-products", // SAME PC
       // "http://10.191.17.135:8080/api/custom-products", // OTHER PCs
       formData,
       {

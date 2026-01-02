@@ -72,7 +72,7 @@ const handleSizeChange = (size) => {
       formData.append("image", image);
 
       const response = await axios.post(
-        "http://localhost:8080/api/products",
+        "https://vulps-fashion-store.onrender.com/api/products",
         formData,
         {
           headers: {
@@ -115,7 +115,7 @@ const handleSizeChange = (size) => {
     formData.append("image", latestImage);
 
     await axios.post(
-      "http://localhost:8080/api/latest-collections",
+      "https://vulps-fashion-store.onrender.com/api/latest-collections",
       formData,
       {
         headers: {

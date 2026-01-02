@@ -98,7 +98,7 @@ function Home() {
 
 const fetchLatestCollections = async () => {
   try {
-    const res = await fetch("http://localhost:8080/api/latest-collections");
+    const res = await fetch("https://vulps-fashion-store.onrender.com/api/latest-collections");
 
     if (!res.ok) {
       throw new Error("Failed to fetch latest collections");
