@@ -13,11 +13,12 @@ import com.example.backend.product.dto.ProductRequest;
 import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.service.ProductService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
+@CrossOrigin(origins = "https://vulpsfashionstore.vercel.app")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController 
@@ -26,16 +27,17 @@ public class ProductController
     private ProductService productService;
 
     // Admin adds product 
-    @PostMapping
-    public ProductResponse addProduct(@RequestParam String name,
-                                      @RequestParam String description,
-                                      @RequestParam double price,
-                                      @RequestParam String category,
-                                      @RequestParam MultipartFile image,
-                                      @RequestParam List<String> sizes,
-                                      @RequestParam List<String> colors
-                                      ) throws IOException
-                                      {
+    @PostMapping(consumes = "multipart/form-data")
+public ProductResponse addProduct(
+    @RequestParam String name,
+    @RequestParam String description,
+    @RequestParam double price,
+    @RequestParam String category,
+    @RequestParam MultipartFile image,
+    @RequestParam List<String> sizes,
+    @RequestParam List<String> colors
+) throws IOException {
+
          ProductRequest request = new ProductRequest();
         request.setName(name);
         request.setDescription(description);
