@@ -65,26 +65,19 @@ const addProduct = async () => {
     formData.append("category", category);
     formData.append("sizes", JSON.stringify(sizes));
     formData.append("colors", JSON.stringify(colors));
-    formData.append("image", imageFile);
-
-
+    formData.append("image", image); // ✅ FIXED
 
     const response = await axios.post(
-  "https://vulps-fashion-store.onrender.com/api/products",
-  formData
-);
+      "https://vulps-fashion-store.onrender.com/api/products",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-
-    setProducts(prev => [...prev, response.data]);
     alert("Product added successfully");
-
-    setName("");
-    setDescription("");
-    setPrice("");
-    setCategory("");
-    setSizes([]);
-    setColors([]);
-    setImage(null);
 
   } catch (error) {
     console.error("Add product failed:", error.response?.data || error.message);
