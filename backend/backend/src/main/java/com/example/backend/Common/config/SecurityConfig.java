@@ -38,7 +38,7 @@ public class SecurityConfig {
         config.setAllowCredentials(false);
 
         config.setAllowedOrigins(List.of(
-            "https://vulpsfashionstore.vercel.app",
+            "https://vulpsfashion.vercel.app",
             "https://vulps-fashion-store.vercel.app"
         ));
 
