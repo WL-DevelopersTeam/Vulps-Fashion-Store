@@ -13,6 +13,10 @@ import com.example.backend.product.dto.ProductRequest;
 import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.service.ProductService;
 
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,10 +38,21 @@ public ProductResponse addProduct(
     @RequestParam double price,
     @RequestParam String category,
     @RequestParam MultipartFile image,
-    @RequestParam(required = false) List<String> sizes,
-    @RequestParam(required = false) List<String> colors
+    @RequestParam(required = false) String sizes,
+    @RequestParam(required = false) String colors
+
 
 ) throws IOException {
+    ObjectMapper mapper = new ObjectMapper();
+
+List<String> sizeList = sizes != null
+        ? mapper.readValue(sizes, new TypeReference<List<String>>() {})
+        : List.of();
+
+List<String> colorList = colors != null
+        ? mapper.readValue(colors, new TypeReference<List<String>>() {})
+        : List.of();
+
 
          ProductRequest request = new ProductRequest();
         request.setName(name);
@@ -45,8 +60,8 @@ public ProductResponse addProduct(
         request.setPrice(price);
         request.setCategory(category);
         request.setImage(image);
-        request.setSizes(sizes);
-        request.setColors(colors);
+        request.setSizes(sizeList);
+        request.setColors(colorList);
 
         return productService.addProduct(request);
     }

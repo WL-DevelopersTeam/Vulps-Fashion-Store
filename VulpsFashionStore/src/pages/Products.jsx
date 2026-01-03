@@ -65,8 +65,9 @@ const addProduct = async () => {
     formData.append("category", category);
     formData.append("image", image);
 
-    sizes.forEach(size => formData.append("sizes", size));
-    colors.forEach(color => formData.append("colors", color));
+    formData.append("sizes", JSON.stringify(sizes));
+    formData.append("colors", JSON.stringify(colors));
+
 
     const response = await axios.post(
   "https://vulps-fashion-store.onrender.com/api/products",
