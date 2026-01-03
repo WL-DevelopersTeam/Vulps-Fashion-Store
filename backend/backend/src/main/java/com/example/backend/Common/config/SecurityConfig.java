@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,54 +22,39 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
-
-                // ✅ Allow OPTIONS requests (preflight)
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // ✅ Allow public APIs
-                .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/products/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/cart/**").permitAll()
-                .requestMatchers("/api/latest-collections/**").permitAll()
-
-                // ✅ Allow images
-                .requestMatchers("/images/**").permitAll()
-
-                // 🔐 Everything else requires authentication
-                .anyRequest().authenticated()
+                // 🔥 ALLOW EVERYTHING FOR NOW
+                .anyRequest().permitAll()
             );
 
         return http.build();
     }
 
-   @Bean
-public CorsConfigurationSource corsConfigurationSource() {
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
 
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
+        CorsConfiguration config = new CorsConfiguration();
 
-    config.setAllowedOriginPatterns(List.of(
-        "https://vulpsfashionstore.vercel.app",
-        "https://vulps-fashion-store.vercel.app"
-    ));
+        // 🔥 VERY IMPORTANT
+        config.setAllowCredentials(false);
 
-    config.setAllowedMethods(List.of(
-        "GET", "POST", "PUT", "DELETE", "OPTIONS"
-    ));
+        config.setAllowedOrigins(List.of(
+            "https://vulpsfashionstore.vercel.app",
+            "https://vulps-fashion-store.vercel.app"
+        ));
 
-    config.setAllowedHeaders(List.of(
-        "Authorization",
-        "Content-Type",
-        "Accept"
-    ));
+        config.setAllowedMethods(List.of(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
+        // 🔥 MUST BE *
+        config.setAllowedHeaders(List.of("*"));
 
-    return source;
-}
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
 
+        return source;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
