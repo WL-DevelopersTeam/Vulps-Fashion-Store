@@ -51,7 +51,8 @@ public CorsConfigurationSource corsConfigurationSource() {
     config.setAllowCredentials(true);
 
     config.setAllowedOriginPatterns(List.of(
-        "https://vulpsfashionstore.vercel.app"
+        "https://vulpsfashionstore.vercel.app",
+        "https://vulps-fashion-store.vercel.app"
     ));
 
     config.setAllowedMethods(List.of(
