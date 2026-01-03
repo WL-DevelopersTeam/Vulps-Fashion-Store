@@ -51,7 +51,6 @@ const handleSizeChange = (size) => {
   );
 };
 
-
 const addProduct = async () => {
   if (!name || !price || !image) {
     alert("Please fill all fields");
@@ -64,22 +63,17 @@ const addProduct = async () => {
     formData.append("description", description);
     formData.append("price", price);
     formData.append("category", category);
-    formData.append("sizes", sizes.join(","));
-    formData.append("colors", colors.join(","));
     formData.append("image", image);
+
+    sizes.forEach(size => formData.append("sizes", size));
+    colors.forEach(color => formData.append("colors", color));
 
     const response = await axios.post(
       "https://vulps-fashion-store.onrender.com/api/products",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
 
-    setProducts([...products, response.data]);
-
+    setProducts(prev => [...prev, response.data]);
     alert("Product added successfully");
 
     setName("");
@@ -95,6 +89,7 @@ const addProduct = async () => {
     alert("Failed to add product");
   }
 };
+
 
 
   // Add Latest Product 
