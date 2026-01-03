@@ -12,13 +12,22 @@ import com.cloudinary.Cloudinary;
 public class CloudinaryConfig {
 
     @Bean
-    public Cloudinary cloudinary() {
+public Cloudinary cloudinary() {
 
-        Map<String, String> config = new HashMap<>();
-        config.put("cloud_name", System.getenv("CLOUDINARY_CLOUD_NAME"));
-        config.put("api_key", System.getenv("CLOUDINARY_API_KEY"));
-        config.put("api_secret", System.getenv("CLOUDINARY_API_SECRET"));
+    String cloudName = System.getenv("CLOUDINARY_CLOUD_NAME");
+    String apiKey = System.getenv("CLOUDINARY_API_KEY");
+    String apiSecret = System.getenv("CLOUDINARY_API_SECRET");
 
-        return new Cloudinary(config);
+    if (cloudName == null || apiKey == null || apiSecret == null) {
+        throw new RuntimeException("❌ Cloudinary ENV variables are missing");
     }
+
+    Map<String, String> config = new HashMap<>();
+    config.put("cloud_name", cloudName);
+    config.put("api_key", apiKey);
+    config.put("api_secret", apiSecret);
+
+    return new Cloudinary(config);
+}
+
 }
