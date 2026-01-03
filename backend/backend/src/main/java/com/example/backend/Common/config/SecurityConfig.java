@@ -44,22 +44,32 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+   @Bean
+public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true); // ✅ Important if frontend sends cookies or auth
-        config.setAllowedOrigins(List.of(
-            "https://vulpsfashionstore.vercel.app" // ✅ EXACT frontend URL
-        ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+    config.setAllowedOriginPatterns(List.of(
+        "https://vulpsfashionstore.vercel.app"
+    ));
 
-        return source;
-    }
+    config.setAllowedMethods(List.of(
+        "GET", "POST", "PUT", "DELETE", "OPTIONS"
+    ));
+
+    config.setAllowedHeaders(List.of(
+        "Authorization",
+        "Content-Type",
+        "Accept"
+    ));
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+
+    return source;
+}
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

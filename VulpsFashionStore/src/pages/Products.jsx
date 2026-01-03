@@ -68,11 +68,16 @@ const addProduct = async () => {
     sizes.forEach(size => formData.append("sizes", size));
     colors.forEach(color => formData.append("colors", color));
 
-    const response = await axios.post(
+    await axios.post(
   "https://vulps-fashion-store.onrender.com/api/products",
   formData,
-  { headers: { "Content-Type": "multipart/form-data" } }
+  {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  }
 );
+
 
 
     setProducts(prev => [...prev, response.data]);
