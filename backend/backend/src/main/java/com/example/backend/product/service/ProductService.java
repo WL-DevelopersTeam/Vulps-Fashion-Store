@@ -51,8 +51,9 @@ public ProductResponse addProduct(ProductRequest request) throws IOException {
     product.setDescription(request.getDescription());
     product.setPrice(request.getPrice());
     product.setCategory(request.getCategory());
-    product.setColors(request.getColors());
-    product.setSizes(request.getSizes());
+    product.setSizes(request.getSizes() == null ? List.of() : request.getSizes());
+    product.setColors(request.getColors() == null ? List.of() : request.getColors());
+
 
     // Save Cloudinary URL
     product.setImageUrl(imageUrl);

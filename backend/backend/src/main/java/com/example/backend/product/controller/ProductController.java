@@ -34,8 +34,9 @@ public ProductResponse addProduct(
     @RequestParam double price,
     @RequestParam String category,
     @RequestParam MultipartFile image,
-    @RequestParam List<String> sizes,
-    @RequestParam List<String> colors
+    @RequestParam(required = false) List<String> sizes,
+    @RequestParam(required = false) List<String> colors
+
 ) throws IOException {
 
          ProductRequest request = new ProductRequest();
