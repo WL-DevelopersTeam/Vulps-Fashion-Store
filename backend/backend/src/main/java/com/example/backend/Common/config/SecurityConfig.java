@@ -6,15 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -22,24 +21,23 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
-
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ Allow OPTIONS (VERY IMPORTANT)
+                // ✅ Allow OPTIONS requests (preflight)
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // ✅ Allow product APIs (GET + POST)
+                // ✅ Allow public APIs
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/products/**").permitAll()
-
-                // ✅ Other public APIs
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/cart/**").permitAll()
                 .requestMatchers("/api/latest-collections/**").permitAll()
 
-                // ❌ Everything else protected
+                // ✅ Allow images
+                .requestMatchers("/images/**").permitAll()
+
+                // 🔐 Everything else requires authentication
                 .anyRequest().authenticated()
             );
 
@@ -50,16 +48,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(false);
-
+        config.setAllowCredentials(true); // ✅ Important if frontend sends cookies or auth
         config.setAllowedOrigins(List.of(
-            "https://vulpsfashionstore.vercel.app"
+            "https://vulpsfashionstore.vercel.app" // ✅ EXACT frontend URL
         ));
-
-        config.setAllowedMethods(List.of(
-            "GET", "POST", "PUT", "DELETE", "OPTIONS"
-        ));
-
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
