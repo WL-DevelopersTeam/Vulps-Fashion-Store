@@ -52,56 +52,50 @@ const handleSizeChange = (size) => {
 };
 
 
-  const addProduct = async () => {
+const addProduct = async () => {
+  if (!name || !price || !image) {
+    alert("Please fill all fields");
+    return;
+  }
 
-    
+  try {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("category", category);
+    formData.append("sizes", sizes.join(","));
+    formData.append("colors", colors.join(","));
+    formData.append("image", image);
 
-    if (!name || !price || !image) {
-      alert("Please fill all fields");
-      return;
-    }
+    const response = await axios.post(
+      "https://vulps-fashion-store.onrender.com/api/products",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("category", category);
-      formData.append("sizes", sizes.join(","));
-      formData.append("colors", colors.join(","));
-      formData.append("image", image);
+    setProducts([...products, response.data]);
 
-      const response = await axios.post(
-                      "https://vulps-fashion-store.onrender.com/api/products",
-                    formData,
-                      {
-                              headers: { "Content-Type": "multipart/form-data" },
-                      }
-);
+    alert("Product added successfully");
 
-setProducts([...products, response.data]);
+    setName("");
+    setDescription("");
+    setPrice("");
+    setCategory("");
+    setSizes([]);
+    setColors([]);
+    setImage(null);
 
+  } catch (error) {
+    console.error("Add product failed:", error.response?.data || error.message);
+    alert("Failed to add product");
+  }
+};
 
-
-      // Add product to UI table
-      setProducts([...products, response.data]);
-
-      alert("Product added successfully");
-
-      // Reset form
-      setName("");
-      setDescription("");
-      setPrice("");
-      setCategory("");
-      setSizes("");
-      setColors("");
-      setImage(null);
-
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add product");
-    }
-  };
 
   // Add Latest Product 
   const addLatestProduct = async () => {
