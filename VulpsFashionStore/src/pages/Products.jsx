@@ -63,10 +63,10 @@ const addProduct = async () => {
     formData.append("description", description);
     formData.append("price", price);
     formData.append("category", category);
-    formData.append("image", image);
-
     formData.append("sizes", JSON.stringify(sizes));
     formData.append("colors", JSON.stringify(colors));
+    formData.append("image", imageFile);
+
 
 
     const response = await axios.post(

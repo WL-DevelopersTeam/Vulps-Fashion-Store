@@ -20,14 +20,15 @@ import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.model.Product;
 import com.example.backend.product.repository.ProductRepository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 @Service
 public class ProductService 
 {
     @Autowired
     private ProductRepository productRepository;
-
-
-
 
     // Add product
     @Autowired
