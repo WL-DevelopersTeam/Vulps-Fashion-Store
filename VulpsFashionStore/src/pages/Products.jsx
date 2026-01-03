@@ -71,15 +71,16 @@ const handleSizeChange = (size) => {
       formData.append("colors", colors.join(","));
       formData.append("image", image);
 
-      axios.post(
-  "https://vulps-fashion-store.onrender.com/api/products",
-  formData,
-  {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }
+      const response = await axios.post(
+                      "https://vulps-fashion-store.onrender.com/api/products",
+                    formData,
+                      {
+                              headers: { "Content-Type": "multipart/form-data" },
+                      }
 );
+
+setProducts([...products, response.data]);
+
 
 
       // Add product to UI table
@@ -330,10 +331,11 @@ const handleSizeChange = (size) => {
               <tr key={product.id} className="border-t">
                 <td className="p-3">
                   <img
-                    src={`https://vulps-fashion-store.onrender.com${product.imageUrl}`}
-                    alt={product.name}
-                    className="h-12 w-12 object-cover rounded"
-                  />
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="h-12 w-12 object-cover rounded"
+                    />
+
                 </td>
                 <td>{product.name}</td>
                 <td className="text-center">₹{product.price}</td>
