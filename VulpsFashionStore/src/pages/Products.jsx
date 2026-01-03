@@ -70,8 +70,7 @@ const addProduct = async () => {
 
     const response = await axios.post(
   "https://vulps-fashion-store.onrender.com/api/products",
-  formData,
-  { headers: { "Content-Type": "multipart/form-data" } }
+  formData
 );
 
 
