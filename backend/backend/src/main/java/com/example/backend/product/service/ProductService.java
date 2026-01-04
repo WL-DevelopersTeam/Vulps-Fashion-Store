@@ -149,8 +149,4 @@ public List<ProductResponse> getProductsByColor(String color) {
     productRepository.deleteById(id);
 }
 
-
-
-
-
 }

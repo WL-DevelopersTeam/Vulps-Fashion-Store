@@ -94,7 +94,7 @@ List<String> colorList = colors != null
 
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        productService.delete(id);
 }
 
     
