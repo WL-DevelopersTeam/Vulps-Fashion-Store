@@ -319,7 +319,7 @@ const fetchLatestCollections = async () => {
             
             <div className="product-image">
               <img
-                src={`https://vulps-fashion-store.onrender.com${item.imageUrl}`}
+                src={item.imageUrl}
                 alt={item.title}
                 onError={(e) => {
                   e.target.src = "/placeholder.png"; // optional fallback

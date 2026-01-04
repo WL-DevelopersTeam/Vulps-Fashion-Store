@@ -1,13 +1,14 @@
 package com.example.backend.latestcollection.service;
+
 import java.io.IOException;
-import java.nio.file.*;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
 import com.example.backend.latestcollection.dto.LatestCollectionRequest;
 import com.example.backend.latestcollection.dto.LatestCollectionResponse;
 import com.example.backend.latestcollection.model.LatestCollection;
@@ -19,30 +20,27 @@ public class LatestCollectionService {
     @Autowired
     private LatestCollectionRepository repository;
 
-    private final String uploadDir =
-        System.getProperty("user.dir") + "/backend/images/latest/";
-
+    @Autowired
+    private Cloudinary cloudinary;
 
     // Admin adds latest collection
     public void add(LatestCollectionRequest request) throws IOException {
 
         MultipartFile image = request.getImage();
-        String fileName = System.currentTimeMillis() + "_" +
-                StringUtils.cleanPath(image.getOriginalFilename());
 
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
+        // Upload to Cloudinary
+        Map uploadResult = cloudinary.uploader().upload(
+                image.getBytes(),
+                Map.of("folder", "fashion-store/latest")
+        );
 
-        Files.copy(image.getInputStream(),
-                uploadPath.resolve(fileName),
-                StandardCopyOption.REPLACE_EXISTING);
+        String imageUrl = uploadResult.get("secure_url").toString();
 
         LatestCollection lc = new LatestCollection();
         lc.setTitle(request.getTitle());
         lc.setDescription(request.getDescription());
-        lc.setImageUrl("/images/latest/" + fileName);
+        lc.setImageUrl(imageUrl);
+
         repository.save(lc);
     }
 
@@ -59,4 +57,3 @@ public class LatestCollectionService {
                 .toList();
     }
 }
-
