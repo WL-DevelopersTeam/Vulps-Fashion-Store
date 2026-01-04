@@ -44,17 +44,14 @@ function Cart() {
   };
 
   /* ---------------- REMOVE ITEM ---------------- */
-  const removeItem = async (itemId) => {
-    try {
-      await fetch(
-        `https://vulps-fashion-store.onrender.com/api/cart/remove/${itemId}`,
-        { method: "DELETE" }
-      );
-      fetchCart();
-    } catch (error) {
-      console.error("Remove failed:", error);
-    }
-  };
+const removeItem = async (cartItemId) => {
+  await fetch(
+    `https://vulps-fashion-store.onrender.com/api/cart/remove/${cartItemId}`,
+    { method: "DELETE" }
+  );
+  fetchCart();
+};
+
 
   /* ---------------- CALCULATIONS ---------------- */
   const subtotal = cartItems.reduce(
@@ -89,9 +86,11 @@ function Cart() {
                 <div key={item.productId} className="cart-item">
                   <div className="item-image">
                     <img
-                      src={`https://vulps-fashion-store.onrender.com${item.imageUrl}`}
+                      src={item.imageUrl}
                       alt={item.name}
-                    />
+                      className="cart-image"
+                      />
+
                   </div>
 
                   <div className="item-details">
@@ -113,10 +112,11 @@ function Cart() {
                     </p>
                     <button
                       className="remove-btn"
-                      onClick={() => removeItem(item.productId)}
-                    >
-                      Remove
+                      onClick={() => removeItem(item.cartItemId)}
+                          >
+                         Remove
                     </button>
+
                   </div>
                 </div>
               ))}

@@ -2,6 +2,7 @@ package com.example.backend.cart.dto;
 
 public class CartItemResponse {
 
+    private Long cartItemId;
     private Long productId;
     private String productName;
     private String imageUrl;
@@ -9,8 +10,16 @@ public class CartItemResponse {
     private String size;
     private String color;
     private int quantity;
+
+    
+    public void setCartItemId(Long cartItemId) {
+        this.cartItemId = cartItemId;
+    }
     public Long getProductId() {
         return productId;
+    }
+    public Long getCartItemId() {
+        return cartItemId;
     }
     public String getProductName() {
         return productName;
@@ -30,8 +39,9 @@ public class CartItemResponse {
     public int getQuantity() {
         return quantity;
     }
-    public CartItemResponse(Long productId, String productName, String imageUrl, double price, String size,
+    public CartItemResponse(Long cartItemId,Long productId, String productName, String imageUrl, double price, String size,
             String color, int quantity) {
+        this.cartItemId=cartItemId;
         this.productId = productId;
         this.productName = productName;
         this.imageUrl = imageUrl;

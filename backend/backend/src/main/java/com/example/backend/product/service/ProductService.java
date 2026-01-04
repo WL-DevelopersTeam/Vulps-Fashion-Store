@@ -142,6 +142,15 @@ public List<ProductResponse> getProductsByColor(String color) {
             .toList();
 }
 
+        public void deleteProduct(Long id) {
+
+                Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+                productRepository.delete(product);
+}
+
+
 
 
 }

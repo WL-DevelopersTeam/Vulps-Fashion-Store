@@ -1,5 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
+import { useEffect } from "react";
+
 
 export default function Products() {
 
@@ -85,6 +87,19 @@ const addProduct = async () => {
   }
 };
 
+  useEffect(() => {
+  fetchProducts();
+}, []);
+const fetchProducts = async () => {
+  try {
+    const res = await axios.get(
+      "https://vulps-fashion-store.onrender.com/api/products"
+    );
+    setProducts(res.data);
+  } catch (err) {
+    console.error("Fetch failed", err);
+  }
+};
 
 
   // Add Latest Product 
@@ -125,9 +140,24 @@ const addProduct = async () => {
 };
 
 
-  const deleteProduct = (id) => {
+  const deleteProduct = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+  try {
+    await axios.delete(
+      `https://vulps-fashion-store.onrender.com/api/products/${id}`
+    );
+
+    // remove from UI
     setProducts(products.filter((p) => p.id !== id));
-  };
+
+    alert("Product deleted");
+  } catch (err) {
+    console.error("Delete failed", err);
+    alert("Failed to delete product");
+  }
+};
+
 
   return (
     <div className="flex-1 p-6">
@@ -324,12 +354,13 @@ const addProduct = async () => {
                 <td>{product.name}</td>
                 <td className="text-center">₹{product.price}</td>
                 <td className="text-center">
-                  <button
-                    onClick={() => deleteProduct(product.id)}
-                    className="text-red-500"
-                  >
-                    Delete
-                  </button>
+              <button
+                  onClick={() => deleteProduct(product.id)}
+                  className="text-red-500"
+                    >
+                  Delete
+              </button>
+
                 </td>
               </tr>
             ))}

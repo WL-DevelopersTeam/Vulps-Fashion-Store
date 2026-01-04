@@ -60,6 +60,7 @@ public class CartService {
 
         return cart.getItems().stream()
                 .map(item -> new CartItemResponse(
+                        item.getId(),  
                         item.getProduct().getId(),
                         item.getProduct().getName(),
                         item.getProduct().getImageUrl(),

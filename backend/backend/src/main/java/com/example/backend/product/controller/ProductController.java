@@ -90,5 +90,11 @@ List<String> colorList = colors != null
     public List<ProductResponse> getByColor(@PathVariable String color) {
         return productService.getProductsByColor(color);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+}
+
     
 }
