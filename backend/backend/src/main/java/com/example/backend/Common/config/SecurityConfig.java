@@ -39,7 +39,8 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
             "https://vulpsfashion.vercel.app",
-            "https://vulps-fashion-store.vercel.app"
+            "https://vulps-fashion-store.vercel.app",
+            "https://vulps-fashion.vercel.app/"
         ));
 
         config.setAllowedMethods(List.of(
