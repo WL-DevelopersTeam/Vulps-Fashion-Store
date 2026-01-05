@@ -41,15 +41,22 @@ public class CartService {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        CartItem item = new CartItem();
-        item.setCart(cart);
-        item.setProduct(product);
-        item.setSize(request.getSize());
-        item.setColor(request.getColor());
-        item.setQuantity(request.getQuantity());
+                        CartItem item = new CartItem();
+                        item.setCart(cart);
 
-        cart.getItems().add(item);
-        cartRepository.save(cart);
+                        // Copy product snapshot
+                        item.setProductId(product.getId());
+                        item.setName(product.getName());
+                        item.setImageUrl(product.getImageUrl());
+                        item.setPrice(product.getPrice());
+
+                        item.setSize(request.getSize());
+                        item.setColor(request.getColor());
+                        item.setQuantity(request.getQuantity());
+
+                        cartItemRepository.save(item);
+
+                        cartRepository.save(cart);
     }
 
     // View cart
@@ -58,18 +65,19 @@ public class CartService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart empty"));
 
-        return cart.getItems().stream()
-                .map(item -> new CartItemResponse(
-                        item.getId(),  
-                        item.getProduct().getId(),
-                        item.getProduct().getName(),
-                        item.getProduct().getImageUrl(),
-                        item.getProduct().getPrice(),
+                    return cart.getItems().stream()
+                    .map(item -> new CartItemResponse(
+                        item.getId(),
+                        item.getProductId(),
+                        item.getName(),
+                        item.getImageUrl(),
+                        item.getPrice(),
                         item.getSize(),
                         item.getColor(),
                         item.getQuantity()
-                ))
-                .toList();
+                    ))
+                    .toList();
+
     }
 
     // Remove item

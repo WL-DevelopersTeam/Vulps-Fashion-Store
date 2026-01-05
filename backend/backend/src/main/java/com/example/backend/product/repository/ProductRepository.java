@@ -10,6 +10,10 @@ import com.example.backend.product.model.Product;
 
 public interface ProductRepository extends JpaRepository<Product , Long>
 {
+
+    List<Product> findByActiveTrue();
+
+
     List<Product> findByCategory(String category);
     @Query("""
     SELECT DISTINCT p

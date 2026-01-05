@@ -23,9 +23,11 @@ public class CartItem
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    // Snapshot fields (NO FK)
+    private Long productId;
+    private String name;
+    private String imageUrl;
+    private double price;
 
     private String size;
     private String color;
@@ -42,11 +44,29 @@ public class CartItem
     public void setCart(Cart cart) {
         this.cart = cart;
     }
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public void setPrice(double price) {
+        this.price = price;
     }
     public String getSize() {
         return size;
@@ -67,6 +87,7 @@ public class CartItem
         this.quantity = quantity;
     }
 
+    
     // getters & setters
     
 }

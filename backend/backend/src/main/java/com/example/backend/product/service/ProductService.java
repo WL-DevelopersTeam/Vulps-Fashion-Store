@@ -73,22 +73,22 @@ public ProductResponse addProduct(ProductRequest request) throws IOException {
 
     // Get all products (Customer)
 
-    public List<ProductResponse> getAllProducts() 
-    {
-        return productRepository.findAll()
-                .stream()
-                .map(p -> new ProductResponse(
-                        p.getId(),
-                        p.getName(),
-                        p.getDescription(),
-                        p.getPrice(),
-                        p.getImageUrl(),
-                        p.getColors(),
-                        p.getSizes(),
-                        p.getCategory()
-                ))
-                .collect(Collectors.toList());
-    }
+    public List<ProductResponse> getAllProducts() {
+    return productRepository.findByActiveTrue()
+        .stream()
+        .map(p -> new ProductResponse(
+            p.getId(),
+            p.getName(),
+            p.getDescription(),
+            p.getPrice(),
+            p.getImageUrl(),
+            p.getColors(),
+            p.getSizes(),
+            p.getCategory()
+        ))
+        .toList();
+}
+
 
     // Get products by category
 
@@ -143,10 +143,13 @@ public List<ProductResponse> getProductsByColor(String color) {
 }
 
         public void delete(Long id) {
-    if (!productRepository.existsById(id)) {
-        throw new RuntimeException("Product not found");
-    }
-    productRepository.deleteById(id);
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Product not found"));
+
+    product.setActive(false);   // ✅ SOFT DELETE
+    productRepository.save(product);
 }
+
+
 
 }

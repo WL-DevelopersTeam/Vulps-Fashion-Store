@@ -30,6 +30,10 @@ public class Product
 
     private String category; // e.g., Men, Women, Accessories
 
+    @Column(nullable = false)
+    private boolean active = true;
+
+
     @ElementCollection
     @CollectionTable(
         name = "product_sizes",
