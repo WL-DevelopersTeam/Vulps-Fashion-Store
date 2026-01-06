@@ -13,7 +13,7 @@ export default function ProductTable() {
           <tr>
             <th className="text-left py-2">Name</th>
             <th>Price</th>
-            <th>Category</th>
+            <th>Stock</th>
             <th>Actions</th>
           </tr>
         </thead>
