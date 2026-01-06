@@ -9,6 +9,7 @@ export default function Sidebar() {
       <NavLink to="/admin" end>Dashboard</NavLink>
       <NavLink to="/admin/orders">Orders</NavLink>
       <NavLink to="/admin/products">Products</NavLink>
+      <NavLink to="/admin/custom-orders">Custom Orders</NavLink>
     </div>
   );
 }

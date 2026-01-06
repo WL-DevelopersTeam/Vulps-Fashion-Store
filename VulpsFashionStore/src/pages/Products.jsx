@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
+import Loader from "../components/Loader";
+
 
 
 export default function Products() {
@@ -22,6 +24,12 @@ export default function Products() {
   const [latestPrice, setLatestPrice] = useState("");
   const [latestDescription, setLatestDescription] = useState("");
   const [latestImage, setLatestImage] = useState(null);
+
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [addingProduct, setAddingProduct] = useState(false);
+  const [addingLatest, setAddingLatest] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
 
     const AVAILABLE_COLORS = [
     { name: "Red", value: "#ef4444" },
@@ -60,6 +68,8 @@ const addProduct = async () => {
   }
 
   try {
+    setAddingProduct(true);
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("description", description);
@@ -67,94 +77,98 @@ const addProduct = async () => {
     formData.append("category", category);
     formData.append("sizes", JSON.stringify(sizes));
     formData.append("colors", JSON.stringify(colors));
-    formData.append("image", image); // ✅ FIXED
+    formData.append("image", image);
 
-    const response = await axios.post(
+    await axios.post(
       "https://vulps-fashion-store.onrender.com/api/products",
       formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
 
     alert("Product added successfully");
+    fetchProducts();
 
   } catch (error) {
-    console.error("Add product failed:", error.response?.data || error.message);
     alert("Failed to add product");
+  } finally {
+    setAddingProduct(false);
   }
 };
 
-  useEffect(() => {
-  fetchProducts();
-}, []);
-const fetchProducts = async () => {
-  try {
-    const res = await axios.get(
-      "https://vulps-fashion-store.onrender.com/api/products"
-    );
-    setProducts(res.data);
-  } catch (err) {
-    console.error("Fetch failed", err);
-  }
-};
+
+            useEffect(() => {
+            fetchProducts();
+          }, []);
+
+        const fetchProducts = async () => {
+          try {
+            setLoadingProducts(true);
+            const res = await axios.get(
+              "https://vulps-fashion-store.onrender.com/api/products"
+            );
+            setProducts(res.data);
+          } catch (err) {
+            console.error("Fetch failed", err);
+          } finally {
+            setLoadingProducts(false);
+          }
+        };
+
 
 
   // Add Latest Product 
-  const addLatestProduct = async () => {
+const addLatestProduct = async () => {
   if (!latestName || !latestImage) {
     alert("Please fill all fields");
     return;
   }
 
   try {
+    setAddingLatest(true);
+
     const formData = new FormData();
     formData.append("title", latestName);
+    formData.append("price", latestPrice); 
     formData.append("description", latestDescription);
     formData.append("image", latestImage);
 
     await axios.post(
       "https://vulps-fashion-store.onrender.com/api/latest-collections",
       formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
 
     alert("Latest product added successfully");
-
-    // reset fields
     setLatestName("");
-    setLatestPrice("");
+    setLatestDescription("");
     setLatestDescription("");
     setLatestImage(null);
 
   } catch (error) {
-    console.error(error);
     alert("Failed to add latest product");
+  } finally {
+    setAddingLatest(false);
   }
 };
 
 
-  const deleteProduct = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+const deleteProduct = async (id) => {
+  if (!window.confirm("Are you sure?")) return;
 
   try {
+    setDeletingId(id);
+
     await axios.delete(
       `https://vulps-fashion-store.onrender.com/api/products/${id}`
     );
 
-    // remove from UI
     setProducts(products.filter((p) => p.id !== id));
 
-    alert("Product deleted");
   } catch (err) {
-    console.error("Delete failed", err);
     alert("Failed to delete product");
+  } finally {
+    setDeletingId(null);
   }
 };
 
@@ -270,12 +284,15 @@ const fetchProducts = async () => {
           />
         )}
 
-        <button
-          onClick={addProduct}
-          className="mt-4 bg-black text-white px-4 py-2 rounded"
-        >
-          Save Product
-        </button>
+            <button
+                  onClick={addProduct}
+                  disabled={addingProduct}
+                  className="mt-4 bg-black text-white px-6 py-2 rounded flex items-center justify-center gap-2 disabled:opacity-50"
+                        >
+                         {addingProduct ? <Loader /> : "Save Product"}
+            </button>
+
+
       </div>
 
       {/* Add Latest Product (UNCHANGED) */}
@@ -321,11 +338,14 @@ const fetchProducts = async () => {
 
 
         <button
-          onClick={addLatestProduct}
-          className="mt-4 bg-black text-white px-4 py-2 rounded"
-        >
-          Add Latest Product
+                onClick={addLatestProduct}
+                disabled={addingLatest}
+                className="mt-4 bg-black text-white px-6 py-2 rounded flex items-center justify-center gap-2 disabled:opacity-50"
+                      >
+                      {addingLatest ? <Loader /> : "Add Latest Product"}
         </button>
+
+
       </div>
 
       {/* Products Table */}
@@ -341,6 +361,17 @@ const fetchProducts = async () => {
           </thead>
 
           <tbody>
+
+            {loadingProducts && (
+            <tr>
+                      <td colSpan="4" className="p-6">
+                       <div className="flex justify-center">
+                            <Loader />
+                        </div>
+                      </td>
+                </tr>
+                  )}
+
             {products.map((product) => (
               <tr key={product.id} className="border-t">
                 <td className="p-3">
@@ -355,12 +386,12 @@ const fetchProducts = async () => {
                 <td className="text-center">₹{product.price}</td>
                 <td className="text-center">
               <button
-                  onClick={() => deleteProduct(product.id)}
-                  className="text-red-500"
-                    >
-                  Delete
+                      onClick={() => deleteProduct(product.id)}
+                      disabled={deletingId === product.id}
+                      className="text-red-500 flex justify-center items-center disabled:opacity-50"
+                        >
+                    {deletingId === product.id ? <Loader /> : "Delete"}
               </button>
-
                 </td>
               </tr>
             ))}
