@@ -430,12 +430,6 @@
   transform: scale(1.05);
 }
 
-/* Latest Collections */
-.latest-section {
-  padding: 100px 0;
-  background: white;
-}
-
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -1164,8 +1158,12 @@ html {
   transform: translateX(0);
 }
 
-.latest-collection-premium {
-  padding: 80px 40px;
+/* ===============================
+   LATEST COLLECTIONS (UPDATED)
+================================ */
+
+.latest-section {
+  padding: 80px 0;
   background: linear-gradient(90deg, #f6d64a, #8a5c0c);
 }
 
@@ -1173,37 +1171,49 @@ html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 .latest-header h2 {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 600;
   color: #000;
 }
 
-.see-all {
-  cursor: pointer;
+.see-all-link {
   font-weight: 600;
+  color: #000;
+  text-decoration: none;
+  transition: transform 0.3s ease;
 }
 
-.latest-slider {
+.see-all-link:hover {
+  transform: translateX(5px);
+}
+
+/* Slider Wrapper */
+.latest-slider-wrapper {
+  position: relative;
   display: flex;
-  gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding-bottom: 10px;
+  align-items: center;
 }
 
-.latest-slider::-webkit-scrollbar {
-  display: none;
+/* Visible Area */
+.latest-slider {
+  overflow: hidden;
+  width: 100%;
 }
 
+/* Moving Track */
+.latest-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Individual Card */
 .latest-card {
-  min-width: 260px;
-  
-  border-radius: 14px;
-  padding: 10px;
+  min-width: 25%; /* 4 cards visible */
+  padding: 14px;
   transition: transform 0.3s ease;
 }
 
@@ -1211,98 +1221,111 @@ html {
   transform: translateY(-6px);
 }
 
+/* Product Image */
 .latest-card img {
   width: 100%;
-  height: 320px;
+  height: 360px;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 20px;
 }
 
-.latest-info {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-  font-weight: 600;
-}
-
-.no-data {
-  text-align: center;
-  margin-top: 20px;
-  color: #000;
-}
-
-.latest-section {
-  background: linear-gradient(90deg,#6945e8 , #21b0db);
-  padding: 60px 0;
-}
-
-.latest-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #000;
-  margin-bottom: 30px;
-}
-
-.latest-slider-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.latest-slider {
-  overflow: hidden;
-  width: 100%;
-}
-
-.latest-track {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-.latest-card {
-  min-width: 25%; /* 4 cards exactly */
-  padding: 12px;
-}
-
-.latest-card img {
-  width: 100%;
-  height: 320px;
-  object-fit: cover;
-  border-radius: 16px;
-}
-
+/* Rating + Price */
 .card-info {
   display: flex;
   justify-content: space-between;
-  margin-top: 8px;
-  color: #000;
+  align-items: center;
+  margin-top: 12px;
   font-weight: 600;
+  color: #111;
 }
 
-/* ARROWS */
+.card-info h4 {
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.category {
+  font-size: 0.8rem;
+  color: #444;
+}
+
+/* Price */
+.price {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* Navigation Arrows */
 .slider-arrow {
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border: none;
   width: 44px;
   height: 44px;
   border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  font-size: 22px;
   cursor: pointer;
-  font-size: 20px;
   position: absolute;
   z-index: 10;
+  transition: background 0.3s ease;
+}
+
+.slider-arrow:hover {
+  background: rgba(0, 0, 0, 0.8);
 }
 
 .slider-arrow.left {
-  left: -22px;
+  left: -18px;
 }
 
 .slider-arrow.right {
-  right: -22px;
+  right: -18px;
 }
 
 .slider-arrow:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+/* Empty State */
+.no-data {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #000;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .latest-card {
+    min-width: 33.33%; /* 3 cards */
+  }
+}
+
+@media (max-width: 768px) {
+  .latest-card {
+    min-width: 80%; /* 1 card swipe */
+  }
+
+  .slider-arrow {
+    display: none;
+  }
+}
+/* Image Wrapper for Zoom Effect */
+.latest-card {
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.latest-card img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  border-radius: 20px;
+  transition: transform 0.5s ease;
+}
+
+/* Myntra-like zoom */
+.latest-card:hover img {
+  transform: scale(1.08);
 }

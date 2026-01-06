@@ -249,6 +249,9 @@ import OrderDetails from "./pages/OrderDetails";
 // import AddressForm from "./components/AdressForm";
 import AdminProtectedRoute from "./routes/AdminProtectedRoute";
 
+import CustomOrders from "./pages/CustomOrders";
+
+
 
 function Layout() {
   const location = useLocation();
@@ -275,6 +278,18 @@ function Layout() {
     </AdminProtectedRoute>
   }
 />
+
+  <Route
+  path="/admin/custom-orders"
+  element={
+    <AdminProtectedRoute>
+      <AdminLayout>
+        <CustomOrders />
+      </AdminLayout>
+    </AdminProtectedRoute>
+  }
+/>
+
 
 <Route
   path="/admin/orders"

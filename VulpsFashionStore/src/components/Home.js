@@ -101,6 +101,89 @@ const ProcessSection = () => {
     </section>
   );
 };
+
+ const LatestSlider = ({ products }) => {
+  const [index, setIndex] = useState(0);
+  const visibleCards = 4;
+  const maxIndex = Math.max(products.length - visibleCards, 0);
+
+  const startX = useRef(0);
+  const endX = useRef(0);
+
+  const next = () => setIndex((prev) => Math.min(prev + 1, maxIndex));
+  const prev = () => setIndex((prev) => Math.max(prev - 1, 0));
+
+  useEffect(() => {
+  const autoSlide = setInterval(() => {
+    setIndex((prev) => (prev < maxIndex ? prev + 1 : 0));
+  }, 3000);
+
+  return () => clearInterval(autoSlide);
+}, [maxIndex]);
+
+
+  /* Touch handlers */
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    endX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (startX.current - endX.current > 50) next();
+    if (endX.current - startX.current > 50) prev();
+  };
+
+  if (!products || products.length === 0) {
+    return <p className="no-data">No latest products found</p>;
+  }
+
+  return (
+    <div className="latest-slider-wrapper">
+      <button className="slider-arrow left" onClick={prev} disabled={index === 0}>
+        ❮
+      </button>
+
+      <div
+        className="latest-slider"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div
+          className="latest-track"
+          style={{ transform: `translateX(-${index * 25}%)` }}
+        >
+          {products.map((item) => (
+            <div key={item.id} className="latest-card">
+              <img src={item.imageUrl} alt={item.title} />
+
+              <div className="card-info">
+                <div>
+                  <h4>{item.title}</h4>
+                  <p className="category">{item.category}</p>
+                </div>
+                <span className="price">₹{item.price}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        className="slider-arrow right"
+        onClick={next}
+        disabled={index === maxIndex}
+      >
+        ❯
+      </button>
+    </div>
+  );
+};
+
+
 function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   // const [premiumBgIndex, setPremiumBgIndex] = useState(0);
@@ -301,41 +384,20 @@ const fetchLatestCollections = async () => {
 
 
       {/* Latest Collections */}
-      {/* Latest Collections */}
+{/* Latest Collections Slider */}
 <section className="latest-section">
   <div className="container">
-    <div className="section-header fade-in">
+
+    <div className="latest-header">
       <h2>Our Latest Collections</h2>
       <Link to="/shop" className="see-all-link">See all →</Link>
     </div>
 
-    <div className="products-grid">
-      {latestCollections.length === 0 ? (
-        <p style={{ textAlign: "center" }}>No latest collections found</p>
-      ) : (
-        latestCollections.map((item) => (
-          <div key={item.id} className="product-card slide-up animate-in">
+    <LatestSlider products={latestCollections} />
 
-            
-            <div className="product-image">
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                onError={(e) => {
-                  e.target.src = "/placeholder.png"; // optional fallback
-                }}
-              />
-            </div>
-
-            <h4>{item.title}</h4>
-            <p className="text-sm text-gray-500">{item.description}</p>
-
-          </div>
-        ))
-      )}
-    </div>
   </div>
 </section>
+
 
 
 

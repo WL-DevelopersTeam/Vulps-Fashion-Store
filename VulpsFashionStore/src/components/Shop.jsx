@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "./layout/Layout";
 import { cn } from "../lib/utils";
-import { Grid, List, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import Loader from "../components/Loader";
+import CartConfigModal from "../components/CartConfigModal";
 
 const categories = ["All Products", "Men", "Women", "Kids"];
 const colors = [
@@ -20,8 +22,9 @@ const CATEGORY_API_MAP = {
   "Kids": "Kids",
 };
 
-
 const Shop = () => {
+
+
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
@@ -32,87 +35,145 @@ const Shop = () => {
   const [sortBy, setSortBy] = useState("Featured");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+const [addingToCartId, setAddingToCartId] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showCartModal, setShowCartModal] = useState(false);
 
- useEffect(() => {
-  fetchProducts(selectedCategory, selectedColor);
-}, [selectedCategory, selectedColor]);
 
-;
+    const confirmAddToCart = async ({ product, size, color, quantity }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+    navigate("/signin");
+    return;
+  }
 
-  const fetchProducts = async (category, color) => {
   try {
-    let url = "https://vulps-fashion-store.onrender.com/api/products";
+    setAddingToCartId(product.id);
 
-    // CATEGORY FILTER
-    if (category && category !== "All Products") {
-      const apiCategory = CATEGORY_API_MAP[category];
-      url = `https://vulps-fashion-store.onrender.com/api/products/category/${apiCategory}`;
-    }
+    await axios.post(
+      `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
+      {
+        productId: product.id,
+        size,
+        color,
+        quantity,
+      }
+    );
 
-    // COLOR FILTER (overrides category if selected)
-    if (color) {
-      url = `https://vulps-fashion-store.onrender.com/api/products/color/${color}`;
-    }
-
-    const res = await axios.get(url);
-
-    const mappedProducts = res.data.map((p) => ({
-      id: p.id,
-      name: p.name,
-      description: p.description,
-      price: p.price,
-      category: p.category,
-      colors: p.colors,
-      sizes: p.sizes,
-      image: p.imageUrl,
-    }));
-
-    setProducts(mappedProducts);
-    setPage(1);
+    setShowCartModal(false);
+    navigate("/cart");
   } catch (err) {
-    console.error("Failed to fetch products", err);
+    console.error(err);
+  } finally {
+    setAddingToCartId(null);
   }
 };
 
 
-  // Add to cart with login check
-  const addToCart = async (product) => {
-    const user = JSON.parse(localStorage.getItem("user")); // check login
-    if (!user) {
-      navigate("/signin"); // redirect to login page if not logged in
-      return;
-    }
+            useEffect(() => {
+        setSelectedColor(null);     // ✅ reset color
+        setSelectedSizes([]);       // ✅ reset sizes
+        setPage(1);                 // ✅ reset pagination
+        fetchProducts(selectedCategory);
+      }, [selectedCategory]);
 
-    try {
-      const requestBody = {
-        productId: product.id,
-        size: product.sizes[0] || "M",
-        color: product.colors[0] || "Red",
-        quantity: 1,
+      useEffect(() => {
+  setPage(1);
+}, [selectedColor, selectedSizes, searchQuery]);
+
+
+      const fetchProducts = async (category) => {
+        try {
+          setLoadingProducts(true);
+
+          let url = "https://vulps-fashion-store.onrender.com/api/products";
+
+          if (category && category !== "All Products") {
+            const apiCategory = CATEGORY_API_MAP[category];
+            url = `https://vulps-fashion-store.onrender.com/api/products/category/${apiCategory}`;
+          }
+
+          const res = await axios.get(url);
+
+          const mappedProducts = res.data.map((p) => ({
+            id: p.id,
+            name: p.name,
+            description: p.description,
+            price: p.price,
+            category: p.category,
+            colors: p.colors,
+            sizes: p.sizes,
+            image: p.imageUrl,
+          }));
+
+          setProducts(mappedProducts);
+          setPage(1);
+        } catch (err) {
+          console.error("Failed to fetch products", err);
+        } finally {
+          setLoadingProducts(false);
+        }
       };
 
-      await axios.post(
-        `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
-        requestBody
-      );
 
-      alert("Product added to cart!");
-    } catch (err) {
-      console.error("Failed to add product to cart", err);
-    }
-  };
+
+  // Add to cart with login check
+// const addToCart = async (product) => {
+//   const user = JSON.parse(localStorage.getItem("user"));
+//   if (!user) {
+//     navigate("/signin");
+//     return;
+//   }
+
+//   try {
+//     setAddingToCartId(product.id);
+
+//     const requestBody = {
+//       productId: product.id,
+//       size: product.sizes[0] || "M",
+//       color: product.colors[0] || "Red",
+//       quantity: 1,
+//     };
+
+//     await axios.post(
+//       `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
+//       requestBody
+//     );
+
+//     alert("Product added to cart!");
+//   } catch (err) {
+//     console.error("Failed to add product to cart", err);
+//   } finally {
+//     setAddingToCartId(null);
+//   }
+// };
+
 
   // Filtering products
   const filteredProducts = products
-    .filter((product) =>
-      !searchQuery || product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    
-    .filter(
-      (product) =>
-        selectedSizes.length === 0 ||
-        product.sizes?.some((s) => selectedSizes.includes(s))
-    );
+  // 🔍 SEARCH
+  .filter(
+    (product) =>
+      !searchQuery ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  // 🎨 COLOR
+  .filter(
+    (product) =>
+      !selectedColor ||
+      product.colors?.some(
+        (c) => c.toLowerCase() === selectedColor.toLowerCase()
+      )
+  )
+
+  // 📏 SIZE
+  .filter(
+    (product) =>
+      selectedSizes.length === 0 ||
+      product.sizes?.some((s) => selectedSizes.includes(s))
+  );
 
   // Pagination
   const itemsPerPage = 12;
@@ -148,31 +209,34 @@ const Shop = () => {
           </div>
 
           <div>
-  <h3 className="font-semibold mb-2">Colors</h3>
+                  <h3 className="font-semibold mb-2">Colors</h3>
 
-  <div className="flex flex-wrap gap-2">
-    {colors.map((c) => (
-  <button
-    key={c.name}
-    onClick={() => setSelectedColor(c.value)} // ✅ FIXED
-    className="w-6 h-6 rounded-full"
-    style={{ backgroundColor: c.value }}
-    title={c.name}
-  />
-))}
+                  <div className="flex gap-3 flex-wrap">
+                    {colors.map((c) => (
+                      <button
+                        key={c.value}
+                        onClick={() => setSelectedColor(c.value)}
+                        className={cn(
+                          "w-7 h-7 rounded-full border-2",
+                          selectedColor === c.value ? "border-black scale-110" : "border-gray-300"
+                        )}
+                        style={{ backgroundColor: c.value }}
+                        title={c.name}
+                      />
+                    ))}
+            </div>
 
-  </div>
+                  {selectedColor && (
+                    <button
+                      onClick={() => setSelectedColor(null)}
+                      className="text-xs underline mt-2 text-gray-600"
+                    >
+                      Clear Color
+                    </button>
+                  )}
+                </div>
 
-  {/* ✅ CLEAR COLOR FILTER BUTTON */}
-  {selectedColor && (
-    <button
-      onClick={() => setSelectedColor(null)}
-      className="text-xs underline mt-2 text-gray-600 hover:text-black"
-    >
-      Clear Color Filter
-    </button>
-  )}
-</div>
+
 
 
           <div>
@@ -181,7 +245,12 @@ const Shop = () => {
               {sizes.map((s) => (
                 <button
                   key={s}
-                  onClick={() => setSelectedSizes([s])}
+                  onClick={() =>
+  setSelectedSizes((prev) =>
+    prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
+  )
+}
+
                   className="border px-2 py-1 text-sm"
                 >
                   {s}
@@ -224,39 +293,67 @@ const Shop = () => {
             </div> */}
           </div>
 
-          <div
-            className={cn(
-              "grid gap-6",
-              viewMode === "grid"
-                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                : "grid-cols-1"
-            )}
-          >
-            {paginatedProducts.map((product) => (
-              <div
-                key={product.id}
-                className="border p-4 flex flex-col justify-between hover:shadow-lg transition"
-              >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded"
-                />
-                <div className="mt-3">
-                  <h3 className="font-semibold">{product.name}</h3>
-                  <span className="text-lg font-bold">
-                    ₹ {product.price.toLocaleString()}
-                  </span>
-                </div>
+            
+          {loadingProducts ? (
+  <div className="flex justify-center items-center h-64">
+    <Loader />
+  </div>
+) : (
+  <div
+    className={cn(
+      "grid gap-6",
+      viewMode === "grid"
+        ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+        : "grid-cols-1"
+    )}
+  >
+    {paginatedProducts.map((product) => (
+      <div
+        key={product.id}
+        className="border p-4 flex flex-col justify-between hover:shadow-lg transition"
+      >
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-48 object-cover rounded"
+        />
+
+        <div className="mt-3 space-y-1">
+          <h3 className="font-semibold">{product.name}</h3>
+
+          {/* CATEGORY */}
+          <p className="text-xs text-gray-500">
+            Category:{" "}
+            <span className="font-medium">{product.category}</span>
+          </p>
+
+          {/* SIZES */}
+          {product.sizes && product.sizes.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              {product.sizes.map((size) => (
+                <span
+                  key={size}
+                  className="border px-2 py-0.5 text-xs rounded bg-gray-100"
+                >
+                  {size}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <span className="block text-lg font-bold mt-2">
+            ₹ {product.price.toLocaleString()}
+          </span>
+        </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <button
                     onClick={() => addToCart(product)}
-                    className="flex items-center justify-center gap-2 bg-[#1fc4e1] text-[#ffffff] font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95"
+                    className="flex items-center justify-center gap-2 border-2 border-[#d59f35] text-[#00053f] font-bold py-2 text-sm rounded-xl bg-white transition-all duration-300 ease-in-out hover:bg-[#26ffb6] hover:scale-[1.03] hover:shadow-md active:scale-95"
                   >
                     Add to Cart
                   </button>
-                  <button className="flex items-center justify-center gap-2 bg-[#1fc4e1] text-[#ffffff] font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95">
+                  <button className="flex items-center justify-center gap-2 bg-[#d59f35] text-black font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95">
                     Buy Now
                   </button>
                 </div>
@@ -280,6 +377,15 @@ const Shop = () => {
           </div>
         </div>
       </div>
+      {showCartModal && selectedProduct && (
+  <CartConfigModal
+    product={selectedProduct}
+    loading={addingToCartId === selectedProduct.id}
+    onClose={() => setShowCartModal(false)}
+    onConfirm={confirmAddToCart}
+  />
+)}
+
     </Layout>
   );
 };
