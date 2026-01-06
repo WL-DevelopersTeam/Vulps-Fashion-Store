@@ -252,11 +252,11 @@ const Shop = () => {
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <button
                     onClick={() => addToCart(product)}
-                    className="flex items-center justify-center gap-2 border-2 border-[#d59f35] text-[#00053f] font-bold py-2 text-sm rounded-xl bg-white transition-all duration-300 ease-in-out hover:bg-[#26ffb6] hover:scale-[1.03] hover:shadow-md active:scale-95"
+                    className="flex items-center justify-center gap-2 bg-[#1fc4e1] text-[#ffffff] font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95"
                   >
                     Add to Cart
                   </button>
-                  <button className="flex items-center justify-center gap-2 bg-[#d59f35] text-black font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95">
+                  <button className="flex items-center justify-center gap-2 bg-[#1fc4e1] text-[#ffffff] font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95">
                     Buy Now
                   </button>
                 </div>

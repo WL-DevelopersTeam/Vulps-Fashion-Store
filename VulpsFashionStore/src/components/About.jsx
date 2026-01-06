@@ -189,19 +189,36 @@ const About = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-16 md:py-24">
-                <div className="container mx-auto text-center">
-                    <h2 className="section-title mb-6 animate-fade-up">
-                        Ready to Explore?
-                    </h2>
-                    <p className="text-muted-foreground mb-8 animate-fade-up">
-                        Discover our latest collections and find your perfect style.
-                    </p>
-                    <Link to="/shop" className="btn-vulps-primary animate-fade-up">
-                        Shop Now
-                    </Link>
-                </div>
-            </section>
+           <section style={{ padding: '80px 20px', textAlign: 'center' }}>
+  <h2 style={{ 
+    color: '#d4af37', 
+    fontSize: '2.2rem', 
+    fontWeight: 'bold', 
+    marginBottom: '30px' 
+  }}>
+    Ready to Explore?
+  </h2>
+  
+  <Link to="/shop" style={{
+    display: 'inline-block',
+    backgroundColor: 'white',
+    color: '#0f172a',
+    padding: '14px 45px',
+    borderRadius: '50px',
+    
+    textDecoration: 'none',
+    boxShadow: '0 0 20px rgba(34, 211, 238, 0.7)', // Cyan Glow
+    border: '1px solid rgba(34, 211, 238, 0.3)',
+    transition: 'transform 0.2s ease-in-out',
+    textTransform: 'uppercase',
+    letterSpacing: '1px'
+  }}
+  onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+  onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+  >
+    Shop Now
+  </Link>
+</section>
         </Layout>
     );
 };

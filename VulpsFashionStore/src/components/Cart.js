@@ -141,7 +141,7 @@ const removeItem = async (cartItemId) => {
                 <span>₹{total.toLocaleString()}</span>
               </div>
 
-              <button className="checkout-btn">
+              <button className="checkout-btn" >
                 Proceed to Checkout
               </button>
 
