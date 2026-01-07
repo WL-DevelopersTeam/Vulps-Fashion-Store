@@ -4,6 +4,7 @@ import axios from "axios";
 import Layout from "./layout/Layout";
 import { cn } from "../lib/utils";
 import { Grid, List, Search } from "lucide-react";
+import './Shop.css';
 
 const categories = ["All Products", "Men", "Women", "Kids"];
 const colors = [
@@ -123,164 +124,160 @@ const Shop = () => {
   );
 
   return (
-    <Layout>
-      <div className="h-48 bg-gradient-to-r from-muted to-background flex items-center justify-center">
-        <h1 className="text-4xl md:text-5xl font-bold">Shop</h1>
-      </div>
-
-      <div className="container mx-auto py-8 flex gap-8">
-        <aside className="w-60 space-y-6">
-          <div>
-            <h3 className="font-semibold mb-2">Categories</h3>
-            {categories.map((cat) => (
-              <button
-  key={cat}
-  onClick={() => setSelectedCategory(cat)}
-  className={cn(
-    "block w-full text-left py-1 text-sm hover:text-primary",
-    selectedCategory === cat && "font-bold text-primary"
-  )}
->
-  {cat}
-</button>
-
-            ))}
-          </div>
-
-          <div>
-  <h3 className="font-semibold mb-2">Colors</h3>
-
-  <div className="flex flex-wrap gap-2">
-    {colors.map((c) => (
-  <button
-    key={c.name}
-    onClick={() => setSelectedColor(c.value)} // ✅ FIXED
-    className="w-6 h-6 rounded-full"
-    style={{ backgroundColor: c.value }}
-    title={c.name}
-  />
-))}
-
+   <Layout>
+  {/* Header: Responsive Height */}
+  <div className="h-32 md:h-48 bg-gradient-to-r from-slate-50 to-slate-200 flex items-center justify-center border-b">
+    <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-800">Shop</h1>
   </div>
-
-  {/* ✅ CLEAR COLOR FILTER BUTTON */}
-  {selectedColor && (
-    <button
-      onClick={() => setSelectedColor(null)}
-      className="text-xs underline mt-2 text-gray-600 hover:text-black"
-    >
-      Clear Color Filter
-    </button>
-  )}
-</div>
-
-
-          <div>
-            <h3 className="font-semibold mb-2">Sizes</h3>
-            <div className="flex flex-wrap gap-2">
-              {sizes.map((s) => (
+<div className="bg-mesh min-h-screen w-full">   
+  <div className="container mx-auto py-4 md:py-8 px-4">
+    <div className="flex flex-col lg:flex-row gap-8">
+      
+      {/* SIDEBAR: Horizontal Scroll on Mobile, Sticky Sidebar on Desktop */}
+      <aside className="w-full lg:w-64 flex-shrink-0">
+        <div className="sticky top-20 space-y-6">
+          
+          {/* Categories: Row on Mobile, Column on Desktop */}
+          <div className="bg-white p-4 lg:p-6 rounded-2xl border shadow-sm">
+            <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500 mb-4 hidden lg:block">Categories</h3>
+            <div className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+              {categories.map((cat) => (
                 <button
-                  key={s}
-                  onClick={() => setSelectedSizes([s])}
-                  className="border px-2 py-1 text-sm"
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={cn(
+                    "whitespace-nowrap px-4 py-2 rounded-xl text-sm transition-all duration-300",
+                    selectedCategory === cat 
+                      ? "bg-[#1fc4e1] text-white font-bold shadow-md" 
+                      : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  )}
                 >
-                  {s}
+                  {cat}
                 </button>
               ))}
             </div>
           </div>
-        </aside>
 
-        <div className="flex-1 space-y-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <Search className="w-5 h-5" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="border px-3 py-2"
-              />
+          {/* Filters: Grid on Mobile, Column on Desktop */}
+          <div className="bg-white p-4 lg:p-6 rounded-2xl border shadow-sm hidden md:block">
+            <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500 mb-4">Color Filter</h3>
+            <div className="flex flex-wrap gap-3">
+              {colors.map((c) => (
+                <button
+                  key={c.name}
+                  onClick={() => setSelectedColor(c.value)}
+                  className={cn(
+                    "w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 active:scale-90",
+                    selectedColor === c.value ? "border-black scale-110" : "border-transparent"
+                  )}
+                  style={{ backgroundColor: c.value }}
+                  title={c.name}
+                />
+              ))}
+              
             </div>
-
-            {/* <div className="flex items-center gap-3">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="border px-2 py-1"
-              >
-                <option>Featured</option>
-                <option>Price: Low to High</option>
-                <option>Price: High to Low</option>
-              </select>
-
-              <button onClick={() => setViewMode("grid")}>
-                <Grid className="w-5 h-5" />
-              </button>
-              <button onClick={() => setViewMode("list")}>
-                <List className="w-5 h-5" />
-              </button>
-            </div> */}
           </div>
-
-          <div
+          <div className="filter-box p-6">
+      <h3 className="text-[10px] font-bold uppercase tracking-widest text-black-400 mb-4 text-center">Select Size</h3>
+      <div className="grid grid-cols-4 gap-2">
+        {["S", "M", "L", "XL", "XXL"].map((size) => (
+          <button
+            key={size}
+            onClick={() => setSelectedSizes([size])}
             className={cn(
-              "grid gap-6",
-              viewMode === "grid"
-                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                : "grid-cols-1"
+              "size-chip h-10 flex items-center justify-center rounded-xl text-xs font-black border border-slate-200 transition-all",
+              selectedSizes.includes(size) ? "active-size" : "bg-white/50 text-slate-600"
             )}
           >
-            {paginatedProducts.map((product) => (
-              <div
-                key={product.id}
-                className="border p-4 flex flex-col justify-between hover:shadow-lg transition"
-              >
+            {size}
+          </button>
+        ))}
+      </div>
+    </div>
+        </div>
+      </aside>
+
+      {/* PRODUCT AREA */}
+      <div className="flex-1 space-y-6">
+        {/* Search Bar: Full Width */}
+        <div className="relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-[#1fc4e1] transition-colors" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search for items..."
+            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-2xl focus:ring-4 focus:ring-[#1fc4e1]/10 focus:border-[#1fc4e1] outline-none transition-all shadow-sm"
+          />
+        </div>
+
+        {/* The Animated Grid: 1 col mobile, 2 col tablet, 3-4 col desktop */}
+        <div
+          className={cn(
+            "grid gap-4 md:gap-6",
+            viewMode === "grid"
+              ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              : "grid-cols-1"
+          )}
+        >
+          {paginatedProducts.map((product, index) => (
+            <div
+              key={product.id}
+              style={{ animationDelay: `${index * 100}ms` }}
+              className="product-card-animated opacity-0 group bg-white border border-gray-100 rounded-3xl overflow-hidden flex flex-col hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
+            >
+              <div className="relative aspect-square overflow-hidden">
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="mt-3">
-                  <h3 className="font-semibold">{product.name}</h3>
-                  <span className="text-lg font-bold">
-                    ₹ {product.price.toLocaleString()}
-                  </span>
+                <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-md px-2 py-1 rounded-lg text-xs font-bold shadow-sm">
+                   ₹ {product.price.toLocaleString()}
                 </div>
+              </div>
 
-                <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="p-5 flex flex-col flex-1">
+                <h3 className="font-bold text-gray-800 text-lg mb-4 line-clamp-1">{product.name}</h3>
+                
+                <div className="mt-auto grid grid-cols-2 gap-2">
                   <button
                     onClick={() => addToCart(product)}
-                    className="flex items-center justify-center gap-2 bg-[#1fc4e1] text-[#ffffff] font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95"
+                    className="flex items-center justify-center bg-[#1fc4e1] text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-[#ff0062] transition-colors active:scale-95"
                   >
-                    Add to Cart
+                    Add
                   </button>
-                  <button className="flex items-center justify-center gap-2 bg-[#1fc4e1] text-[#ffffff] font-bold py-2 text-sm rounded-xl transition-all duration-300 ease-in-out hover:bg-[#ff0062] hover:text-white hover:scale-[1.03] hover:shadow-lg active:scale-95">
-                    Buy Now
+                  <button className="flex items-center justify-center bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-[#ff0062] transition-colors active:scale-95">
+                    Buy
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
-          <div className="flex justify-center gap-3">
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i + 1)}
-                className={cn(
-                  "px-3 py-1 border",
-                  page === i + 1 && "bg-gray-200"
-                )}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
+        {/* Pagination: Responsive sizing */}
+        <div className="flex justify-center gap-2 py-10">
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setPage(i + 1)}
+              className={cn(
+                "w-10 h-10 md:w-12 md:h-12 rounded-2xl border font-bold transition-all",
+                page === i + 1 
+                  ? "bg-black text-white border-black" 
+                  : "bg-white text-gray-400 hover:border-gray-300"
+              )}
+            >
+              {i + 1}
+            </button>
+          ))}
         </div>
       </div>
-    </Layout>
+    </div>
+    </div>
+  </div>
+</Layout>
   );
 };
 
