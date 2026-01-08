@@ -5,6 +5,10 @@ import Layout from "./layout/Layout";
 import { cn } from "../lib/utils";
 import { Grid, List, Search } from "lucide-react";
 import './Shop.css';
+import Loader from "../components/Loader";
+import CartConfigModal from "../components/CartConfigModal";
+
+
 
 const categories = ["All Products", "Men", "Women", "Kids"];
 const colors = [
@@ -33,6 +37,41 @@ const Shop = () => {
     const [sortBy, setSortBy] = useState("Featured");
     const [searchQuery, setSearchQuery] = useState("");
     const [page, setPage] = useState(1);
+    const [loadingProducts, setLoadingProducts] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [showCartModal, setShowCartModal] = useState(false);
+    const [addingToCartId, setAddingToCartId] = useState(null);
+
+
+          const confirmAddToCart = async ({ product, size, color, quantity }) => {
+          const user = JSON.parse(localStorage.getItem("user"));
+          if (!user) {
+            navigate("/signin");
+            return;
+          }
+
+          try {
+            setAddingToCartId(product.id);
+
+            await axios.post(
+              `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
+              {
+                productId: product.id,
+                size,
+                color,
+                quantity,
+              }
+            );
+
+            setShowCartModal(false);
+            navigate("/cart");
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setAddingToCartId(null);
+          }
+        };
+
 
     const resetFilters = () => {
         setSelectedCategory("All Products");
@@ -51,6 +90,7 @@ const Shop = () => {
 
     const fetchProducts = async (category, color) => {
         try {
+            setLoadingProducts(true);
             let url = "https://vulps-fashion-store.onrender.com/api/products";
 
             // CATEGORY FILTER
@@ -81,7 +121,9 @@ const Shop = () => {
             setPage(1);
         } catch (err) {
             console.error("Failed to fetch products", err);
-        }
+        } finally {
+                setLoadingProducts(false);
+                  }
     };
 
 
@@ -230,6 +272,11 @@ const Shop = () => {
                             </div>
 
                             {/* The Animated Grid: 1 col mobile, 2 col tablet, 3-4 col desktop */}
+                            {loadingProducts ? (
+                                <div className="flex justify-center items-center h-64">
+                                  <Loader />
+                                </div>
+                              ) : (
                             <div
                                 className={cn(
                                     "grid gap-4 md:gap-6",
@@ -260,7 +307,10 @@ const Shop = () => {
 
                                             <div className="mt-auto grid grid-cols-2 gap-2">
                                                 <button
-                                                    onClick={() => addToCart(product)}
+                                                    onClick={() => {
+                                                                        setSelectedProduct(product);
+                                                                        setShowCartModal(true);
+                                                                    }}
                                                     className="flex items-center justify-center bg-[#1fc4e1] text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-[#ff0062] transition-colors active:scale-95"
                                                 >
                                                     Add
@@ -273,6 +323,7 @@ const Shop = () => {
                                     </div>
                                 ))}
                             </div>
+                            )}
 
                             {/* Pagination: Responsive sizing */}
                             <div className="flex justify-center gap-2 py-10">
@@ -295,6 +346,16 @@ const Shop = () => {
                     </div>
                 </div>
             </div>
+            {showCartModal && selectedProduct && (
+            <CartConfigModal
+                  product={selectedProduct}
+                  loading={addingToCartId === selectedProduct.id}
+                  onClose={() => setShowCartModal(false)}
+                  onConfirm={confirmAddToCart}
+            />
+          )}
+
+
         </Layout>
     );
 };
