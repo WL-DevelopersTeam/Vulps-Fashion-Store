@@ -4,7 +4,7 @@ import '../App.css';
 import './Footer.css';
 import './CustomDesign.css';
 import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { color, motion } from 'framer-motion';
 
 
 // Removed: import './About.jsx'; (Not needed here)
@@ -267,7 +267,7 @@ const fetchLatestCollections = async () => {
             <div className="hero-content fade-in">
               <h1>Elevate Your Everyday Style</h1>
               <p>Effortless Fashion for Every Occasion</p>
-              <p className="hero-subtitle">At Vulps, we believe your wardrobe should work as hard as you do. Our collection of premium T-shirts and hoodies is designed to seamlessly transition from casual outings to relaxed evenings.</p>
+              <p className="hero-subtitle">At Clovra, Modern elegance meets thoughtful desgin to define a new standerd in fashion.</p>
               <a href="/Shop"><button className="cta-button">Shop Now</button></a>
             </div>
           </div>
@@ -463,7 +463,7 @@ const fetchLatestCollections = async () => {
           <div className="footer-top-row">
             {/* Logo or Brand Name */}
             <div className="footer-brand">
-              <h3>Vulps<span>.</span></h3>
+              <h2>CLOVRA<span>.</span></h2>
             </div>
 
             {/* Minimal Menu */}
@@ -486,8 +486,9 @@ const fetchLatestCollections = async () => {
 
           <div className="footer-bottom-slim">
             <p>Powered by <a href="https://wordlanetech.com/" target="_blank" rel="noreferrer">WordLaneTech</a></p>
-            <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
-            
+            <p>© {new Date().getFullYear()} Clovra. All rights reserved.</p> 
+            <p style={{ color: 'white' }}>ADDERSS - PATNA CITY ,BIHAR - 800001.</p>
+             <p style={{ color: 'white' }}>CONTACT - 9950309343.</p>
           </div>
         </div>
       </footer>

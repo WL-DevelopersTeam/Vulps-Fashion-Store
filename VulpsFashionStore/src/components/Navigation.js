@@ -48,7 +48,7 @@ function Navigation() {
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         <div className="nav-container">
           <Link to="/" className="logo">
-            <span className="logo-text">vulps</span>
+            <span className="logo-text">Clovra</span>
             <span className="logo-subtitle">fashion store</span>
           </Link>
 
