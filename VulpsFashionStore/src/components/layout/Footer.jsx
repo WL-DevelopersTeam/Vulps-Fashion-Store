@@ -24,7 +24,7 @@ const Footer = () => {
           {/* Logo / Brand */}
           <div className="text-left w-full md:w-auto">
             <h3 className="text-2xl font-bold tracking-tight uppercase italic">
-              Vulps<span className="text-red-600">.</span>
+              Clovra<span className="text-red-600">.</span>
             </h3>
             <p className="text-gray-400 text-xs mt-1">Elevating your style, every day.</p>
           </div>
@@ -62,8 +62,8 @@ const Footer = () => {
         <hr className="border-white/10 mb-6" />
 
         {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-gray-500 tracking-wide">
-          <p>© {new Date().getFullYear()} Vulps. All rights reserved.</p>
+        <div className="flex flex-col md:flex-row justify-between items-center text-[11px] text-white-500 tracking-wide">
+          <p>© {new Date().getFullYear()} CLOVRA. All rights reserved.</p>
           <p>
             Powered by{" "}
             <a 
@@ -75,6 +75,9 @@ const Footer = () => {
               WordLaneTech
             </a>
           </p>
+           <p style={{ color: 'white' }}>ADDERSS - PATNA CITY ,BIHAR - 800001.</p>
+                       <p style={{ color: 'white' }}>CONTACT - 9950309343.</p>
+            
         </div>
       </div>
     </footer>
