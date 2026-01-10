@@ -48,7 +48,7 @@ function Navigation() {
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         <div className="nav-container">
           <Link to="/" className="logo">
-            <span className="logo-text">Clovra</span>
+            <span className="logo-text">CLOVRA</span>
             <span className="logo-subtitle">fashion store</span>
           </Link>
 
@@ -60,8 +60,8 @@ function Navigation() {
           <ul className={`nav-menu ${menuOpen ? 'active' : ''}`}>
             <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
             <li><Link to="/shop" onClick={() => setMenuOpen(false)}>Shop</Link></li>
-            <li><Link to="/about" onClick={() => setMenuOpen(false)}>About Us</Link></li>
-            <li><Link to="/blog" onClick={() => setMenuOpen(false)}>Blog</Link></li>
+            {/* <li><Link to="/about" onClick={() => setMenuOpen(false)}>About Us</Link></li>
+            <li><Link to="/blog" onClick={() => setMenuOpen(false)}>Blog</Link></li> */}
           </ul>
 
           <div className="nav-icons">
