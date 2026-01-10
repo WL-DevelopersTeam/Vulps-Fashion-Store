@@ -10,9 +10,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 // import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.cloudinary.Cloudinary;
 import com.example.backend.product.dto.ProductRequest;
@@ -74,7 +76,7 @@ public ProductResponse addProduct(ProductRequest request) throws IOException {
     // Get all products (Customer)
 
     public List<ProductResponse> getAllProducts() {
-    return productRepository.findByActiveTrue()
+    return productRepository.findAll()
         .stream()
         .map(p -> new ProductResponse(
             p.getId(),
@@ -82,12 +84,13 @@ public ProductResponse addProduct(ProductRequest request) throws IOException {
             p.getDescription(),
             p.getPrice(),
             p.getImageUrl(),
-            p.getColors(),
             p.getSizes(),
+            p.getColors(),
             p.getCategory()
         ))
         .toList();
 }
+
 
 
     // Get products by category
@@ -143,13 +146,30 @@ public List<ProductResponse> getProductsByColor(String color) {
 }
 
         public void delete(Long id) {
-    Product product = productRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Product not found"));
-
-    product.setActive(false);   // ✅ SOFT DELETE
-    productRepository.save(product);
+    productRepository.deleteById(id);
 }
 
 
+    public ProductResponse getProductById(Long id) {
+
+    Product product = productRepository.findById(id)
+        .orElseThrow(() ->
+            new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Product not found"
+            )
+        );
+
+    return new ProductResponse(
+        product.getId(),
+        product.getName(),
+        product.getDescription(),
+        product.getPrice(),
+        product.getImageUrl(),
+        product.getSizes(),
+        product.getColors(),
+        product.getCategory()
+    );
+}
 
 }

@@ -1,6 +1,7 @@
 package com.example.backend.product.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,10 @@ import com.example.backend.product.model.Product;
 public interface ProductRepository extends JpaRepository<Product , Long>
 {
 
-    List<Product> findByActiveTrue();
+
+    // Optional<Product> findById(Long id);
+
+    // List<Product> findByActiveTrue();
 
 
     List<Product> findByCategory(String category);

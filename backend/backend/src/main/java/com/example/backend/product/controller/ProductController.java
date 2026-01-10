@@ -69,6 +69,12 @@ List<String> colorList = colors != null
         return productService.addProduct(request);
     }
 
+    // ✅ Get product by ID (SAFE PATH)
+    @GetMapping("/id/{id}")
+    public ProductResponse getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
+    }
+
     // Get all products
     @GetMapping
     public List<ProductResponse> getAllProducts() {

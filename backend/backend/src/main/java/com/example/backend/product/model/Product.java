@@ -30,8 +30,8 @@ public class Product
 
     private String category; // e.g., Men, Women, Accessories
 
-    @Column(nullable = false)
-    private boolean active = true;
+    // @Column(nullable = false)
+    // private boolean active = true;
 
 
     @ElementCollection
