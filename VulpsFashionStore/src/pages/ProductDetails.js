@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Layout from "../components/layout/Layout";
 import Loader from "../components/Loader";
+import { useNavigate } from "react-router-dom";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,6 +38,21 @@ const ProductDetails = () => {
       setLoading(false);
     }
   };
+
+  const handleBuyNow = () => {
+  navigate("/checkout", {
+    state: {
+      productId: product.id,
+      productName: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      size: selectedSize,
+      color: selectedColor,
+      quantity: quantity
+    }
+  });
+};
+
 
   const increaseQty = () => setQuantity((q) => q + 1);
   const decreaseQty = () => {
@@ -160,9 +177,13 @@ const ProductDetails = () => {
               Add to Cart
             </button>
 
-            <button className="bg-gray-800 text-white px-6 py-3 rounded-xl hover:bg-black transition">
-              Buy Now
+            <button
+                    onClick={handleBuyNow}
+                    className="bg-gray-800 text-white px-6 py-3 rounded-xl hover:bg-black transition"
+                >
+                   Buy Now
             </button>
+
           </div>
         </div>
       </div>

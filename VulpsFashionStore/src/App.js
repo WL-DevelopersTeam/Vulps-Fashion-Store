@@ -21,10 +21,11 @@ import ProductDetails from "./pages/ProductDetails";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminProtectedRoute from "./routes/AdminProtectedRoute";
 import Dashboard from "./pages/Dashboard";
-import Orders from "./pages/Orders";
+import Orders from "./pages/AdminOrders";
 import Products from "./pages/Products";
 import OrderDetails from "./pages/OrderDetails";
 import CustomOrders from "./pages/CustomOrders";
+import Checkout from "./pages/Checkout";
 
 /* ---------- MAIN LAYOUT ---------- */
 function Layout() {
@@ -41,6 +42,7 @@ function Layout() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
