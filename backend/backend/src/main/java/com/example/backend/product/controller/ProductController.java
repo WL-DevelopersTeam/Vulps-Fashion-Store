@@ -82,4 +82,12 @@ public class ProductController {
     public List<ProductResponse> getByColor(@PathVariable String color) {
         return productService.getProductsByColor(color);
     }
+
+    @GetMapping("/{id:[0-9]+}")
+public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
+
+    ProductResponse response = productService.getProductById(id);
+    return ResponseEntity.ok(response);
+}
+
 }

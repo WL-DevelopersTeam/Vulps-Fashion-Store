@@ -126,4 +126,22 @@ public class ProductService {
                 ))
                 .toList();
     }
+
+    // ✅ Fetch product by ID
+    public ProductResponse getProductById(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+
+        return new ProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getImageUrl(),
+                product.getColors(),
+                product.getSizes(),
+                product.getCategory()
+        );
+    }
 }
