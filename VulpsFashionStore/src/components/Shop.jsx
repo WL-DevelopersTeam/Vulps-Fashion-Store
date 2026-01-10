@@ -285,12 +285,14 @@ const Shop = () => {
                                         : "grid-cols-1"
                                 )}
                             >
-                                {paginatedProducts.map((product, index) => (
-                                    <div
+                                {paginatedProducts.map((product) => (
+                                      <div
                                         key={product.id}
-                                        style={{ animationDelay: `${index * 100}ms` }}
-                                        className="product-card-animated opacity-0 group bg-white border border-gray-100 rounded-3xl overflow-hidden flex flex-col hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
-                                    >
+                                        onClick={() => navigate(`/product/${product.id}`)}
+                                        className="product-card-animated cursor-pointer"
+                                      >
+
+
                                         <div className="relative aspect-square overflow-hidden">
                                             <img
                                                 src={product.image}
@@ -307,14 +309,15 @@ const Shop = () => {
 
                                             <div className="mt-auto grid grid-cols-2 gap-2">
                                                 <button
-                                                    onClick={() => {
-                                                                        setSelectedProduct(product);
-                                                                        setShowCartModal(true);
-                                                                    }}
+                                                    onClick={(e) => {
+                                                      e.stopPropagation(); // ⛔ stop card click
+                                                      setSelectedProduct(product);
+                                                      setShowCartModal(true);
+                                                    }}
                                                     className="flex items-center justify-center bg-[#1fc4e1] text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-[#ff0062] transition-colors active:scale-95"
-                                                >
+                                                  >
                                                     Add
-                                                </button>
+                                                  </button>
                                                 <button className="flex items-center justify-center bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-[#ff0062] transition-colors active:scale-95">
                                                     Buy
                                                 </button>
