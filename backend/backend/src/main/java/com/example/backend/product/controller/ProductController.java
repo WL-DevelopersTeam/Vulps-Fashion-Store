@@ -1,13 +1,13 @@
-
 package com.example.backend.product.controller;
 
-import java.io.IOException;
+// import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.backend.product.dto.ProductRequest;
@@ -18,91 +18,68 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/products")
-public class ProductController 
-{
+@CrossOrigin(origins = {
+    "http://localhost:3000",
+    "https://vulps-fashion-store.vercel.app",
+    "https://vulpsfashionstore.vercel.app"
+})
+public class ProductController {
+
     @Autowired
     private ProductService productService;
 
-    // Admin adds product 
-    @PostMapping(consumes = "multipart/form-data")
-public ProductResponse addProduct(
-    @RequestParam String name,
-    @RequestParam String description,
-    @RequestParam double price,
-    @RequestParam String category,
-    @RequestParam MultipartFile image,
-    @RequestParam(required = false) String sizes,
-    @RequestParam(required = false) String colors
+    // ✅ ADD PRODUCT
+   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> addProduct(
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("price") Double price,
+            @RequestParam("category") String category,
+            @RequestParam("sizes") String sizes,
+            @RequestParam("colors") String colors,
+            @RequestParam("image") MultipartFile image
+    ) throws Exception {
 
+        ObjectMapper mapper = new ObjectMapper();
 
-) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
+        List<String> sizeList = mapper.readValue(sizes, new TypeReference<List<String>>() {});
+        List<String> colorList = mapper.readValue(colors, new TypeReference<List<String>>() {});
 
-List<String> sizeList = sizes != null
-        ? mapper.readValue(sizes, new TypeReference<List<String>>() {})
-        : List.of();
-
-List<String> colorList = colors != null
-        ? mapper.readValue(colors, new TypeReference<List<String>>() {})
-        : List.of();
-
-
-         ProductRequest request = new ProductRequest();
+        ProductRequest request = new ProductRequest();
         request.setName(name);
         request.setDescription(description);
         request.setPrice(price);
         request.setCategory(category);
-        request.setImage(image);
         request.setSizes(sizeList);
         request.setColors(colorList);
+        request.setImage(image);
 
-        return productService.addProduct(request);
+        return ResponseEntity.ok(productService.addProduct(request));
     }
 
-    // ✅ Get product by ID (SAFE PATH)
-    @GetMapping("/id/{id}")
-    public ProductResponse getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
-    }
-
-    // Get all products
+    // ✅ GET ALL
     @GetMapping
     public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    // Get by category
+    // ✅ GET BY CATEGORY
     @GetMapping("/category/{category}")
-    public List<ProductResponse> getProductsByCategory(@PathVariable String category) {
+    public List<ProductResponse> getByCategory(@PathVariable String category) {
         return productService.getProductsByCategory(category);
     }
 
-    // Get by size
+    // ✅ GET BY SIZE
     @GetMapping("/size/{size}")
     public List<ProductResponse> getBySize(@PathVariable String size) {
         return productService.getProductsBySize(size);
     }
 
-    // Get by color
+    // ✅ GET BY COLOR
     @GetMapping("/color/{color}")
     public List<ProductResponse> getByColor(@PathVariable String color) {
         return productService.getProductsByColor(color);
     }
-
-    @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
-        productService.delete(id);
-}
-
-    
 }
