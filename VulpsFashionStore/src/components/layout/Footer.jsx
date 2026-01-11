@@ -57,7 +57,8 @@ const Footer = () => {
             ))}
           </div>
         </div>
-
+            <p style={{ color: 'white', fontWeight: 'revert' ,fontSize: '11px'}}>ADDERSS - PATNA CITY ,BIHAR - 800001.</p> <br />
+                         <p style={{ color: 'white', fontWeight: 'revert' ,fontSize: '11px'}}>CONTACT - 9950309343.</p>
         {/* Divider Line */}
         <hr className="border-white/10 mb-6" />
 
@@ -75,9 +76,6 @@ const Footer = () => {
               WordLaneTech
             </a>
           </p>
-           <p style={{ color: 'white' }}>ADDERSS - PATNA CITY ,BIHAR - 800001.</p>
-                       <p style={{ color: 'white' }}>CONTACT - 9950309343.</p>
-            
         </div>
       </div>
     </footer>

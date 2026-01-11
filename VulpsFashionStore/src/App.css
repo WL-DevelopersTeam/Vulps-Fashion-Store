@@ -53,24 +53,74 @@
   display: flex;
   flex-direction: column;
   text-decoration: none;
-  margin-right: 50px; /* Gap after logo */
+  margin-right: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+/* Subtle lift effect on the whole logo when hovered */
+.logo:hover {
+  transform: translateY(-1px);
 }
 
 .logo-text {
   font-size: 26px;
   font-weight: 800;
-  color: #00d1db; /* Teal color to match your theme */
-  text-transform: lowercase;
-  letter-spacing: 1px;
+  color: #00d1db;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: letter-spacing 0.4s ease; /* Smooth transition for hover */
+  
+  /* Shimmer Effect Configuration */
+  background: linear-gradient(
+    to right, 
+    #00d1db 0%, 
+    #00d1db 40%, 
+    #d81919 50%, 
+    #00d1db 60%, 
+    #00d1db 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: logo-shine 6s ease-in-out infinite;
+}
+
+/* Gently expand letters when hovered */
+.logo:hover .logo-text {
+  letter-spacing: 4px;
 }
 
 .logo-subtitle {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(223, 21, 21, 0.6);
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
+  margin-top: 4px;
+  
+  /* Initial entrance animation */
+  animation: subtitle-entrance 0.5s ease-out forwards;
 }
 
+/* --- KEYFRAMES --- */
+
+/* The 'Metallic' Shine: Sweeps and then pauses for a clean look */
+@keyframes logo-shine {
+  0% { background-position: -100% center; }
+  20%, 100% { background-position: 100% center; }
+}
+
+/* The Subtitle Reveal: Fades in and slides up slightly */
+@keyframes subtitle-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /* 2. UL Links moved to Left (next to logo) */
 .nav-menu {
   display: flex;
@@ -104,8 +154,36 @@
 .icon-svg {
   width: 22px;
   height: 22px;
-  color: #ffffff; /* Changed from #333 to White */
-  transition: all 0.3s ease;
+  fill: currentColor; /* Ensures it uses the color property */
+  color: #21abd1;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy transition */
+  
+  /* Idle Animation: Makes the icon feel "alive" */
+  animation: icon-float 3s ease-in-out infinite;
+}
+
+/* Hover Effects */
+.logo:hover .icon-svg {
+  color: #00d1db; /* Changes to match your teal theme */
+  transform: rotate(15deg) scale(1.2); /* Slight tilt and grow */
+  filter: drop-shadow(0 0 8px rgba(0, 209, 219, 0.5)); /* Glowing effect */
+}
+
+/* Active/Press Effect */
+.logo:active .icon-svg {
+  transform: scale(0.9); /* Subtle shrink when clicked */
+}
+
+/* --- KEYFRAMES --- */
+
+/* Gentle floating movement */
+@keyframes icon-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
 }
 
 .sign-in-btn {
