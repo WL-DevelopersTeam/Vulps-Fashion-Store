@@ -22,74 +22,81 @@ const AdminOrders = () => {
     }
   };
 
-const updateStatus = async (orderId, status) => {
-  try {
-    let endpoint = "";
+  const updateStatus = async (orderId, status) => {
+    try {
+      let endpoint = "";
 
-    if (status === "ACCEPTED") {
-      endpoint = "accept";
-    } else if (status === "DECLINED") {
-      endpoint = "decline";
-    } else if (status === "DELIVERED") {
-      endpoint = "accept"; // or create delivered endpoint
+      if (status === "ACCEPTED") endpoint = "accept";
+      if (status === "DECLINED") endpoint = "decline";
+      if (status === "DELIVERED") endpoint = "accept"; // temp
+
+      await axios.put(
+        `https://vulps-fashion-store.onrender.com/api/orders/${orderId}/${endpoint}`
+      );
+
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === orderId ? { ...o, status } : o
+        )
+      );
+    } catch {
+      alert("Failed to update status");
     }
-
-    await axios.put(
-      `https://vulps-fashion-store.onrender.com/api/orders/${orderId}/${endpoint}`
-    );
-
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === orderId ? { ...o, status } : o
-      )
-    );
-  } catch (err) {
-    alert("Failed to update status");
-  }
-};
+  };
 
   if (loading) {
-    return <div className="p-10">Loading orders...</div>;
+    return (
+      <div className="flex justify-center items-center h-64 text-gray-500">
+        Loading orders...
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Orders</h1>
+    <div className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">📦 Orders Management</h1>
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-lg">
         <table className="w-full text-sm">
           <thead className="bg-gray-100 text-gray-600">
             <tr>
-              <th className="p-3">Order ID</th>
+              <th className="p-4 text-left">Order</th>
               <th>Customer</th>
               <th>Product</th>
-              <th>Qty</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th className="text-center">Qty</th>
+              <th className="text-center">Amount</th>
+              <th className="text-center">Status</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {orders.map((order) => (
-              <tr key={order.id} className="border-t">
-                <td className="p-3">{order.id}</td>
+              <tr
+                key={order.id}
+                className="border-t hover:bg-gray-50 transition"
+              >
+                <td className="p-4 font-semibold">#{order.id}</td>
+
                 <td>
-                  <div className="font-semibold">{order.fullName}</div>
-                  <div className="text-gray-500 text-xs">
+                  <div className="font-medium">{order.fullName}</div>
+                  <div className="text-xs text-gray-500">
                     {order.mobile}
                   </div>
                 </td>
+
                 <td>{order.productName}</td>
+
                 <td className="text-center">{order.quantity}</td>
-                <td className="text-center">
+
+                <td className="text-center font-semibold">
                   ₹ {order.price * order.quantity}
                 </td>
 
-                {/* STATUS */}
+                {/* STATUS BADGE */}
                 <td className="text-center">
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold
+                    className={`px-3 py-1 rounded-full text-xs font-bold
                       ${
                         order.status === "PENDING"
                           ? "bg-yellow-100 text-yellow-700"
@@ -104,39 +111,61 @@ const updateStatus = async (orderId, status) => {
                   </span>
                 </td>
 
-                {/* ACTION BUTTONS */}
+                {/* ACTIONS */}
                 <td className="text-center space-x-2">
-                  <button
-                    onClick={() =>
-                      updateStatus(order.id, "ACCEPTED")
-                    }
-                    className="text-blue-600 text-xs"
-                  >
-                    Accept
-                  </button>
+                    {/* ACCEPT */}
+                    <button
+                      disabled={order.status !== "PENDING"}
+                      onClick={() => updateStatus(order.id, "ACCEPTED")}
+                      className={`px-3 py-1 text-xs rounded-md
+                        ${
+                          order.status === "PENDING"
+                            ? "bg-blue-600 text-white hover:bg-blue-700"
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
+                    >
+                      Accept
+                    </button>
 
-                  <button
-                    onClick={() =>
-                      updateStatus(order.id, "DELIVERED")
-                    }
-                    className="text-green-600 text-xs"
-                  >
-                    Delivered
-                  </button>
+                    {/* DELIVER */}
+                    <button
+                      disabled={order.status !== "ACCEPTED"}
+                      onClick={() => updateStatus(order.id, "DELIVERED")}
+                      className={`px-3 py-1 text-xs rounded-md
+                        ${
+                          order.status === "ACCEPTED"
+                            ? "bg-green-600 text-white hover:bg-green-700"
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
+                    >
+                      Delivered
+                    </button>
 
-                  <button
-                    onClick={() =>
-                      updateStatus(order.id, "DECLINED")
-                    }
-                    className="text-red-600 text-xs"
-                  >
-                    Decline
-                  </button>
-                </td>
+                    {/* DECLINE */}
+                    <button
+                      disabled={order.status !== "PENDING"}
+                      onClick={() => updateStatus(order.id, "DECLINED")}
+                      className={`px-3 py-1 text-xs rounded-md
+                        ${
+                          order.status === "PENDING"
+                            ? "bg-red-600 text-white hover:bg-red-700"
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        }`}
+                    >
+                      Decline
+                    </button>
+                  </td>
+
               </tr>
             ))}
           </tbody>
         </table>
+
+        {orders.length === 0 && (
+          <div className="text-center py-10 text-gray-500">
+            No orders found
+          </div>
+        )}
       </div>
     </div>
   );

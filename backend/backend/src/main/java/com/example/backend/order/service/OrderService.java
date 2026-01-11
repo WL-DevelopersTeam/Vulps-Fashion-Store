@@ -28,10 +28,34 @@ public class OrderService {
     }
 
     // 🔹 UPDATE STATUS
-    public void updateOrderStatus(Long id, String status) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        order.setStatus(status);
-        orderRepository.save(order);
+    public void updateOrderStatus(Long id, String newStatus) {
+
+    Order order = orderRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Order not found"));
+
+    String current = order.getStatus();
+
+    if ("PENDING".equals(current)) {
+        if ("ACCEPTED".equals(newStatus) || "DECLINED".equals(newStatus)) {
+            order.setStatus(newStatus);
+        } else {
+            throw new RuntimeException("Invalid transition");
+        }
     }
+
+    else if ("ACCEPTED".equals(current)) {
+        if ("DELIVERED".equals(newStatus)) {
+            order.setStatus(newStatus);
+        } else {
+            throw new RuntimeException("Invalid transition");
+        }
+    }
+
+    else {
+        throw new RuntimeException("Order already closed");
+    }
+
+    orderRepository.save(order);
+}
+
 }
