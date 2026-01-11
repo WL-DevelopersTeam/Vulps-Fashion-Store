@@ -34,6 +34,9 @@ public class Order {
     private String status; // PENDING, ACCEPTED, DECLINED
     private LocalDateTime orderDate;
 
+    private String paymentMethod;  // COD / ONLINE
+    private String paymentStatus;  // PENDING / PAID / FAILED
+
     // 🔹 GETTERS & SETTERS
 
     public Long getId() {
@@ -151,4 +154,22 @@ public class Order {
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    
 }

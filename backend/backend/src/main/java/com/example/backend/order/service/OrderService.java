@@ -15,47 +15,60 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    // 🔹 PLACE ORDER
+    // ================================
+    // PLACE ORDER (CUSTOMER)
+    // ================================
     public Order placeOrder(Order order) {
-        order.setStatus("PENDING");
+
+        // 1️⃣ SET DEFAULT ORDER STATUS
+        order.setStatus("PENDING"); // PENDING, ACCEPTED, DELIVERED, DECLINED
+
+        // 2️⃣ SET ORDER DATE
         order.setOrderDate(LocalDateTime.now());
+
+        // 3️⃣ PAYMENT LOGIC
+        if ("COD".equalsIgnoreCase(order.getPaymentMethod())) {
+            order.setPaymentStatus("PENDING"); // Cash on Delivery
+        } else if ("ONLINE".equalsIgnoreCase(order.getPaymentMethod())) {
+            order.setPaymentStatus("PAID"); // After payment success
+        } else {
+            order.setPaymentStatus("UNKNOWN");
+        }
+
+        // 4️⃣ SAVE ORDER
         return orderRepository.save(order);
     }
 
-    // 🔹 GET ALL ORDERS (ADMIN)
+    // ================================
+    // GET ALL ORDERS (ADMIN DASHBOARD)
+    // ================================
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    // 🔹 UPDATE STATUS
-    public void updateOrderStatus(Long id, String newStatus) {
+    // ================================
+    // UPDATE ORDER STATUS (ADMIN)
+    // ================================
+    public Order updateOrderStatus(Long id, String status) {
 
-    Order order = orderRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-    String current = order.getStatus();
+        order.setStatus(status);
 
-    if ("PENDING".equals(current)) {
-        if ("ACCEPTED".equals(newStatus) || "DECLINED".equals(newStatus)) {
-            order.setStatus(newStatus);
-        } else {
-            throw new RuntimeException("Invalid transition");
-        }
+        return orderRepository.save(order);
     }
 
-    else if ("ACCEPTED".equals(current)) {
-        if ("DELIVERED".equals(newStatus)) {
-            order.setStatus(newStatus);
-        } else {
-            throw new RuntimeException("Invalid transition");
-        }
+    // ================================
+    // UPDATE PAYMENT STATUS (FUTURE)
+    // ================================
+    public Order updatePaymentStatus(Long id, String paymentStatus) {
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setPaymentStatus(paymentStatus);
+
+        return orderRepository.save(order);
     }
-
-    else {
-        throw new RuntimeException("Order already closed");
-    }
-
-    orderRepository.save(order);
-}
-
 }

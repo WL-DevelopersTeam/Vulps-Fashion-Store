@@ -1329,3 +1329,16 @@ html {
 .latest-card:hover img {
   transform: scale(1.08);
 }
+.input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: black;
+}
