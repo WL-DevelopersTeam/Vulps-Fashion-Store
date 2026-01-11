@@ -139,8 +139,8 @@ public class ProductService {
                 product.getDescription(),
                 product.getPrice(),
                 product.getImageUrl(),
-                product.getColors(),
                 product.getSizes(),
+                product.getColors(),
                 product.getCategory()
         );
     }
