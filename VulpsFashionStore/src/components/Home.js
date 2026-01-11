@@ -19,32 +19,28 @@ const testimonials = [
     stars: "⭐⭐⭐⭐⭐",
     text: "Inviting and vibrant, just like the vibe at Vulps. The clothing truly stands out — especially the organic cotton tees.",
     author: "Prasad Kale",
-    role: "Founder & CEO, Rayfit",
-    image: "https://i.pravatar.cc/150?u=prasad" // Replace with real image paths
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd7LkMlXSQkKt-vuvK_eiglmiW_IqiV-8ncQ&s" // Replace with real image paths
   },
   {
     id: 2,
     stars: "⭐⭐⭐⭐⭐",
     text: "This collection is perfect for casual outings or special events. The fit is impeccable.",
-    author: "Sudhir Siddheshware",
-    role: "Graphic Designer",
+    author: "Niharika kulkarni",
     image: "https://i.pravatar.cc/150?u=sudhir"
   },
   {
     id: 3,
     stars: "⭐⭐⭐⭐⭐",
     text: "A truly exquisite fashion experience. I highly recommend the Eco-Friendly Collection.",
-    author: "Iris Doe",
-    role: "Manager, FashionBrand",
-    image: "https://i.pravatar.cc/150?u=iris"
+    author: "Karan Sharma",
+    image: "https://plus.unsplash.com/premium_photo-1682089787056-9ac0c78a2ac2?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aW5kaWFuJTIwcGVvcGxlfGVufDB8fDB8fHww"
   },
   {
     id: 4,
     stars: "⭐⭐⭐⭐⭐",
     text: "The best premium streetwear in the market. Quality and sustainability combined.",
-    author: "Rahul Sharma",
-    role: "Content Creator",
-    image: "https://i.pravatar.cc/150?u=rahul"
+    author: "Rahul Mishra",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyVCt82gZk1SWFowG5i62hVbg52cthoo6SDg&s"
   }
 
 ];
@@ -465,6 +461,7 @@ const fetchLatestCollections = async () => {
             <div className="footer-brand">
               <h2>CLOVRA<span>.</span></h2>
             </div>
+            
 
             {/* Minimal Menu */}
             <ul className="footer-links-slim">
@@ -481,14 +478,14 @@ const fetchLatestCollections = async () => {
               <a href="#" className="social-icon-box wa"><FaWhatsapp /></a>
             </div>
           </div>
-
+          <p style={{ color: 'white', fontWeight: 'revert' ,fontSize: '11px'}}>ADDERSS - PATNA CITY ,BIHAR - 800001.</p> <br />
+             <p style={{ color: 'white', fontWeight: 'revert' ,fontSize: '11px'}}>CONTACT - 9950309343.</p>
           <hr className="footer-divider" />
 
           <div className="footer-bottom-slim">
             <p>Powered by <a href="https://wordlanetech.com/" target="_blank" rel="noreferrer">WordLaneTech</a></p>
             <p>© {new Date().getFullYear()} Clovra. All rights reserved.</p> 
-            <p style={{ color: 'white' }}>ADDERSS - PATNA CITY ,BIHAR - 800001.</p>
-             <p style={{ color: 'white' }}>CONTACT - 9950309343.</p>
+            
           </div>
         </div>
       </footer>
