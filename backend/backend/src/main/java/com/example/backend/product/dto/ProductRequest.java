@@ -7,24 +7,15 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.Data;
 
 @Data
-public class ProductRequest 
-{
+public class ProductRequest {
+
     private String name;
-    
     private String description;
-
     private double price;
-
-    private MultipartFile image; // image file uploaded
-
-
-    private List<String> sizes;   
-
-    private List<String> colors;
-
     private String category;
-    
-    
 
-    
+    private MultipartFile image;
+
+    private List<String> sizes;
+    private List<String> colors;
 }

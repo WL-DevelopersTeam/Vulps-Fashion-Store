@@ -1,17 +1,12 @@
 package com.example.backend.product.service;
 
 import java.io.IOException;
-// import java.nio.file.Files;
-// import java.nio.file.Path;
-// import java.nio.file.Paths;
-// import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-// import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
@@ -20,80 +15,69 @@ import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.model.Product;
 import com.example.backend.product.repository.ProductRepository;
 
-
 @Service
-public class ProductService 
-{
+public class ProductService {
+
     @Autowired
     private ProductRepository productRepository;
 
-    // Add product
     @Autowired
-private Cloudinary cloudinary;
+    private Cloudinary cloudinary;
 
-public ProductResponse addProduct(ProductRequest request) throws IOException {
+    // ✅ ADD PRODUCT
+    public ProductResponse addProduct(ProductRequest request) throws IOException {
 
-    MultipartFile image = request.getImage();
+        MultipartFile image = request.getImage();
 
-    // Upload to Cloudinary
-    Map uploadResult = cloudinary.uploader().upload(
-            image.getBytes(),
-            Map.of("folder", "fashion-store/products")
-    );
+        Map uploadResult = cloudinary.uploader().upload(
+                image.getBytes(),
+                Map.of("folder", "fashion-store/products")
+        );
 
-    // Get the public URL from Cloudinary
-    String imageUrl = uploadResult.get("secure_url").toString();
+        String imageUrl = uploadResult.get("secure_url").toString();
 
-    Product product = new Product();
-    product.setName(request.getName());
-    product.setDescription(request.getDescription());
-    product.setPrice(request.getPrice());
-    product.setCategory(request.getCategory());
-    product.setSizes(request.getSizes() == null ? List.of() : request.getSizes());
-    product.setColors(request.getColors() == null ? List.of() : request.getColors());
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setCategory(request.getCategory());
+        product.setSizes(request.getSizes());
+        product.setColors(request.getColors());
+        product.setImageUrl(imageUrl);
 
+        productRepository.save(product);
 
-    // Save Cloudinary URL
-    product.setImageUrl(imageUrl);
+        return new ProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                imageUrl,
+                product.getSizes(),
+                product.getColors(),
+                product.getCategory()
+        );
+    }
 
-    productRepository.save(product);
-
-    return new ProductResponse(
-            product.getId(),
-            product.getName(),
-            product.getDescription(),
-            product.getPrice(),
-            imageUrl,
-            product.getColors(),
-            product.getSizes(),
-            product.getCategory()
-    );
-}
-
-
-    // Get all products (Customer)
-
+    // ✅ GET ALL
     public List<ProductResponse> getAllProducts() {
-    return productRepository.findByActiveTrue()
-        .stream()
-        .map(p -> new ProductResponse(
-            p.getId(),
-            p.getName(),
-            p.getDescription(),
-            p.getPrice(),
-            p.getImageUrl(),
-            p.getColors(),
-            p.getSizes(),
-            p.getCategory()
-        ))
-        .toList();
-}
+        return productRepository.findAll()
+                .stream()
+                .map(p -> new ProductResponse(
+                        p.getId(),
+                        p.getName(),
+                        p.getDescription(),
+                        p.getPrice(),
+                        p.getImageUrl(),
+                        p.getSizes(),
+                        p.getColors(),
+                        p.getCategory()
+                ))
+                .collect(Collectors.toList());
+    }
 
-
-    // Get products by category
-
-    public List<ProductResponse> getProductsByCategory(String category) 
-    {
+    // ✅ GET BY CATEGORY
+    public List<ProductResponse> getProductsByCategory(String category) {
         return productRepository.findByCategory(category)
                 .stream()
                 .map(p -> new ProductResponse(
@@ -102,54 +86,62 @@ public ProductResponse addProduct(ProductRequest request) throws IOException {
                         p.getDescription(),
                         p.getPrice(),
                         p.getImageUrl(),
-                        p.getColors(),
                         p.getSizes(),
+                        p.getColors(),
                         p.getCategory()
                 ))
                 .collect(Collectors.toList());
     }
 
-    // Get products by size
-public List<ProductResponse> getProductsBySize(String size) {
-    return productRepository.findBySize(size)
-            .stream()
-            .map(p -> new ProductResponse(
-                    p.getId(),
-                    p.getName(),
-                    p.getDescription(),
-                    p.getPrice(),
-                    p.getImageUrl(),  // ✅ Correct
-                    p.getSizes(),
-                    p.getColors(),
-                    p.getCategory()   // ✅ Correct
-            ))
-            .toList();
-}
+    // ✅ GET BY SIZE
+    public List<ProductResponse> getProductsBySize(String size) {
+        return productRepository.findBySizesContaining(size)
+                .stream()
+                .map(p -> new ProductResponse(
+                        p.getId(),
+                        p.getName(),
+                        p.getDescription(),
+                        p.getPrice(),
+                        p.getImageUrl(),
+                        p.getSizes(),
+                        p.getColors(),
+                        p.getCategory()
+                ))
+                .toList();
+    }
 
-public List<ProductResponse> getProductsByColor(String color) {
-    return productRepository.findByColor(color)
-            .stream()
-            .map(p -> new ProductResponse(
-                    p.getId(),
-                    p.getName(),
-                    p.getDescription(),
-                    p.getPrice(),
-                    p.getImageUrl(),  // ✅ Correct
-                    p.getSizes(),
-                    p.getColors(),
-                    p.getCategory()   // ✅ Correct
-            ))
-            .toList();
-}
+    // ✅ GET BY COLOR
+    public List<ProductResponse> getProductsByColor(String color) {
+        return productRepository.findByColorsContaining(color)
+                .stream()
+                .map(p -> new ProductResponse(
+                        p.getId(),
+                        p.getName(),
+                        p.getDescription(),
+                        p.getPrice(),
+                        p.getImageUrl(),
+                        p.getSizes(),
+                        p.getColors(),
+                        p.getCategory()
+                ))
+                .toList();
+    }
 
-        public void delete(Long id) {
-    Product product = productRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Product not found"));
+    // ✅ Fetch product by ID
+    public ProductResponse getProductById(Long id) {
 
-    product.setActive(false);   // ✅ SOFT DELETE
-    productRepository.save(product);
-}
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
-
-
+        return new ProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getImageUrl(),
+                product.getColors(),
+                product.getSizes(),
+                product.getCategory()
+        );
+    }
 }
