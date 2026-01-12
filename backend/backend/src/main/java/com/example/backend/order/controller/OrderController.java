@@ -20,26 +20,54 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // ✅ PLACE ORDER
+    // ================================
+    // PLACE ORDER
+    // ================================
     @PostMapping
     public ResponseEntity<Order> placeOrder(@RequestBody Order order) {
         return ResponseEntity.ok(orderService.placeOrder(order));
     }
 
-    // ✅ GET ALL ORDERS (ADMIN)
+    // ================================
+    // ADMIN: GET ALL ORDERS
+    // ================================
     @GetMapping
     public List<Order> getAllOrders() {
         return orderService.getAllOrders();
     }
 
-    // ✅ ACCEPT ORDER
+    // ================================
+    // CUSTOMER: GET PROFILE ORDERS
+    // ================================
+    @GetMapping("/customer")
+    public List<Order> getCustomerOrders(
+            @RequestParam String mobile,
+            @RequestParam String email) {
+
+        return orderService.getCustomerOrders(mobile, email);
+    }
+
+    // ================================
+    // ADMIN: ACCEPT ORDER
+    // ================================
     @PutMapping("/{id}/accept")
     public ResponseEntity<String> acceptOrder(@PathVariable Long id) {
         orderService.updateOrderStatus(id, "ACCEPTED");
         return ResponseEntity.ok("Order accepted");
     }
 
-    // ✅ DECLINE ORDER
+    // ================================
+    // ADMIN: DELIVER ORDER
+    // ================================
+    @PutMapping("/{id}/deliver")
+    public ResponseEntity<String> deliverOrder(@PathVariable Long id) {
+        orderService.updateOrderStatus(id, "DELIVERED");
+        return ResponseEntity.ok("Order delivered");
+    }
+
+    // ================================
+    // ADMIN: DECLINE ORDER
+    // ================================
     @PutMapping("/{id}/decline")
     public ResponseEntity<String> declineOrder(@PathVariable Long id) {
         orderService.updateOrderStatus(id, "DECLINED");

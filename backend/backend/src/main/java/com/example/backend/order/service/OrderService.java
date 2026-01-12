@@ -20,31 +20,35 @@ public class OrderService {
     // ================================
     public Order placeOrder(Order order) {
 
-        // 1️⃣ SET DEFAULT ORDER STATUS
-        order.setStatus("PENDING"); // PENDING, ACCEPTED, DELIVERED, DECLINED
-
-        // 2️⃣ SET ORDER DATE
+        order.setStatus("PENDING");
         order.setOrderDate(LocalDateTime.now());
 
-        // 3️⃣ PAYMENT LOGIC
+        // PAYMENT LOGIC
         if ("COD".equalsIgnoreCase(order.getPaymentMethod())) {
-            order.setPaymentStatus("PENDING"); // Cash on Delivery
+            order.setPaymentStatus("PENDING");
         } else if ("ONLINE".equalsIgnoreCase(order.getPaymentMethod())) {
-            order.setPaymentStatus("PAID"); // After payment success
+            order.setPaymentStatus("PAID");
         } else {
             order.setPaymentStatus("UNKNOWN");
         }
 
-        // 4️⃣ SAVE ORDER
         return orderRepository.save(order);
     }
 
     // ================================
-    // GET ALL ORDERS (ADMIN DASHBOARD)
+    // GET ALL ORDERS (ADMIN)
     // ================================
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
+        // ================================
+        // GET CUSTOMER ORDERS (PROFILE PAGE)
+        // ================================
+        public List<Order> getCustomerOrders(String mobile, String email) {
+            return orderRepository.findByMobileAndEmail(mobile, email);
+        }
+
 
     // ================================
     // UPDATE ORDER STATUS (ADMIN)
@@ -60,7 +64,7 @@ public class OrderService {
     }
 
     // ================================
-    // UPDATE PAYMENT STATUS (FUTURE)
+    // UPDATE PAYMENT STATUS
     // ================================
     public Order updatePaymentStatus(Long id, String paymentStatus) {
 
