@@ -28,7 +28,7 @@
   width: 100%;
   z-index: 1000;
   transition: all 0.3s ease-in-out;
-  
+  height: 125px;
   /* Glassmorphism Background */
   background: rgba(0, 0, 0, 0.4); 
   backdrop-filter: blur(15px);
