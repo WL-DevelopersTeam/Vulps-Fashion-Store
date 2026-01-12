@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "../components/layout/Layout";
 import Loader from "../components/Loader";
-import { useNavigate } from "react-router-dom";
-
+import "./ProductDetails.css";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -35,19 +34,12 @@ const ProductDetails = () => {
       const res = await axios.get(
         `https://vulps-fashion-store.onrender.com/api/products/${id}`
       );
-
       const data = res.data;
 
-      const sizes = Array.isArray(data.sizes)
-        ? data.sizes
-        : JSON.parse(data.sizes || "[]");
-
-      const colors = Array.isArray(data.colors)
-        ? data.colors
-        : JSON.parse(data.colors || "[]");
+      const sizes = Array.isArray(data.sizes) ? data.sizes : JSON.parse(data.sizes || "[]");
+      const colors = Array.isArray(data.colors) ? data.colors : JSON.parse(data.colors || "[]");
 
       setProduct({ ...data, sizes, colors });
-
       setSelectedSize(sizes[0] || "");
       setSelectedColor(colors[0] || "");
     } catch (err) {
@@ -57,172 +49,107 @@ const ProductDetails = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Layout>
-        <div className="flex justify-center items-center h-64">
-          <Loader />
-        </div>
-      </Layout>
-    );
-  }
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.pageX - left) / width) * 100;
+    const y = ((e.pageY - top) / height) * 100;
+    e.currentTarget.style.setProperty('--x', `${x}%`);
+    e.currentTarget.style.setProperty('--y', `${y}%`);
+  };
 
-  if (!product) {
-    return (
-      <Layout>
-        <div className="text-center py-20 text-gray-500">
-          Product not found
-        </div>
-      </Layout>
-    );
-  }
+  if (loading) return <Layout><div className="loader-box"><Loader /></div></Layout>;
+  if (!product) return <Layout><div className="not-found">Product not found</div></Layout>;
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-14">
-
-        {/* LEFT: PRODUCT IMAGE */}
-        <div className="flex justify-center">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="w-full max-w-lg rounded-3xl shadow-2xl"
-          />
-        </div>
-
-        {/* RIGHT: PRODUCT INFO */}
-        <div>
-          {/* TITLE */}
-          <h1 className="text-4xl font-extrabold mb-2">
-            {product.name}
-          </h1>
-
-          {/* CATEGORY */}
-          <p className="text-gray-500 mb-3">
-            {product.category}
-          </p>
-
-          {/* RATING */}
-          <div className="flex items-center gap-2 mb-4">
-            ⭐⭐⭐⭐☆
-            <span className="text-sm text-gray-500">(128 reviews)</span>
+      <div className="product-page-root">
+        <div className="product-main-container">
+          
+          {/* LEFT: SYMMETRICAL IMAGE SECTION */}
+          <div className="product-image-section">
+            <div className="zoom-container" onMouseMove={handleMouseMove}>
+              <img src={product.imageUrl} alt={product.name} className="main-product-image" />
+            </div>
           </div>
 
-          {/* PRICE */}
-          <div className="mb-6">
-            <span className="text-3xl font-bold text-black">
-              ₹ {product.price}
-            </span>
-            <span className="ml-3 text-gray-400 line-through">
-              ₹ {product.price + 300}
-            </span>
-            <span className="ml-3 text-green-600 font-semibold">
-              30% OFF
-            </span>
-          </div>
-
-          {/* DESCRIPTION */}
-          <p className="text-gray-700 leading-relaxed mb-6">
-            {product.description}
-          </p>
-
-          {/* HIGHLIGHTS */}
-          <div className="mb-6">
-            <h3 className="font-semibold mb-2">Why you’ll love it</h3>
-            <ul className="text-sm text-gray-700 space-y-2">
-              <li>✔ Premium cotton fabric</li>
-              <li>✔ Soft, breathable & skin-friendly</li>
-              <li>✔ Fade-resistant colors</li>
-              <li>✔ Made in India 🇮🇳</li>
-            </ul>
-          </div>
-
-          {/* SIZE */}
-          {product.sizes?.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-semibold mb-2">Select Size</h3>
-              <div className="flex gap-3">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-5 py-2 rounded-lg border font-medium
-                      ${
-                        selectedSize === size
-                          ? "bg-black text-white"
-                          : "hover:border-black"
-                      }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+          {/* RIGHT: PREMIUM INFO CARD */}
+          <div className="product-info-section">
+            <div className="info-card">
+              <div className="badge-row">
+                <span className="premium-badge">New Arrival</span>
+                <span className="category-tag">{product.category}</span>
               </div>
-            </div>
-          )}
-
-          {/* COLOR */}
-          {product.colors?.length > 0 && (
-            <div className="mb-6">
-              <h3 className="font-semibold mb-2">Select Color</h3>
-              <div className="flex gap-4">
-                {product.colors.map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
-                    title={color}
-                    className={`w-10 h-10 rounded-full border-2
-                      ${
-                        selectedColor === color
-                          ? "border-black"
-                          : "border-gray-300"
-                      }`}
-                    style={{
-                      backgroundColor:
-                        colorMap[color.toLowerCase()] ||
-                        color.toLowerCase(),
-                    }}
-                  />
-                ))}
+              
+              <h1 className="product-title">{product.name}</h1>
+              
+              <div className="rating-container">
+                <span className="stars">★★★★☆</span>
+                <span className="review-text">(128 Verified Reviews)</span>
               </div>
-            </div>
-          )}
 
-          {/* QUANTITY */}
-          <div className="mb-8">
-            <h3 className="font-semibold mb-2">Quantity</h3>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => quantity > 1 && setQuantity(quantity - 1)}
-                className="px-3 py-1 border rounded text-lg"
-              >
-                −
-              </button>
-              <span className="font-semibold text-lg">{quantity}</span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="px-3 py-1 border rounded text-lg"
-              >
-                +
-              </button>
-            </div>
-          </div>
+              <div className="price-box">
+                <span className="current-price">₹{product.price}</span>
+                <span className="original-price">₹{product.price + 300}</span>
+                <span className="discount-pill">30% OFF</span>
+              </div>
 
-          {/* DELIVERY INFO */}
-          <div className="mb-8 text-sm text-gray-600">
-            🚚 Free delivery within 4–6 working days  
-            <br />
-            🔄 Easy 7-day return & exchange
-          </div>
+              <p className="description-text">{product.description || "Experience unmatched comfort and style with our premium cotton blend, designed for daily wear and durability."}</p>
 
-          {/* ACTION BUTTONS */}
-          <div className="flex gap-4">
-            <button className="bg-black text-white px-7 py-3 rounded-xl hover:bg-[#ff0062] transition">
-              Add to Cart
-            </button>
+              <div className="specs-grid">
+                <div className="spec-item"><span>✔</span> Premium Cotton</div>
+                <div className="spec-item"><span>✔</span> Skin-friendly</div>
+                <div className="spec-item"><span>✔</span> Fade-resistant</div>
+                <div className="spec-item"><span>✔</span> Made in India</div>
+              </div>
 
-            <button
-                onClick={() =>
-                  navigate("/checkout", {
+              {/* SIZE SELECTION */}
+              <div className="selection-area">
+                <label className="section-label">Select Size</label>
+                <div className="options-flex">
+                  {product.sizes.map(size => (
+                    <button 
+                      key={size} 
+                      className={`size-chip ${selectedSize === size ? 'active' : ''}`}
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* COLOR SELECTION */}
+              <div className="selection-area">
+                <label className="section-label">Select Color</label>
+                <div className="options-flex">
+                  {product.colors.map(color => (
+                    <button 
+                      key={color} 
+                      className={`color-pill ${selectedColor === color ? 'active' : ''}`}
+                      style={{ backgroundColor: colorMap[color.toLowerCase()] || color }}
+                      onClick={() => setSelectedColor(color)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="delivery-note">
+                🚚 Free delivery within 4–6 working days | 🔄 7-day returns
+              </div>
+
+              {/* ACTION ROW */}
+              <div className="action-row">
+                <div className="quantity-toggle">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button>
+                  <span>{quantity}</span>
+                  <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                </div>
+                
+                <button className="btn-add">Add to Cart</button>
+                
+                <button 
+                  className="btn-buy"
+                  onClick={() => navigate("/checkout", {
                     state: {
                       productId: product.id,
                       name: product.name,
@@ -232,14 +159,14 @@ const ProductDetails = () => {
                       color: selectedColor,
                       quantity: quantity,
                     },
-                  })
-                }
-                className="bg-gray-900 text-white px-7 py-3 rounded-xl hover:bg-black transition"
-              >
-                Buy Now
-              </button>
-
+                  })}
+                >
+                  Buy Now
+                </button>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </Layout>
