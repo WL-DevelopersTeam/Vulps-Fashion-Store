@@ -14,6 +14,7 @@ import com.example.backend.product.dto.ProductRequest;
 import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.model.Product;
 import com.example.backend.product.repository.ProductRepository;
+import com.cloudinary.utils.ObjectUtils;
 
 @Service
 public class ProductService {
@@ -29,12 +30,13 @@ public class ProductService {
 
         MultipartFile image = request.getImage();
 
-        Map uploadResult = cloudinary.uploader().upload(
-                image.getBytes(),
-                Map.of("folder", "fashion-store/products")
-        );
+       Map uploadResult = cloudinary.uploader().upload(
+        image.getBytes(),
+        Map.of("folder", "fashion-store/products")
+                        );
 
-        String imageUrl = uploadResult.get("secure_url").toString();
+                String imageUrl = uploadResult.get("secure_url").toString();
+                String publicId = uploadResult.get("public_id").toString();
 
         Product product = new Product();
         product.setName(request.getName());
@@ -44,6 +46,7 @@ public class ProductService {
         product.setSizes(request.getSizes());
         product.setColors(request.getColors());
         product.setImageUrl(imageUrl);
+        product.setImagePublicId(publicId);
 
         productRepository.save(product);
 
@@ -144,4 +147,26 @@ public class ProductService {
                 product.getCategory()
         );
     }
+
+    public void deleteProduct(Long id) {
+    Product product = productRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Product not found"));
+
+    // ✅ Safe Cloudinary delete
+    if (product.getImagePublicId() != null && !product.getImagePublicId().isBlank()) {
+        try {
+            cloudinary.uploader().destroy(
+                    product.getImagePublicId(),
+                    ObjectUtils.emptyMap()
+            );
+        } catch (Exception e) {
+            // log only, do not block DB delete
+            System.out.println("Cloudinary delete failed: " + e.getMessage());
+        }
+    }
+
+    // ✅ Delete product from DB
+    productRepository.delete(product);
+}
+
 }

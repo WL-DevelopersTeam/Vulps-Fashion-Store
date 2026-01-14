@@ -28,6 +28,9 @@ public class Product {
 
     private String imageUrl;
 
+    // ✅ ADD THIS
+    private String imagePublicId;
+
     @ElementCollection
     private List<String> sizes;
 
