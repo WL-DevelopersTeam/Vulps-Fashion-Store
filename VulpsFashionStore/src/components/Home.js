@@ -1,491 +1,284 @@
-import React, { useState, useEffect ,useRef} from 'react';
-import { Link } from 'react-router-dom'; // 1. Added Link for navigation
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import { FaInstagram, FaFacebookF, FaWhatsapp, FaArrowRight } from 'react-icons/fa';
+import heroVideo from './assets/hero-video.mp4';
 import '../App.css';
 import './Footer.css';
 import './CustomDesign.css';
-import { FaInstagram, FaFacebookF, FaWhatsapp } from 'react-icons/fa';
-import { color, motion } from 'framer-motion';
 
+// --- 1. Helper Components ---
 
-// Removed: import './About.jsx'; (Not needed here)
-const premiumBgImages = [
-  "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1500&q=80",
-  "https://images.unsplash.com/photo-1554568218-0f1715e72254?auto=format&fit=crop&w=1500&q=80",
-  "https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=1500&q=80"
-];
-const testimonials = [
-  {
-    id: 1,
-    stars: "⭐⭐⭐⭐⭐",
-    text: "Inviting and vibrant, just like the vibe at Vulps. The clothing truly stands out — especially the organic cotton tees.",
-    author: "Prasad Kale",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd7LkMlXSQkKt-vuvK_eiglmiW_IqiV-8ncQ&s" // Replace with real image paths
-  },
-  {
-    id: 2,
-    stars: "⭐⭐⭐⭐⭐",
-    text: "This collection is perfect for casual outings or special events. The fit is impeccable.",
-    author: "Niharika kulkarni",
-    image: "https://i.pravatar.cc/150?u=sudhir"
-  },
-  {
-    id: 3,
-    stars: "⭐⭐⭐⭐⭐",
-    text: "A truly exquisite fashion experience. I highly recommend the Eco-Friendly Collection.",
-    author: "Karan Sharma",
-    image: "https://plus.unsplash.com/premium_photo-1682089787056-9ac0c78a2ac2?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aW5kaWFuJTIwcGVvcGxlfGVufDB8fDB8fHww"
-  },
-  {
-    id: 4,
-    stars: "⭐⭐⭐⭐⭐",
-    text: "The best premium streetwear in the market. Quality and sustainability combined.",
-    author: "Rahul Mishra",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyVCt82gZk1SWFowG5i62hVbg52cthoo6SDg&s"
-  }
+const CustomCursor = () => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
-];
-// We define this separately so it's easy to manage
-const ProcessSection = () => {
-  const [isAnimated, setIsAnimated] = useState(true);
-  const sectionRef = useRef(null);
-  const steps = [
-    { title: "Sign in", desc: "Create an account to track." },
-    { title: "Add to cart", desc: "Select size and quantity." },
-    { title: "Pay", desc: "UPI, Cards, or Net Banking." },
-    { title: "Delivered", desc: "Quick shipping to your door." }
-  ];
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When the section comes into view, trigger the animation
-        if (entry.isIntersecting) {
-          setIsAnimated(true);
-        }
-      },
-      { threshold: 0.3 } // 30% of the section must be visible
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
+    const mouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
+    const mouseOver = (e) => {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.interactive')) {
+        setIsHovered(true);
+      } else {
+        setIsHovered(false);
+      }
+    };
+    window.addEventListener("mousemove", mouseMove);
+    window.addEventListener("mouseover", mouseOver);
+    return () => {
+      window.removeEventListener("mousemove", mouseMove);
+      window.removeEventListener("mouseover", mouseOver);
+    };
   }, []);
 
   return (
-    <section  ref={sectionRef} className="process-section">
-
-      <div className="container">
-        <h1 style={{ color: 'white', textAlign: 'center', fontFamily: 'Arial, sans-serif', fontSize: '4rem' }}>Process ...!</h1>
-        <h2 className="section-title">How It Works</h2>
-        <div className="process-container">
-          <div className="road-line">
-            <div className={`truck-icon ${isAnimated ? 'drive' : ''}`}>🚚</div>
-          </div>
-          <div className="process-steps">
-            {steps.map((step, index) => (
-              <div key={index} className={`process-step ${isAnimated ? 'fade-up' : ''}`}
-                style={{ transitionDelay: `${index * 0.4}s` }}>
-                <div className="step-circle">{index + 1}</div>
-                <h3>{step.title}</h3>
-                <p>{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
+    <motion.div
+      className="custom-cursor"
+      animate={{
+        x: mousePosition.x - (isHovered ? 25 : 7),
+        y: mousePosition.y - (isHovered ? 25 : 7),
+        scale: isHovered ? 2.5 : 1,
+        backgroundColor: isHovered ? "white" : "transparent",
+        mixBlendMode: isHovered ? "difference" : "normal"
+      }}
+      transition={{ type: "tween", ease: "backOut", duration: 0.1 }}
+    />
   );
 };
 
- const LatestSlider = ({ products }) => {
-  const [index, setIndex] = useState(0);
-  const visibleCards = 4;
-  const maxIndex = Math.max(products.length - visibleCards, 0);
-
-  const startX = useRef(0);
-  const endX = useRef(0);
-
-  const next = () => setIndex((prev) => Math.min(prev + 1, maxIndex));
-  const prev = () => setIndex((prev) => Math.max(prev - 1, 0));
-
-  useEffect(() => {
-  const autoSlide = setInterval(() => {
-    setIndex((prev) => (prev < maxIndex ? prev + 1 : 0));
-  }, 3000);
-
-  return () => clearInterval(autoSlide);
-}, [maxIndex]);
-
-
-  /* Touch handlers */
-  const handleTouchStart = (e) => {
-    startX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e) => {
-    endX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (startX.current - endX.current > 50) next();
-    if (endX.current - startX.current > 50) prev();
-  };
-
-  if (!products || products.length === 0) {
-    return <p className="no-data">No latest products found</p>;
-  }
-
+const Marquee = ({ text }) => {
   return (
-    <div className="latest-slider-wrapper">
-      <button className="slider-arrow left" onClick={prev} disabled={index === 0}>
-        ❮
-      </button>
-
-      <div
-        className="latest-slider"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+    <div className="marquee-container">
+      <motion.div
+        className="marquee-track"
+        animate={{ x: [0, -1000] }}
+        transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
       >
-        <div
-          className="latest-track"
-          style={{ transform: `translateX(-${index * 25}%)` }}
-        >
-          {products.map((item) => (
-            <div key={item.id} className="latest-card">
-              <img src={item.imageUrl} alt={item.title} />
-
-              <div className="card-info">
-                <div>
-                  <h4>{item.title}</h4>
-                  <p className="category">{item.category}</p>
-                </div>
-                <span className="price">₹{item.price}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button
-        className="slider-arrow right"
-        onClick={next}
-        disabled={index === maxIndex}
-      >
-        ❯
-      </button>
+        <h1 className="marquee-text">{text} • {text} • {text} • {text} • </h1>
+      </motion.div>
     </div>
   );
 };
 
-
-function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  // const [premiumBgIndex, setPremiumBgIndex] = useState(0);
-  // const [isAnimated, setIsAnimated] = useState(false);
-  // const sectionRef = useRef(null);
-  const [latestCollections, setLatestCollections] = useState([]);
-
-
- useEffect(() => {
-  fetchLatestCollections();
-}, []);
-
-const fetchLatestCollections = async () => {
-  try {
-    const res = await fetch("https://vulps-fashion-store.onrender.com/api/latest-collections");
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch latest collections");
-    }
-
-    const data = await res.json();
-    console.log("Latest collections data:", data); // 🔍 DEBUG
-    setLatestCollections(data);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-  // Hero carousel timer
- 
-
-  // Premium Background slideshow timer (3 seconds)
-  // useEffect(() => {
-  //   const bgInterval = setInterval(() => {
-  //     setPremiumBgIndex((prev) => (prev + 1) % premiumBgImages.length);
-  //   }, 3000);
-  //   return () => clearInterval(bgInterval);
-  // }, []);
-
-  
-  // Hero carousel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Scroll animation observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-
-    const elements = document.querySelectorAll('.fade-in, .slide-up, .slide-left, .slide-right');
-    elements.forEach((el) => observer.observe(el));
-
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-    };
-
-
-  }, []);
-
-
-
+const ProductCard = ({ item }) => {
   return (
-    <div className="home-page">
-      {/* Hero Section with Carousel */}
-      <section id="home" className="hero-section">
-        <div className="hero-carousel">
-          <div className={`hero-slide ${currentSlide === 0 ? 'active' : ''}`} style={{ backgroundImage: `url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1950&q=80')` }}>
-            <div className="hero-content fade-in">
-              <h1>Elevate Your Everyday Style</h1>
-              <p>Effortless Fashion for Every Occasion</p>
-              <p className="hero-subtitle">At Clovra, Modern elegance meets thoughtful desgin to define a new standerd in fashion.</p>
-              <a href="/Shop"><button className="cta-button">Shop Now</button></a>
-            </div>
-          </div>
-          <div className={`hero-slide ${currentSlide === 1 ? 'active' : ''}`} style={{ backgroundImage: `url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1950&q=80')` }}>
-            <div className="hero-content fade-in">
-              <h1>Premium Quality</h1>
-              <p>Organic Cotton & Sustainable Fashion</p>
-              <p className="hero-subtitle">Experience the comfort and quality of our organic cotton collection. Breathable, premium, and made for you.</p>
-              <button className="cta-button">Explore Collection</button>
-            </div>
-          </div>
-          <div className={`hero-slide ${currentSlide === 2 ? 'active' : ''}`} style={{ backgroundImage: `url('https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1950&q=80')` }}>
-            <div className="hero-content fade-in">
-              <h1>Custom Designs</h1>
-              <p>Your Design, Our Print</p>
-              <p className="hero-subtitle">Turn your ideas into custom T-shirts & Hoodies. Upload your design and make it reality.</p>
-              <a href='/SignIn'><button className="cta-button">Get Started</button></a>
-            </div>
-          </div>
-        </div>
-        <div className="carousel-controls">
-          <button className="prev-btn" onClick={() => setCurrentSlide((prev) => (prev - 1 + 3) % 3)}>❮</button>
-          <button className="next-btn" onClick={() => setCurrentSlide((prev) => (prev + 1) % 3)}>❯</button>
-        </div>
-        <div className="carousel-dots">
-          {[0, 1, 2].map((index) => (
-            <span
-              key={index}
-              className={`dot ${currentSlide === index ? 'active' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Premium Collections Section */}
-<section className="py-28 bg-white">
-  <div className="max-w-7xl mx-auto px-6">
-
-    <motion.h2
-      initial={{ opacity: 0, y: 25 }}
+    <motion.div
+      className="product-card interactive"
+      whileHover={{ y: -10 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="text-4xl font-semibold text-center mb-20 text-[#00053f]"
     >
-      Our Premium Collections
-    </motion.h2>
+      <div className="image-wrapper">
+        <img src={item.imageUrl || item.img} alt={item.title} />
+        <div className="overlay">
+          <button className="quick-view-btn">Quick View</button>
+        </div>
+      </div>
+      <div className="info">
+        <h3>{item.title}</h3>
+        <div className="meta">
+          <span className="category">{item.category || item.label}</span>
+          <span className="price">₹{item.price || "1,999"}</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+// --- 2. Main Home Component ---
 
-      {[
-        {
-          title: "Custom Shirt Design",
-          label: "YOUR ART, OUR PRINT",
-          img: "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQ8gYYxOkQkYT2L4avx1LXd55kg2pPTa5g4DEQkUHFwLbhzlVXTcqFYbs1vpYQLBjA2AyyRqyUTj1oCYBW0JMsTDghSEmCq_m1fDCap2CTEmON9PLkC3TG2iA",
-          btn: "Fill the Form",
-          link: "/CustomShirtForm"
-        },
-        {
-          title: "Premium Unisex Hoodie",
-          label: "HOODIE",
-          img: "https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg"
-        },
-        {
-          title: "Printed Men T-shirt",
-          label: "MEN T-SHIRT",
-          img: "https://images.pexels.com/photos/428340/pexels-photo-428340.jpeg"
-        },
-        {
-          title: "Printed Women T-shirt",
-          label: "WOMEN T-SHIRT",
-          img: "https://images.pexels.com/photos/1462637/pexels-photo-1462637.jpeg"
-        }
-      ].map((item, idx) => (
-        <motion.div
-          key={idx}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: idx * 0.1 }}
-          className="bg-[#f9f9fc] rounded-2xl shadow-md hover:shadow-xl overflow-hidden transition"
+function Home() {
+  // A. State & Hooks for Page Logic
+  const [latestCollections, setLatestCollections] = useState([]);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+
+  // B. Mock Data Effect
+  useEffect(() => {
+    const mockData = [
+      { id: 1, title: "Oversized Graphic Tee", category: "Streetwear", price: 1299, imageUrl: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80" },
+      { id: 2, title: "Cargo Parachute Pants", category: "Bottoms", price: 2499, imageUrl: "https://images.unsplash.com/photo-1552160753-117159d7419f?w=800&q=80" },
+      { id: 3, title: "Heavyweight Hoodie", category: "Essentials", price: 3499, imageUrl: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80" },
+      { id: 4, title: "Utility Vest", category: "Outerwear", price: 1899, imageUrl: "https://images.unsplash.com/photo-1559551409-dadc959f76b8?w=800&q=80" },
+    ];
+    setLatestCollections(mockData);
+  }, []);
+
+  // C. Video Auto-Play Logic (Must be INSIDE the Home component)
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.8; 
+      videoRef.current.play().catch((err) => {
+        console.log("Autoplay blocked by browser. User interaction needed.", err);
+      });
+    }
+  }, []);
+
+  // D. The JSX Return
+  return (
+    <div className="home-page-advanced">
+      <CustomCursor />
+
+      {/* Progress Bar */}
+      <motion.div className="scroll-progress" style={{ scaleX }} />
+
+      {/* Hero Section */}
+      {/* Hero Section */}
+<section className="hero-modern">
+
+  {/* --- BACKGROUND LAYER --- */}
+  <div className="hero-bg">
+    
+    {/* 1. The Video with a POSTER image (Fallback) */}
+    <video
+  className="hero-video"
+  autoPlay
+  loop
+  muted
+  playsInline
+ 
+>
+  {/* NEW: Walking in City (Matches the Streetwear vibe) */}
+  <source src={heroVideo} type="video/mp4" />
+</video>
+    {/* 2. Texture Overlay (Darkens the video) */}
+    <div className="noise-overlay"></div>
+  </div>
+
+  {/* --- CONTENT LAYER --- */}
+  <div className="hero-content-modern container">
+
+    {/* Glow Animation */}
+    <motion.div
+      className="hero-glow-circle"
+      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+    />
+
+    {/* Text */}
+    <motion.div
+      className="hero-text-wrapper"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <h5 className="hero-eyebrow">EST. 2026 — CLOVRA STUDIOS</h5>
+      <h1 className="hero-title">REDEFINE <br /> <span className="outline-text">EXISTENCE</span></h1>
+      <p className="hero-desc">Premium streetwear crafted for the modern individual.</p>
+
+      <div className="hero-btns">
+        <Link to="/shop" className="btn-primary interactive">
+          Shop Collection <FaArrowRight className="icon" />
+        </Link>
+      </div>
+    </motion.div>
+
+  </div>
+</section>
+
+      <Marquee text="NEW ARRIVALS • SUMMER DROP • LIMITED EDITION" />
+
+      {/* Categories Grid */}
+      <section className="bento-section container">
+        <motion.h2
+          className="section-header"
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
         >
-          {/* Fixed image height */}
-          <div className="h-56 bg-gradient-to-br from-[#eaeaf5] to-[#ffffff]">
-            <img
-              src={item.img}
-              alt={item.title}
-              onError={(e)=> e.target.style.display='none'}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          CURATED CATEGORIES
+        </motion.h2>
 
-          <div className="p-6 text-center">
-            <p className="text-xs tracking-widest text-[#d59f35] mb-2">{item.label}</p>
-            <h3 className="text-lg font-semibold text-[#00053f] mb-4">{item.title}</h3>
-
-            {item.link ? (
-              <Link to={item.link}>
-                <button className="px-8 py-2 rounded-full bg-[#00053f] text-white hover:bg-[#d59f35] transition">
-                  {item.btn}
-                </button>
-              </Link>
-            ) : (
-              <button className="px-8 py-2 rounded-full bg-[#00053f] text-white hover:bg-[#d59f35] transition">
-                Shop Now
-              </button>
-            )}
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
-      {/* Latest Collections */}
-{/* Latest Collections Slider */}
-<section className="latest-section">
-  <div className="container">
-
-    <div className="latest-header">
-      <h2>Our Latest Collections</h2>
-      <Link to="/shop" className="see-all-link">See all →</Link>
-    </div>
-
-    <LatestSlider products={latestCollections} />
-
-  </div>
-</section>
-
-
-
-
-      {/* Custom Design Section */}
-      <section className="custom-design-section">
-        <div className="container">
-          <div className="custom-design-content fade-in">
-            <h2> Your Design, Our Print </h2>
-            <p className="custom-subtitle">Turn your ideas into custom T-shirts & Hoodies</p>
-
-            <div className="custom-steps">
-              {/* Step 1 */}
-              <div className="step-item">
-                <span className="step-number">1</span>
-                <p className="text-gray-300">Fill out the form</p>
-              </div>
-
-              {/* Step 2 */}
-              <div className="step-item">
-                <span className="step-number">2</span>
-                <p className="text-gray-300">Upload your design Information & submit</p>
-              </div>
+        <div className="bento-grid">
+          <motion.div className="bento-item large" whileHover={{ scale: 0.98 }}>
+            <img src="https://plus.unsplash.com/premium_photo-1687989650785-7edeaaddc7a7?w=600&auto=format&fit=crop&q=60" alt="Men" />
+            <div className="bento-content">
+              <h3>MEN'S EDIT</h3>
+              <Link to="/shop?cat=men" className="underline-btn">Explore</Link>
             </div>
+          </motion.div>
+          <motion.div className="bento-item tall" whileHover={{ scale: 0.98 }}>
+            <img src="https://images.unsplash.com/photo-1503342394128-c104d54dba01?w=800" alt="Women" />
+            <div className="bento-content">
+              <h3>WOMEN'S</h3>
+              <Link to="/shop?cat=women" className="underline-btn">Explore</Link>
+            </div>
+          </motion.div>
+          <motion.div className="bento-item wide" whileHover={{ scale: 0.98 }}>
+            <img src="https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=800" alt="Accessories" />
+            <div className="bento-content">
+              <h3>ACCESSORIES</h3>
+              <Link to="/shop?cat=acc" className="underline-btn">Explore</Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
+      {/* Latest Slider */}
+      <section className="latest-modern container">
+        <div className="header-flex">
+          <h2>LATEST DROPS</h2>
+          <Link to="/shop" className="view-all interactive">View All</Link>
+        </div>
+        <div className="product-grid-modern">
+          {latestCollections.map((item) => (
+            <ProductCard key={item.id} item={item} />
+          ))}
+        </div>
+      </section>
+
+      {/* Custom Design (Split Scroll) */}
+      <section className="custom-split">
+        <div className="split-image">
+          <img src="https://images.unsplash.com/photo-1618331835717-801e976710b2?w=1000" alt="Custom" />
+        </div>
+        <div className="split-content">
+          <motion.div
+            initial={{ x: 50, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2>YOUR VISION.<br />OUR CANVAS.</h2>
+            <p>Don't just wear the brand. Be the brand. Use our custom studio to print your art on premium heavy-weight cotton.</p>
             <Link to="/CustomShirtForm">
-              <button className="cta-button">Fill the Form Now</button>
+              <button className="btn-outline interactive">Start Designing</button>
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
-      {/* Testimonials Section */}
-      <section className="testimonials-section">
-        <div className="container">
-          <h2 style={{ color: 'black', fontSize: '2rem', textAlign: 'center' }}>What Our Customers Say</h2>
-           
-          <div className="marquee-wrapper">
-            <div className="marquee-content">
-              {/* Render two sets of items for seamless looping */}
-              {[...testimonials, ...testimonials].map((t, index) => (
-                <div key={index} className="testimonial-card">
-                  <div className="card-header">
-                    <img src={t.image} alt={t.author} className="author-img" />
-                    <div className="stars">{t.stars}</div>
-                  </div>
-                  <p className="testimonial-text">"{t.text}"</p>
-                  <div className="author-info">
-                    <h4 className="author-name">{t.author}</h4>
-                    <p className="author-role">{t.role}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* {<ProcessSection />} */}
-      <ProcessSection />
-
 
       {/* Footer */}
       <footer className="footer-slim">
         <div className="container-slim">
           <div className="footer-top-row">
-            {/* Logo or Brand Name */}
             <div className="footer-brand">
-              <h2>CLOVRA<span>.</span></h2>
+              <h2>Clovra<span>.</span></h2>
             </div>
-            
-
-            {/* Minimal Menu */}
-            <ul className="footer-links-slim">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/About">About</Link></li>
-              <li><Link to="/Blog">Blog</Link></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-
-            {/* Animated Social Icons */}
             <div className="social-links-slim">
-              <a href="#" className="social-icon-box ig"><FaInstagram /></a>
-              <a href="#" className="social-icon-box fb"><FaFacebookF /></a>
-              <a href="#" className="social-icon-box wa"><FaWhatsapp /></a>
+              <a href="#" className="social-icon-box" aria-label="Instagram">
+                <FaInstagram />
+              </a>
+              <a href="#" className="social-icon-box" aria-label="Facebook">
+                <FaFacebookF />
+              </a>
+              <a href="#" className="social-icon-box" aria-label="WhatsApp">
+                <FaWhatsapp />
+              </a>
             </div>
           </div>
-          <p style={{ color: 'white', fontWeight: 'revert' ,fontSize: '11px'}}>ADDERSS - PATNA CITY ,BIHAR - 800001.</p> <br />
-             <p style={{ color: 'white', fontWeight: 'revert' ,fontSize: '11px'}}>CONTACT - 9950309343.</p>
           <hr className="footer-divider" />
-
-          <div className="footer-bottom-slim">
-            <p>Powered by <a href="https://wordlanetech.com/" target="_blank" rel="noreferrer">WordLaneTech</a></p>
-            <p>© {new Date().getFullYear()} Clovra. All rights reserved.</p> 
-            
+          <div className="footer-bottom-container">
+            <div className="footer-links-slim">
+              <Link to="/about">About</Link>
+              <Link to="/contact">Contact</Link>
+              <Link to="/terms">Terms</Link>
+              <Link to="/privacy">Privacy</Link>
+            </div>
+            <div className="footer-bottom-slim">
+              <p>© 2024 Clovra Studios. All Rights Reserved.</p>
+              <span className="separator">|</span>
+              <p>Patna City, Bihar - 800001</p>
+            </div>
           </div>
         </div>
       </footer>

@@ -1,12 +1,17 @@
-import Header from "./Header";
-import Footer from "./Footer";
+// src/components/layout/Layout.jsx
+import React from 'react';
+// import Footer from '../Footer'; // Uncomment if you have a footer
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
+    <div className="flex flex-col min-h-screen">
+      {/* Header is removed from here as requested */}
+      
+      <main className="flex-grow">
+        {children}
+      </main>
+
+      {/* <Footer /> */} 
     </div>
   );
 };

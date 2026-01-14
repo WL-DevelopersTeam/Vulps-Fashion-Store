@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import Layout from "../components/layout/Layout";
+import './Checkout.css'; // Import the new CSS
 
 const Checkout = () => {
   const { state } = useLocation();
@@ -18,11 +19,13 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Redirect if no product state passed
   if (!state) {
     return (
       <Layout>
-        <div className="text-center py-20 text-gray-500">
-          Invalid checkout session
+        <div className="checkout-container text-center">
+          <h2 className="text-gray-500">Invalid checkout session</h2>
+          <button onClick={() => navigate('/shop')} className="mt-4 text-[#d4af37] underline">Return to Shop</button>
         </div>
       </Layout>
     );
@@ -73,7 +76,7 @@ const Checkout = () => {
       alert("Order placed successfully!");
       navigate("/");
     } catch (err) {
-      alert("Failed to place order");
+      alert("Failed to place order. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -81,147 +84,124 @@ const Checkout = () => {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+      {/* Used 'bg-mesh' class globally in Layout or Shop, if not add it to a wrapper here */}
+      <div className="checkout-container">
+        <div className="checkout-grid">
 
-        {/* LEFT - ORDER SUMMARY */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold mb-5">
-            Order Summary
-          </h2>
+          {/* LEFT - ORDER SUMMARY */}
+          <div className="checkout-card">
+            <h2 className="checkout-title">Order Summary</h2>
 
-          <div className="flex gap-4">
-            <img
-              src={state.image}
-              alt={state.name}
-              className="w-28 rounded-xl"
-            />
+            <div className="order-item">
+              <img
+                src={state.image}
+                alt={state.name}
+                className="order-img"
+              />
 
-            <div>
-              <h3 className="font-semibold text-lg">
-                {state.name}
-              </h3>
-
-              <p className="text-sm text-gray-500">
-                Size: {state.size} | Color: {state.color}
-              </p>
-
-              <p className="mt-2 font-semibold">
-                ₹ {state.price} × {state.quantity}
-              </p>
-            </div>
-          </div>
-
-          <hr className="my-4" />
-
-          <div className="flex justify-between text-lg font-bold">
-            <span>Total</span>
-            <span>
-              ₹ {state.price * state.quantity}
-            </span>
-          </div>
-
-          <p className="text-sm text-gray-500 mt-3">
-            🚚 Free delivery in 4–6 working days
-          </p>
-        </div>
-
-        {/* RIGHT - CUSTOMER DETAILS */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-bold mb-4">
-            Shipping Details
-          </h2>
-
-          <input
-            name="fullName"
-            placeholder="Full Name"
-            className="input"
-            onChange={handleChange}
-          />
-
-          <input
-            name="mobile"
-            placeholder="Mobile Number"
-            className="input"
-            onChange={handleChange}
-          />
-
-          <input
-            name="email"
-            placeholder="Email Address"
-            className="input"
-            onChange={handleChange}
-          />
-
-          <textarea
-            name="address"
-            placeholder="Full Address"
-            className="input"
-            onChange={handleChange}
-          />
-
-          <input
-            name="city"
-            placeholder="City"
-            className="input"
-            onChange={handleChange}
-          />
-
-          {/* PAYMENT METHOD */}
-          <div className="mt-6">
-            <h3 className="font-semibold mb-3">
-              Payment Method
-            </h3>
-
-            <div className="space-y-3">
-              {/* COD */}
-              <div
-                onClick={() => setPaymentMethod("COD")}
-                className={`p-4 border rounded-xl cursor-pointer flex justify-between
-                  ${
-                    paymentMethod === "COD"
-                      ? "border-black bg-gray-50"
-                      : "hover:border-gray-400"
-                  }`}
-              >
-                <span>Cash on Delivery</span>
-                <span>💵</span>
-              </div>
-
-              {/* ONLINE */}
-              <div
-                onClick={() => setPaymentMethod("ONLINE")}
-                className={`p-4 border rounded-xl cursor-pointer flex justify-between
-                  ${
-                    paymentMethod === "ONLINE"
-                      ? "border-black bg-gray-50"
-                      : "hover:border-gray-400"
-                  }`}
-              >
-                <span>Online Payment</span>
-                <span>💳</span>
+              <div className="order-details">
+                <h3>{state.name}</h3>
+                <p className="order-meta">Size: {state.size}</p>
+                <p className="order-meta">Color: <span style={{color: state.color, fontWeight:'bold', textTransform:'capitalize'}}>{state.color}</span></p>
+                <p className="order-price">₹ {state.price} × {state.quantity}</p>
               </div>
             </div>
 
-            {paymentMethod === "ONLINE" && (
-              <p className="text-sm text-gray-500 mt-2">
-                Online payment integration coming soon
-              </p>
-            )}
+            <hr className="order-divider" />
+
+            <div className="order-total">
+              <span>Total</span>
+              <span>₹ {(state.price * state.quantity).toLocaleString()}</span>
+            </div>
+
+            <p className="delivery-note">
+              🚚 Free delivery in 4–6 working days
+            </p>
           </div>
 
-          {/* PLACE ORDER */}
-          <button
-            onClick={placeOrder}
-            disabled={!isFormValid || loading}
-            className={`w-full mt-6 py-3 rounded-xl text-white transition
-              ${
-                isFormValid
-                  ? "bg-black hover:bg-[#ff0062]"
-                  : "bg-gray-400 cursor-not-allowed"
-              }`}
-          >
-            {loading ? "Placing Order..." : "Place Order"}
-          </button>
+          {/* RIGHT - CUSTOMER DETAILS */}
+          <div className="checkout-card">
+            <h2 className="checkout-title">Shipping Details</h2>
+
+            <div className="form-grid">
+              <input
+                name="fullName"
+                placeholder="Full Name"
+                className="checkout-input"
+                onChange={handleChange}
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  name="mobile"
+                  placeholder="Mobile Number"
+                  className="checkout-input"
+                  onChange={handleChange}
+                />
+                <input
+                  name="email"
+                  placeholder="Email Address"
+                  className="checkout-input"
+                  onChange={handleChange}
+                />
+              </div>
+
+              <textarea
+                name="address"
+                placeholder="Full Address (House No, Street, Area)"
+                className="checkout-input"
+                onChange={handleChange}
+              />
+
+              <input
+                name="city"
+                placeholder="City / Pincode"
+                className="checkout-input"
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* PAYMENT METHOD */}
+            <div className="payment-section">
+              <h3 className="font-semibold mb-3 text-white">Payment Method</h3>
+
+              <div className="payment-options">
+                {/* COD */}
+                <div
+                  onClick={() => setPaymentMethod("COD")}
+                  className={`payment-card ${paymentMethod === "COD" ? "selected" : ""}`}
+                >
+                  <span>Cash on Delivery</span>
+                  <span>💵</span>
+                </div>
+
+                {/* ONLINE */}
+                <div
+                  onClick={() => setPaymentMethod("ONLINE")}
+                  className={`payment-card ${paymentMethod === "ONLINE" ? "selected" : ""}`}
+                >
+                  <span>Online Payment</span>
+                  <span>💳</span>
+                </div>
+              </div>
+
+              {paymentMethod === "ONLINE" && (
+                <p className="text-xs text-[#d4af37] mt-2 opacity-80">
+                  * Secure Gateway (Razorpay/Stripe) integration pending.
+                </p>
+              )}
+            </div>
+
+            {/* PLACE ORDER */}
+            <button
+              onClick={placeOrder}
+              disabled={!isFormValid || loading}
+              className="place-order-btn"
+            >
+              {loading ? "Processing..." : "Confirm Order"}
+            </button>
+          </div>
+          
         </div>
       </div>
     </Layout>
