@@ -5,4 +5,5 @@ import com.example.backend.cart.model.CartItem;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> 
 {
+    void deleteByProductId(Long productId);
 }

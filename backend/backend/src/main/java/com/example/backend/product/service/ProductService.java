@@ -7,19 +7,25 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
+import com.example.backend.cart.repository.CartRepository;
 import com.example.backend.product.dto.ProductRequest;
 import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.model.Product;
 import com.example.backend.product.repository.ProductRepository;
+import com.cloudinary.utils.ObjectUtils;
 
 @Service
 public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     @Autowired
     private Cloudinary cloudinary;
@@ -29,12 +35,13 @@ public class ProductService {
 
         MultipartFile image = request.getImage();
 
-        Map uploadResult = cloudinary.uploader().upload(
-                image.getBytes(),
-                Map.of("folder", "fashion-store/products")
-        );
+       Map uploadResult = cloudinary.uploader().upload(
+        image.getBytes(),
+        Map.of("folder", "fashion-store/products")
+                        );
 
-        String imageUrl = uploadResult.get("secure_url").toString();
+                String imageUrl = uploadResult.get("secure_url").toString();
+                String publicId = uploadResult.get("public_id").toString();
 
         Product product = new Product();
         product.setName(request.getName());
@@ -44,6 +51,7 @@ public class ProductService {
         product.setSizes(request.getSizes());
         product.setColors(request.getColors());
         product.setImageUrl(imageUrl);
+        product.setImagePublicId(publicId);
 
         productRepository.save(product);
 
@@ -144,4 +152,31 @@ public class ProductService {
                 product.getCategory()
         );
     }
+
+     // ✅ DELETE PRODUCT (AUTO REMOVE FROM CART)
+    @Transactional
+    public void deleteProduct(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // ✅ Remove product from all carts
+        cartRepository.deleteByProductId(id);
+
+        // ✅ Delete image from Cloudinary
+        if (product.getImagePublicId() != null && !product.getImagePublicId().isBlank()) {
+            try {
+                cloudinary.uploader().destroy(
+                        product.getImagePublicId(),
+                        ObjectUtils.emptyMap()
+                );
+            } catch (Exception e) {
+                System.out.println("Cloudinary delete failed: " + e.getMessage());
+            }
+        }
+
+        // ✅ Delete product from DB
+        productRepository.delete(product);
+    }
+
 }

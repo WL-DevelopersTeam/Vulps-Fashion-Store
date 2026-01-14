@@ -1,5 +1,6 @@
 package com.example.backend.product.controller;
 
+import java.io.IOException;
 // import java.io.IOException;
 import java.util.List;
 
@@ -89,5 +90,12 @@ public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
     ProductResponse response = productService.getProductById(id);
     return ResponseEntity.ok(response);
 }
+
+@DeleteMapping("/{id}")
+public ResponseEntity<String> deleteProduct(@PathVariable Long id) throws IOException {
+    productService.deleteProduct(id);
+    return ResponseEntity.ok("Product deleted successfully");
+}
+
 
 }
