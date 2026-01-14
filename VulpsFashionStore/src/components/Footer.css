@@ -1,135 +1,284 @@
-/* Footer Container */
+/* =========================================
+   1. FOOTER VARIABLES & THEME
+   ========================================= */
 .footer-slim {
-  background-color: #0b1120; /* Deep dark blue-black */
-  color: #ffffff;
-  padding: 40px 24px;
-  font-family: 'Inter', sans-serif;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  /* Local Scope Variables */
+  --footer-bg: #050505; /* Deep Black */
+  --footer-text: #a1a1aa;
+  --footer-text-light: #ffffff;
+  --footer-accent: #d4af37; /* Gold */
+  --footer-border: 1px solid rgba(255, 255, 255, 0.08);
+  
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  padding: 80px 0 40px;
+  border-top: 2px solid var(--footer-accent);
+  position: relative;
+  overflow: hidden;
 }
 
+/* [MAGIC UPGRADE] Breathing Background Light */
+.footer-slim::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+  animation: breatheLight 8s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+/* =========================================
+   2. LAYOUT CONTAINERS
+   ========================================= */
 .container-slim {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  /* [MAGIC UPGRADE] Smooth Entrance */
+  animation: fadeSlideUp 1s ease-out forwards; 
 }
 
-/* Top Row Layout */
 .footer-top-row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 32px;
-  margin-bottom: 32px;
+  flex-direction: row;        /* Align items side-by-side */
+  justify-content: space-between; /* Push Brand to left, Icons to right */
+  align-items: center;        /* Center them vertically */
+  width: 100%;
+  margin-bottom: 50px;
 }
 
-/* Brand/Logo */
-.footer-brand h3 {
-  font-size: 24px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -1px;
+/* Container for the bottom section to handle layout */
+.footer-bottom-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+/* On Mobile/Tablets: Stack them back up so it doesn't look squished */
+@media (max-width: 768px) {
+  .footer-top-row {
+    flex-direction: column; /* Stack vertically on phone */
+    gap: 30px;
+  }
+  
+  .footer-bottom-container {
+    text-align: center;
+  }
+  
+  .separator {
+    display: none; /* Hide the | pipe on mobile */
+  }
+}
+
+/* =========================================
+   3. BRANDING (LOGO)
+   ========================================= */
+.footer-brand h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  letter-spacing: 0.1em;
   margin: 0;
+  line-height: 1;
+  text-transform: uppercase;
+  
+  /* [MAGIC UPGRADE] Liquid Gold Shimmer Effect */
+  background: linear-gradient(to right, #ffffff 0%, #e8dcb9 20%, #ffffff 40%, #ffffff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerText 5s linear infinite;
 }
 
 .footer-brand span {
-  color: #ff4d4d; /* Sharp red dot */
+  color: var(--footer-accent);
+  display: inline-block;
+  /* Reset text fill for the dot so it stays gold */
+  -webkit-text-fill-color: var(--footer-accent); 
+  animation: pulseGold 3s infinite ease-in-out;
 }
 
-/* Navigation Links */
+/* =========================================
+   4. NAVIGATION LINKS
+   ========================================= */
 .footer-links-slim {
-  display: flex;
   list-style: none;
-  gap: 32px;
-  margin: 0;
+  display: flex;
+  gap: 40px;
   padding: 0;
+  margin: 0;
 }
 
 .footer-links-slim a {
   text-decoration: none;
-  color: #9ca3af; /* Gray text */
-  font-size: 14px;
+  color: var(--footer-text);
+  font-size: 0.85rem;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
   transition: color 0.3s ease;
+  padding-bottom: 5px;
+}
+
+.footer-links-slim a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background-color: var(--footer-accent);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .footer-links-slim a:hover {
-  color: #ffffff;
+  color: var(--footer-text-light);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-/* Social Icon Boxes */
+.footer-links-slim a:hover::after {
+  width: 100%;
+}
+
+/* =========================================
+   5. SOCIAL ICONS ([MAGIC UPGRADE])
+   ========================================= */
 .social-links-slim {
   display: flex;
-  gap: 12px;
+  gap: 1.5rem;
 }
 
 .social-icon-box {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  color: #d1d5db;
+  color: var(--footer-text);
+  font-size: 1.3rem;
   text-decoration: none;
-  font-size: 18px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy transition */
+  position: relative;
+  overflow: hidden;
+  
+  /* Smooth Physics */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* [MAGIC] Continuous Floating Animation */
+  animation: floatIcon 6s ease-in-out infinite;
 }
 
-/* ICON ANIMATIONS */
+/* [MAGIC] Stagger the float so they don't move in unison */
+.social-icon-box:nth-child(1) { animation-delay: 0s; }
+.social-icon-box:nth-child(2) { animation-delay: 1s; }
+.social-icon-box:nth-child(3) { animation-delay: 2s; }
+.social-icon-box:nth-child(4) { animation-delay: 3s; }
+
+/* [MAGIC] Glass Shine on Hover */
+.social-icon-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.social-icon-box:hover::before {
+  left: 100%;
+}
+
 .social-icon-box:hover {
-  transform: translateY(-5px) scale(1.1);
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background: var(--footer-accent);
+  border-color: var(--footer-accent);
+  color: #000;
+  transform: translateY(-8px) scale(1.15); /* Higher lift */
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); /* Stronger Glow */
 }
 
-/* Specific Brand Hover Colors (Optional) */
-.social-icon-box.ig:hover { box-shadow: 0 5px 15px rgba(225, 48, 108, 0.3); color: #e1306c; }
-.social-icon-box.fb:hover { box-shadow: 0 5px 15px rgba(24, 119, 242, 0.3); color: #1877f2; }
-.social-icon-box.wa:hover { box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3); color: #25d366; }
-
-/* Divider */
+/* =========================================
+   6. DIVIDERS & BOTTOM BAR
+   ========================================= */
 .footer-divider {
   border: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
-  margin-bottom: 24px;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.1) 20%, 
+    rgba(255, 255, 255, 0.1) 80%, 
+    transparent 100%
+  );
+  margin: 0 0 30px 0;
+  opacity: 0.6;
 }
 
-/* Bottom Bar */
 .footer-bottom-slim {
   display: flex;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  font-size: 11px;
-  color: #4b5563;
+  font-size: 0.75rem;
+  color: #52525b;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.footer-bottom-slim a {
-  color: #9ca3af;
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s;
-}
-
 .footer-bottom-slim a:hover {
-  color: #ffffff;
+  color: var(--footer-accent);
 }
 
-/* Responsive for Mobile */
+/* =========================================
+   7. ANIMATIONS (THE MAGIC SAUCE)
+   ========================================= */
+
+/* Logo Pulse */
+@keyframes pulseGold {
+  0%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(212, 175, 55, 0); }
+  50% { opacity: 0.8; text-shadow: 0 0 30px rgba(212, 175, 55, 0.8); }
+}
+
+/* Background Breathing */
+@keyframes breatheLight {
+  0% { opacity: 0.3; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0.6; transform: translateX(-50%) scale(1.1); }
+}
+
+/* Icon Levitation */
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Logo Text Shimmer */
+@keyframes shimmerText {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* Page Load Entrance */
+@keyframes fadeSlideUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .footer-top-row {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .footer-bottom-slim {
-    flex-direction: column;
-    gap: 12px;
-  }
+  .footer-slim { padding: 60px 0 30px; }
+  .footer-brand h2 { font-size: 2.2rem; }
+  .footer-links-slim { flex-direction: column; gap: 20px; }
+  .footer-bottom-slim { flex-direction: column; gap: 15px; }
 }

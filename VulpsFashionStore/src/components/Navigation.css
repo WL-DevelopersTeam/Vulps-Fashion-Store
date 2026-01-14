@@ -1,0 +1,375 @@
+/* =========================================
+   1. VARIABLES & THEME
+   ========================================= */
+:root {
+  /* Elegant Dark/Gold Theme */
+  --nav-bg-initial: rgb(5, 5, 5); /* Solid Black initially to prevent see-through */
+  --nav-bg-scrolled: rgb(10 10 10 / 0.95); /* Slightly transparent when scrolling */
+  --nav-blur: 12px;
+  --nav-border: 1px solid rgb(255 255 255 / 0.08);
+  
+  --color-text: #ffffff;
+  --color-accent: #d4af37;
+  --color-text-muted: #a1a1aa;
+  
+  --font-logo: 'Playfair Display', serif;
+  --font-body: system-ui, sans-serif;
+  
+  --nav-height: 80px;
+  --nav-height-scrolled: 60px;
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* [CRITICAL FIX] Pushes website content down so it doesn't hide behind Navbar */
+body {
+  padding-top: var(--nav-height); 
+}
+
+/* =========================================
+   2. NAVBAR LAYOUT
+   ========================================= */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  z-index: 9999; /* [FIX] Increased to ensure it stays on top of everything */
+  transition: var(--transition);
+  
+  /* [FIX] Solid background ensures text doesn't bleed through */
+  background: var(--nav-bg-initial); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  
+  color: var(--color-text);
+  /* Optional: heavy blur if you want glass effect */
+  /* backdrop-filter: blur(10px); */ 
+
+  /* Scrolled State */
+  &.scrolled {
+    height: var(--nav-height-scrolled);
+    background: var(--nav-bg-scrolled);
+    backdrop-filter: blur(var(--nav-blur));
+    border-bottom: var(--nav-border);
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8);
+  }
+}
+
+.nav-container {
+  max-width: 1400px;
+  height: 100%;
+  margin-inline: auto;
+  padding-inline: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* =========================================
+   3. LOGO TYPOGRAPHY
+   ========================================= */
+.logo {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  color: var(--color-text);
+  
+  &:hover .logo-text {
+    text-shadow: 0 0 15px rgba(255,255,255,0.3);
+  }
+}
+
+.logo-text {
+  font-family: var(--font-logo);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+}
+
+.logo-subtitle {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-accent);
+  margin-top: 4px;
+}
+
+/* =========================================
+   4. DESKTOP NAVIGATION LINKS
+   ========================================= */
+.nav-menu {
+  display: flex;
+  gap: 3rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  a {
+    position: relative;
+    text-decoration: none;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+
+    /* Animated Underline */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0%;
+      height: 1px;
+      background: var(--color-accent);
+      transition: width 0.3s ease;
+    }
+
+    &:hover {
+      color: var(--color-text);
+      &::after { width: 100%; }
+    }
+  }
+}
+
+/* =========================================
+   5. ICONS & USER ACTIONS
+   ========================================= */
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-icon-btn {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s;
+  padding: 5px;
+
+  &:hover {
+    transform: scale(1.1);
+    color: var(--color-accent);
+  }
+
+  .icon-svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+  }
+}
+
+/* Badge Animation */
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--color-accent);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: bold;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sign-in-btn {
+  background: transparent;
+  border: 1px solid var(--color-text);
+  color: var(--color-text);
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+
+  &:hover {
+    background: var(--color-text);
+    color: #000;
+  }
+}
+
+/* =========================================
+   6. USER DROPDOWN (ANIMATED)
+   ========================================= */
+/* Wrapper to position the dropdown correctly */
+.user-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Main Button Styling */
+
+/* The Circle Avatar */
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background-color: #E6B325; /* Matches your Gold/Yellow accents */
+  color: #000000; /* Black text creates high contrast with gold */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  text-transform: uppercase;
+  border: 2px solid transparent; /* Optional: adds structure */
+}
+
+/* Text alignment adjustments */
+.user-name {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.arrow-icon {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* Dropdown Menu Styling (Dark Theme) */
+.user-dropdown {
+  position: absolute;
+  top: 120%; /* Pushes it slightly below the navbar */
+  right: 0;
+  background-color: #111111; /* Very dark grey/black */
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 8px 0;
+  min-width: 160px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px 20px;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #222;
+  color: #E6B325; /* Gold text on hover */
+  padding-left: 25px; /* Slight slide effect */
+}
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Reduced from 12px since the text is gone */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: #ffffff; 
+  transition: opacity 0.2s ease;
+}
+
+/* Ensure the arrow is white and vertically centered */
+.arrow-icon {
+  font-size: 14px;
+  color: #fff;
+  margin-top: 2px;
+}
+/* =========================================
+   7. MOBILE MENU & ANIMATIONS
+   ========================================= */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  position: relative;
+  transition: var(--transition);
+
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: var(--color-text);
+    transition: var(--transition);
+  }
+
+  &::before { top: -8px; }
+  &::after { top: 8px; }
+
+  &.open {
+    background: transparent;
+    &::before { transform: rotate(45deg); top: 0; }
+    &::after { transform: rotate(-45deg); top: 0; }
+  }
+}
+
+/* KEYFRAMES */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* =========================================
+   8. RESPONSIVE QUERIES
+   ========================================= */
+@media (max-width: 768px) {
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100vh;
+    background: #000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    
+    transform: translateX(100%);
+    transition: transform 0.4s ease-in-out;
+    
+    &.active {
+      transform: translateX(0);
+    }
+    
+    a {
+      font-size: 1.5rem;
+      color: var(--color-text);
+    }
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .nav-icons {
+    margin-right: 1rem;
+  }
+}

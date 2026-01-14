@@ -1,18 +1,136 @@
+/* =========================================
+   1. SHOP THEME VARIABLES
+   ========================================= */
+:root {
+  --shop-bg: #050505;
+  --shop-card-bg: rgba(20, 20, 20, 0.6);
+  --shop-border: 1px solid rgba(255, 255, 255, 0.08);
+  --shop-text: #a1a1aa;
+  --shop-text-highlight: #ffffff;
+  --shop-accent: #d4af37; /* Gold */
+  --shop-glass-blur: 12px;
+}
+
+/* =========================================
+   2. BACKGROUND (Dark Mesh Effect)
+   ========================================= */
+.bg-mesh {
+  background-color: var(--shop-bg);
+  /* Subtle "Breathing" Gold/Dark Gradients */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%), 
+    radial-gradient(at 100% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(212, 175, 55, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
+  background-size: cover;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* =========================================
+   3. SIDEBAR & FILTERS (Glassmorphism)
+   ========================================= */
+.filter-box {
+  background: var(--shop-card-bg);
+  backdrop-filter: blur(var(--shop-glass-blur));
+  -webkit-backdrop-filter: blur(var(--shop-glass-blur));
+  border: var(--shop-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: var(--shop-text);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.sidebar-item {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  color: var(--shop-text);
+  padding: 8px 0;
+  display: block;
+}
+
+/* Hover Effect: Slide Right + Gold Glow */
+.sidebar-item:hover {
+  transform: translateX(12px);
+  color: var(--shop-accent);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* =========================================
+   4. PRODUCT GRID & ANIMATIONS
+   ========================================= */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+  padding: 20px;
+}
+
+/* Consolidated Entrance Animation */
 @keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(30px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
+.animate-grid-item {
+  opacity: 0; /* Start hidden */
+  animation: slideUpFade 0.6s ease-out forwards;
+}
+
+/* Stagger delays if you map this in React, 
+   otherwise this simple class works generally */
 .product-card-animated {
   animation: slideUpFade 0.6s ease-out forwards;
 }
 
+/* =========================================
+   5. SIZE CHIPS (Interactive Elements)
+   ========================================= */
+.size-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  margin: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--shop-text);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover State */
+.size-chip:hover:not(.active-size) {
+  border-color: var(--shop-accent);
+  color: var(--shop-text-highlight);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Active Selected State */
+.active-size {
+  background: var(--shop-accent) !important;
+  color: #000 !important; /* Black text on Gold background */
+  border-color: var(--shop-accent) !important;
+  font-weight: 700;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  transform: scale(1.05);
+}
+
+/* =========================================
+   6. UTILITIES
+   ========================================= */
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -20,90 +138,6 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-/* Animated Mesh Background */
-/* Optimized Mesh Background */
-.bg-mesh {
-  /* Use a lighter base or a white base so the colors pop */
-  background-color: #e8bdbd; 
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(143, 220, 232, 0.6) 0px, transparent 50%), 
-    radial-gradient(at 100% 0%, rgba(229, 168, 194, 0.6) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(31, 196, 225, 0.2) 0px, transparent 50%);
-  background-attachment: fixed;
-  background-size: cover;
-  min-height: 100vh; /* Critical: ensures background covers full screen */
-  width: 100%;
-}
-
-/* Sidebar Item Hover Animation - Improved cubic-bezier for "pop" */
-.sidebar-item {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.sidebar-item:hover {
-  transform: translateX(12px);
-  color: #1fc4e1;
-}
-
-/* Entrance Animation for Grid */
-@keyframes scaleIn {
-  from { 
-    opacity: 0; 
-    transform: scale(0.9) translateY(30px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: scale(1) translateY(0); 
-  }
-}
-
-.animate-grid-item {
-  opacity: 0; /* Starts hidden */
-  animation: scaleIn 0.6s ease-out forwards;
-}
-
-/* Entrance Animation for Grid */
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.9) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.animate-grid-item {
-  animation: scaleIn 0.5s ease-out forwards;
-}
-.size-chip {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.size-chip:hover:not(.active-size) {
-  background: #f1f5f9;
-  transform: translateY(-2px);
-  border-color: #1fc4e1;
-}
-
-.active-size {
-  background: #000 !important;
-  color: #fff !important;
-  border-color: #000 !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-/* Sidebar Box Glassmorphism */
-.filter-box {
-  background:white;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 24px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

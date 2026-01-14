@@ -1,0 +1,237 @@
+/* Layout & Typography */
+.products-container {
+  flex: 1;
+  padding: 1.5rem;
+  font-family: inherit;
+  color: #1f2937; /* Force dark text color (Gray-800) for the whole page */
+  background-color: #f3f4f6; /* Optional: Light gray background for the main area */
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #111827; /* Darker black for title */
+}
+
+/* Card Styling */
+.card {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  color: #1f2937; /* Ensure text inside cards is dark */
+}
+
+.card-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111827; /* Darker black for card headers */
+}
+
+/* Form Grid & Inputs */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.input-field {
+  border: 1px solid #d1d5db; /* Gray-300 */
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #ffffff; /* Force white background */
+  color: #000000; /* Force black text for inputs */
+  font-size: 0.875rem;
+}
+
+/* Fix for placeholder text visibility */
+.input-field::placeholder {
+  color: #9ca3af; /* Gray-400 for visible placeholders */
+  opacity: 1;
+}
+
+.input-field.file-input {
+  padding: 0.4rem 0.75rem;
+  color: #4b5563; /* Dark gray for file input text */
+}
+
+/* Selection Groups (Size/Color) */
+.selection-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #374151; /* Gray-700 */
+}
+
+.options-container {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.options-container.flex-wrap {
+  flex-wrap: wrap;
+}
+
+/* Size Buttons */
+.size-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background-color: white; /* Ensure background is white */
+  color: #1f2937; /* Default text color dark */
+  font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex; /* Center text */
+  align-items: center;
+  justify-content: center;
+}
+
+.size-btn:hover {
+  border-color: black;
+}
+
+.size-btn.selected {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
+/* Color Buttons */
+.color-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 2px solid #d1d5db;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  padding: 0;
+}
+
+.color-btn.selected {
+  border-color: black;
+  transform: scale(1.1);
+}
+
+.checkmark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  border: 2px solid white;
+}
+
+/* Images */
+.image-preview {
+  margin-top: 1rem;
+  height: 6rem;
+  width: auto;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+/* Buttons */
+.primary-btn {
+  margin-top: 1rem;
+  background-color: black;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.primary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Table Styling */
+.table-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  color: #1f2937;
+}
+
+.products-table {
+  width: 100%;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.products-table thead {
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb; /* Light header background */
+}
+
+.products-table th,
+.products-table td {
+  padding: 0.75rem;
+  text-align: left; /* Default align */
+}
+
+.products-table tr {
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Alignments */
+.align-left {
+  text-align: left;
+}
+
+.align-center {
+  text-align: center;
+}
+
+/* Table Specifics */
+.table-img {
+  height: 3rem;
+  width: 3rem;
+  object-fit: cover;
+  border-radius: 0.25rem;
+}
+
+.delete-btn {
+  color: #ef4444;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+}
+
+.loader-cell {
+  padding: 1.5rem;
+}
+
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+}
