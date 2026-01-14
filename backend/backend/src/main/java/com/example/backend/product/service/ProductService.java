@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
+import com.example.backend.cart.repository.CartItemRepository;
 import com.example.backend.cart.repository.CartRepository;
 import com.example.backend.product.dto.ProductRequest;
 import com.example.backend.product.dto.ProductResponse;
@@ -25,7 +26,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CartRepository cartRepository;
+    private CartItemRepository cartItemRepository;
 
     @Autowired
     private Cloudinary cloudinary;
@@ -161,7 +162,7 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         // ✅ Remove product from all carts
-        cartRepository.deleteByProductId(id);
+        cartItemRepository.deleteByProductId(id);
 
         // ✅ Delete image from Cloudinary
         if (product.getImagePublicId() != null && !product.getImagePublicId().isBlank()) {
