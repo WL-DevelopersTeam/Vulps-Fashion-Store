@@ -166,7 +166,7 @@ function Home() {
     >
       <h5 className="hero-eyebrow">EST. 2026 — CLOVRA STUDIOS</h5>
       <h1 className="hero-title">REDEFINE <br /> <span className="outline-text">EXISTENCE</span></h1>
-      <p className="hero-desc">Premium streetwear crafted for the modern individual.</p>
+      <p className="hero-desc">Clovra is a modern fashion house creating refined, contemporary clothing designed for effortless style and lasting impact.</p>
 
       <div className="hero-btns">
         <Link to="/shop" className="btn-primary interactive">
@@ -270,12 +270,13 @@ function Home() {
           <div className="footer-bottom-container">
             <div className="footer-links-slim">
               <Link to="/about">About</Link>
-              <Link to="/contact">Contact</Link>
-              <Link to="/terms">Terms</Link>
-              <Link to="/privacy">Privacy</Link>
+              <Link to="/#">Contact</Link>
+              <Link to="/#">Terms</Link>
+              <Link to="/#">Privacy</Link>
             </div>
             <div className="footer-bottom-slim">
-              <p>© 2024 Clovra Studios. All Rights Reserved.</p>
+              <p>Powered by <a href="https://wordlanetech.com/" target="_blank">Word Lane Tech</a></p>
+              <p>© 2026 Clovra Studios. All Rights Reserved.</p>
               <span className="separator">|</span>
               <p>Patna City, Bihar - 800001</p>
             </div>

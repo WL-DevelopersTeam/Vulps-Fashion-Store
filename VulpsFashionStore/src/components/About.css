@@ -1,0 +1,221 @@
+/* About.css - SCOPED TO ABOUT PAGE */
+
+/* General Variables */
+:root {
+  --clovra-gold: #d4af37;
+  --clovra-black: #0a0a0a;
+  --clovra-dark-gray: #1a1a1a;
+  --clovra-text-gray: #a1a1aa;
+  --clovra-white: #ffffff;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.8s ease-out forwards;
+}
+
+/* --- HERO SECTION (Renamed to about-hero) --- */
+.about-hero-section {
+  position: relative;
+  height: 60vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-bg-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+.about-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+.about-hero-content {
+  text-align: center;
+  color: var(--clovra-white);
+  padding: 0 20px;
+}
+
+.about-main-title {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.about-subtitle {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 2px;
+  opacity: 0.9;
+}
+
+/* --- GENERAL LAYOUT --- */
+.about-container {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-grid-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .about-grid-split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* --- TYPOGRAPHY --- */
+.about-section-header {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--clovra-white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.about-text-body {
+  color: var(--clovra-text-gray);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+/* --- IMAGES --- */
+.about-image-rounded {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.about-image-rounded img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.about-image-rounded:hover img {
+  transform: scale(1.05);
+}
+
+/* --- VALUES GRID --- */
+.about-values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-top: 50px;
+}
+
+.about-value-card {
+  text-align: center;
+  padding: 30px;
+  background: var(--clovra-dark-gray);
+  border-radius: 15px;
+  border: 1px solid #333;
+  transition: transform 0.3s ease;
+}
+
+.about-value-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--clovra-gold);
+}
+
+.about-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--clovra-gold);
+}
+
+.about-value-title {
+  color: var(--clovra-white);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* --- CONTACT SECTION --- */
+.about-contact-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.about-contact-item {
+  background: var(--clovra-dark-gray);
+  padding: 20px 40px;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+.about-contact-label {
+  display: block;
+  color: var(--clovra-gold);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.about-contact-value {
+  color: var(--clovra-white);
+  font-size: 1.1rem;
+}
+
+/* --- CTA BUTTON --- */
+.about-cta-btn {
+  display: inline-block;
+  background-color: var(--clovra-white);
+  color: var(--clovra-black);
+  padding: 16px 50px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  margin-top: 30px;
+}
+
+.about-cta-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+}
