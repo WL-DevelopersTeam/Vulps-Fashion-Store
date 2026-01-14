@@ -26,6 +26,7 @@ import Products from "./pages/Products";
 import OrderDetails from "./pages/OrderDetails";
 import CustomOrders from "./pages/CustomOrders";
 import Checkout from "./pages/Checkout";
+import CustomerProfile from "./pages/CustomerProfile";
 
 /* ---------- MAIN LAYOUT ---------- */
 function Layout() {
@@ -51,6 +52,7 @@ function Layout() {
         <Route path="/successstories" element={<SuccessStories />} />
         <Route path="/customshirtform" element={<CustomShirtForm />} />
         <Route path="/adressform" element={<AdressForm />} />
+        <Route path="/my-orders" element={<CustomerProfile />} />
 
         {/* ================= ADMIN ROUTES ================= */}
         <Route

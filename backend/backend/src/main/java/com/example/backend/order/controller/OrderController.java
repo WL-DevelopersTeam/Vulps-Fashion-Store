@@ -39,13 +39,10 @@ public class OrderController {
     // ================================
     // CUSTOMER: GET PROFILE ORDERS
     // ================================
-    @GetMapping("/customer")
-    public List<Order> getCustomerOrders(
-            @RequestParam String mobile,
-            @RequestParam String email) {
-
-        return orderService.getCustomerOrders(mobile, email);
-    }
+    @GetMapping("/user/{userId}")
+public List<Order> getOrdersByUserId(@PathVariable Long userId) {
+    return orderService.getOrdersByUserId(userId);
+}
 
     // ================================
     // ADMIN: ACCEPT ORDER

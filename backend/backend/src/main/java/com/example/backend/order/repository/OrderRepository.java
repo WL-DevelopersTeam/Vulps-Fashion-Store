@@ -8,5 +8,5 @@ import com.example.backend.order.model.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> 
 {
         // 🔹 FETCH CUSTOMER ORDERS (PROFILE PAGE)
-            List<Order> findByMobileAndEmail(String mobile, String email);
+            List<Order> findByUserId(Long userId);
 }

@@ -45,9 +45,9 @@ public class OrderService {
         // ================================
         // GET CUSTOMER ORDERS (PROFILE PAGE)
         // ================================
-        public List<Order> getCustomerOrders(String mobile, String email) {
-            return orderRepository.findByMobileAndEmail(mobile, email);
-        }
+        public List<Order> getOrdersByUserId(Long userId) {
+    return orderRepository.findByUserId(userId);
+}
 
 
     // ================================

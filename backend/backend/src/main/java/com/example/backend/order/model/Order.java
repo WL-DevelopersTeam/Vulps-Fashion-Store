@@ -11,6 +11,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     // 🔹 PRODUCT DETAILS
     private Long productId;
     private String productName;
@@ -46,6 +49,14 @@ public class Order {
     public Long getProductId() {
         return productId;
     }
+
+    public Long getUserId() {
+    return userId;
+}
+
+public void setUserId(Long userId) {
+    this.userId = userId;
+}
 
     public void setProductId(Long productId) {
         this.productId = productId;

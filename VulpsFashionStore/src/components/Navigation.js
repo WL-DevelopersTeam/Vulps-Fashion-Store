@@ -84,7 +84,7 @@ function Navigation() {
                 </button>
                 {dropdownOpen && (
                   <div className="user-dropdown">
-                    <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
+                    <Link to="/my-orders" className="hover:text-[#ff0062]">My Orders</Link>
                     <Link to="/orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
                     <button className="dropdown-item logout-btn" onClick={handleLogout}>Logout</button>
                   </div>
