@@ -14,6 +14,7 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false); // Loading state for button
 
   const colorMap = {
     black: "#000000",
@@ -22,6 +23,7 @@ const ProductDetails = () => {
     red: "#dc2626",
     green: "#16a34a",
     gray: "#6b7280",
+    yellow: "#eab308"
   };
 
   useEffect(() => {
@@ -49,6 +51,49 @@ const ProductDetails = () => {
     }
   };
 
+  /* --- 1. ADD TO CART FUNCTIONALITY --- */
+  const addToCart = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    
+    // Redirect if not logged in
+    if (!user) {
+      alert("Please login to add items to your cart.");
+      navigate("/SignIn");
+      return;
+    }
+
+    if (!selectedSize || !selectedColor) {
+      alert("Please select a size and color.");
+      return;
+    }
+
+    try {
+      setAddingToCart(true);
+      
+      const cartPayload = {
+        userId: user.id,
+        productId: product.id, // Ensure this matches your DB (id vs _id)
+        quantity: quantity,
+        size: selectedSize,
+        color: selectedColor
+      };
+
+      await axios.post(
+        "https://vulps-fashion-store.onrender.com/api/cart/add",
+        cartPayload
+      );
+
+      alert("Item added to cart successfully!");
+      // Optional: Navigate to cart or stay here
+      // navigate("/cart"); 
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add item to cart.");
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = ((e.pageX - left) / width) * 100;
@@ -65,14 +110,14 @@ const ProductDetails = () => {
       <div className="product-page-root">
         <div className="product-main-container">
           
-          {/* LEFT: SYMMETRICAL IMAGE SECTION */}
+          {/* LEFT: IMAGE SECTION */}
           <div className="product-image-section">
             <div className="zoom-container" onMouseMove={handleMouseMove}>
               <img src={product.imageUrl} alt={product.name} className="main-product-image" />
             </div>
           </div>
 
-          {/* RIGHT: PREMIUM INFO CARD */}
+          {/* RIGHT: INFO CARD */}
           <div className="product-info-section">
             <div className="info-card">
               <div className="badge-row">
@@ -122,14 +167,23 @@ const ProductDetails = () => {
               <div className="selection-area">
                 <label className="section-label">Select Color</label>
                 <div className="options-flex">
-                  {product.colors.map(color => (
-                    <button 
-                      key={color} 
-                      className={`color-pill ${selectedColor === color ? 'active' : ''}`}
-                      style={{ backgroundColor: colorMap[color.toLowerCase()] || color }}
-                      onClick={() => setSelectedColor(color)}
-                    />
-                  ))}
+                  {product.colors.map(color => {
+                    const bgColor = colorMap[color.toLowerCase()] || color;
+                    return (
+                      <button 
+                        key={color} 
+                        className={`color-pill ${selectedColor === color ? 'active' : ''}`}
+                        /* --- 3. FIX: Add White Border so Black shows on Dark Background --- */
+                        style={{ 
+                            backgroundColor: bgColor,
+                            border: '2px solid white', 
+                            boxShadow: selectedColor === color ? '0 0 0 4px #d4af37' : 'none'
+                        }}
+                        onClick={() => setSelectedColor(color)}
+                        title={color} // Shows color name on hover
+                      />
+                    );
+                  })}
                 </div>
               </div>
 
@@ -145,24 +199,17 @@ const ProductDetails = () => {
                   <button onClick={() => setQuantity(quantity + 1)}>+</button>
                 </div>
                 
-                <button className="btn-add">Add to Cart</button>
-                
+                {/* --- 2. UPDATED ADD TO CART BUTTON --- */}
                 <button 
-                  className="btn-buy"
-                  onClick={() => navigate("/checkout", {
-                    state: {
-                      productId: product.id,
-                      name: product.name,
-                      price: product.price,
-                      image: product.imageUrl,
-                      size: selectedSize,
-                      color: selectedColor,
-                      quantity: quantity,
-                    },
-                  })}
+                    className="btn-add" 
+                    onClick={addToCart}
+                    disabled={addingToCart}
+                    style={{ width: '100%' }} // Make it fill the space since Buy Now is gone
                 >
-                  Buy Now
+                    {addingToCart ? "Adding..." : "Add to Cart"}
                 </button>
+                
+                {/* Buy Now button Removed */}
               </div>
             </div>
           </div>
