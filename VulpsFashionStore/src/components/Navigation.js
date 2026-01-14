@@ -74,25 +74,6 @@ function Navigation() {
               {cartCount > 0 && <span className="badge">{cartCount}</span>}
             </button>
 
-<<<<<<< HEAD
-            {user ? (
-              <div className="user-dropdown-wrapper" ref={dropdownRef}>
-                <button
-                  className="user-btn"
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                >
-                  {user.name} ⌄
-                </button>
-                {dropdownOpen && (
-                  <div className="user-dropdown">
-                    <Link to="/my-orders" className="hover:text-[#ff0062]">My Orders</Link>
-                    <Link to="/orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
-                    <button className="dropdown-item logout-btn" onClick={handleLogout}>Logout</button>
-                  </div>
-                )}
-              </div>
-            ) : (
-=======
            {user ? (
   <div className="user-dropdown-wrapper" ref={dropdownRef}>
     <button
@@ -114,7 +95,6 @@ function Navigation() {
     )}
   </div>
 ) : (
->>>>>>> 2e263368abfa265f6689842c23451018a6286bca
               <button
                 className="sign-in-btn"
                 onClick={() => navigate('/signin')}
