@@ -8,17 +8,14 @@ function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  /* ---------------- GET LOGGED IN USER ---------------- */
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
 
-  /* ---------------- FETCH CART ---------------- */
   useEffect(() => {
     if (!userId) {
       navigate("/SignIn");
       return;
     }
-
     fetchCart();
   }, [userId]);
 
@@ -27,13 +24,11 @@ function Cart() {
       const res = await fetch(
         `https://vulps-fashion-store.onrender.com/api/cart?userId=${userId}`
       );
-
       if (!res.ok) {
         setCartItems([]);
         setLoading(false);
         return;
       }
-
       const data = await res.json();
       setCartItems(data);
     } catch (error) {
@@ -43,17 +38,14 @@ function Cart() {
     }
   };
 
-  /* ---------------- REMOVE ITEM ---------------- */
-const removeItem = async (cartItemId) => {
-  await fetch(
-    `https://vulps-fashion-store.onrender.com/api/cart/remove/${cartItemId}`,
-    { method: "DELETE" }
-  );
-  fetchCart();
-};
+  const removeItem = async (cartItemId) => {
+    await fetch(
+      `https://vulps-fashion-store.onrender.com/api/cart/remove/${cartItemId}`,
+      { method: "DELETE" }
+    );
+    fetchCart();
+  };
 
-
-  /* ---------------- CALCULATIONS ---------------- */
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -61,21 +53,38 @@ const removeItem = async (cartItemId) => {
   const shipping = cartItems.length > 0 ? 100 : 0;
   const total = subtotal + shipping;
 
+  /* --- NAVIGATION HANDLERS --- */
+  
+  // 1. Buy Now (Single Item)
+  const handleBuyNow = (item) => {
+    navigate('/checkout', { state: { items: [item] } });
+  };
+
+  // 2. Checkout (All Items)
+  const handleCheckoutAll = () => {
+    navigate('/checkout', { state: { items: cartItems } });
+  };
+
   if (loading) {
-    return <h2 style={{ textAlign: "center" }}>Loading cart...</h2>;
+    return (
+      <div className="cart-loading">
+        <h2>Loading your selection...</h2>
+      </div>
+    );
   }
 
   return (
     <div className="cart-page">
       <div className="cart-container">
-        <h1 className="cart-title">Shopping Cart</h1>
+        <h1 className="cart-title">Shopping Cart ({cartItems.length})</h1>
 
         {cartItems.length === 0 ? (
           <div className="empty-cart">
             <div className="empty-cart-icon">🛒</div>
-            <h2>Your cart is empty</h2>
+            <h2>Your bag is empty</h2>
+            <p>Looks like you haven't made your choice yet.</p>
             <button className="cta-button" onClick={() => navigate("/shop")}>
-              Continue Shopping
+              Explore Collection
             </button>
           </div>
         ) : (
@@ -83,40 +92,49 @@ const removeItem = async (cartItemId) => {
             {/* CART ITEMS */}
             <div className="cart-items">
               {cartItems.map((item) => (
-                <div key={item.productId} className="cart-item">
-                  <div className="item-image">
+                <div key={item.cartItemId || item.productId} className="cart-item">
+                  <div className="item-image-wrapper">
                     <img
                       src={item.imageUrl}
                       alt={item.name}
                       className="cart-image"
-                      />
-
+                    />
                   </div>
 
-                  <div className="item-details">
-                    <h3>{item.name}</h3>
-                    <p>Size: {item.size}</p>
-                    <p>Color: {item.color}</p>
-                    <p className="item-price">
-                      ₹{item.price.toLocaleString()}
-                    </p>
+                  <div className="item-info-group">
+                    <div className="item-details">
+                      <h3>{item.name}</h3>
+                      <p className="item-meta">Size: <span>{item.size}</span></p>
+                      <p className="item-meta">Color: <span>{item.color}</span></p>
+                      <p className="item-price">₹{item.price.toLocaleString()}</p>
+                    </div>
+
+                    <div className="item-quantity">
+                      <span className="qty-label">Qty:</span>
+                      <span className="qty-val">{item.quantity}</span>
+                    </div>
                   </div>
 
-                  <div className="item-quantity">
-                    <span>Qty: {item.quantity}</span>
-                  </div>
-
-                  <div className="item-total">
-                    <p>
+                  <div className="item-actions-wrapper">
+                    <p className="item-subtotal">
                       ₹{(item.price * item.quantity).toLocaleString()}
                     </p>
-                    <button
-                      className="remove-btn"
-                      onClick={() => removeItem(item.cartItemId)}
-                          >
-                         Remove
-                    </button>
-
+                    
+                    <div className="action-buttons">
+                        <button 
+                            className="buy-now-btn"
+                            onClick={() => handleBuyNow(item)}
+                        >
+                            Buy Now
+                        </button>
+                        
+                        <button
+                            className="remove-btn"
+                            onClick={() => removeItem(item.cartItemId)}
+                        >
+                            Remove
+                        </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -125,23 +143,22 @@ const removeItem = async (cartItemId) => {
             {/* ORDER SUMMARY */}
             <div className="cart-summary">
               <h2>Order Summary</h2>
-
               <div className="summary-row">
                 <span>Subtotal</span>
                 <span>₹{subtotal.toLocaleString()}</span>
               </div>
-
               <div className="summary-row">
                 <span>Shipping</span>
                 <span>₹{shipping}</span>
               </div>
-
+              <div className="divider"></div>
               <div className="summary-row total">
                 <span>Total</span>
                 <span>₹{total.toLocaleString()}</span>
               </div>
 
-              <button className="checkout-btn" >
+              {/* FIXED: Added onClick to send ALL items */}
+              <button className="checkout-btn" onClick={handleCheckoutAll}>
                 Proceed to Checkout
               </button>
 

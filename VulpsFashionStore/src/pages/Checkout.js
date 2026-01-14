@@ -1,12 +1,24 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+// Removed Axios to match your Cart.js implementation
 import Layout from "../components/layout/Layout";
-import './Checkout.css'; // Import the new CSS
+import './Checkout.css'; 
 
 const Checkout = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+
+  // 1. Local state for database items & loading status
+  const [dbItems, setDbItems] = useState([]);
+  const [isFetchingCart, setIsFetchingCart] = useState(true); // Starts true to show loading initially
+  
+  // 2. Get User ID
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?.id;
+
+  // 3. Determine items: Use "Buy Now" items (state) OR "Database Cart" items (dbItems)
+  const passedItems = state?.items;
+  const orderItems = (passedItems && passedItems.length > 0) ? passedItems : dbItems;
 
   const [form, setForm] = useState({
     fullName: "",
@@ -14,22 +26,56 @@ const Checkout = () => {
     email: "",
     address: "",
     city: "",
+    state: "",
+    Pincode: "",
   });
 
   const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
+  const [totals, setTotals] = useState({ subtotal: 0, total: 0 });
 
-  // Redirect if no product state passed
-  if (!state) {
-    return (
-      <Layout>
-        <div className="checkout-container text-center">
-          <h2 className="text-gray-500">Invalid checkout session</h2>
-          <button onClick={() => navigate('/shop')} className="mt-4 text-[#d4af37] underline">Return to Shop</button>
-        </div>
-      </Layout>
-    );
-  }
+  // 4. FETCH CART FALLBACK (Uses 'fetch' like Cart.js)
+  useEffect(() => {
+    // If we already have items passed from the previous page, don't fetch.
+    if (passedItems && passedItems.length > 0) {
+      setIsFetchingCart(false); 
+      return;
+    }
+
+    if (!userId) {
+      setIsFetchingCart(false);
+      return;
+    }
+
+    const fetchCart = async () => {
+      try {
+        setIsFetchingCart(true);
+        // Using standard fetch exactly like Cart.js
+        const res = await fetch(`https://vulps-fashion-store.onrender.com/api/cart?userId=${userId}`);
+        
+        if (!res.ok) {
+          throw new Error("Failed to fetch");
+        }
+        
+        const data = await res.json();
+        setDbItems(data || []);
+      } catch (error) {
+        console.error("Error fetching cart for checkout:", error);
+        setDbItems([]); // Ensure it's an array even on error
+      } finally {
+        setIsFetchingCart(false); // Stop loading regardless of success/failure
+      }
+    };
+
+    fetchCart();
+  }, [userId, passedItems]);
+
+  // 5. Calculate Totals
+  useEffect(() => {
+    const sub = orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const shipping = orderItems.length > 0 ? 100 : 0; 
+    setTotals({ subtotal: sub, total: sub + shipping });
+  }, [orderItems]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -41,6 +87,8 @@ const Checkout = () => {
     form.email &&
     form.address &&
     form.city &&
+    form.state &&
+    form.Pincode &&
     paymentMethod;
 
   const placeOrder = async () => {
@@ -52,30 +100,45 @@ const Checkout = () => {
     try {
       setLoading(true);
 
-      await axios.post(
-        "https://vulps-fashion-store.onrender.com/api/orders",
-        {
+      const orderPayload = {
+        customerDetails: {
           fullName: form.fullName,
           mobile: form.mobile,
           email: form.email,
           address: form.address,
           city: form.city,
+          state: form.state,
+          pincode: form.Pincode
+        },
+        items: orderItems.map(item => ({
+          productId: item.productId || item.id,
+          productName: item.name || item.title,
+          price: item.price,
+          quantity: item.quantity,
+          size: item.size,
+          color: item.color,
+          image: item.imageUrl || item.image
+        })),
+        paymentMethod: paymentMethod,
+        totalAmount: totals.total,
+        status: "PENDING",
+      };
 
-          productId: state.productId,
-          productName: state.name,
-          price: state.price,
-          quantity: state.quantity,
-          size: state.size,
-          color: state.color,
+      // Using fetch for order placement as well
+      const res = await fetch("https://vulps-fashion-store.onrender.com/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderPayload)
+      });
 
-          paymentMethod: paymentMethod,
-          status: "PENDING",
-        }
-      );
-
-      alert("Order placed successfully!");
-      navigate("/");
+      if (res.ok) {
+        alert("Order placed successfully!");
+        navigate("/");
+      } else {
+        alert("Failed to place order.");
+      }
     } catch (err) {
+      console.error("Order Error:", err);
       alert("Failed to place order. Please try again.");
     } finally {
       setLoading(false);
@@ -84,34 +147,57 @@ const Checkout = () => {
 
   return (
     <Layout>
-      {/* Used 'bg-mesh' class globally in Layout or Shop, if not add it to a wrapper here */}
       <div className="checkout-container">
         <div className="checkout-grid">
 
           {/* LEFT - ORDER SUMMARY */}
           <div className="checkout-card">
-            <h2 className="checkout-title">Order Summary</h2>
+            <h2 className="checkout-title">Order Summary ({orderItems.length})</h2>
 
-            <div className="order-item">
-              <img
-                src={state.image}
-                alt={state.name}
-                className="order-img"
-              />
-
-              <div className="order-details">
-                <h3>{state.name}</h3>
-                <p className="order-meta">Size: {state.size}</p>
-                <p className="order-meta">Color: <span style={{color: state.color, fontWeight:'bold', textTransform:'capitalize'}}>{state.color}</span></p>
-                <p className="order-price">₹ {state.price} × {state.quantity}</p>
-              </div>
-            </div>
+            {/* LOGIC FIX: Show Loading OR Empty OR Items */}
+            {isFetchingCart ? (
+                <div className="text-gray-500 text-center py-8">
+                   Loading your items...
+                </div>
+            ) : orderItems.length === 0 ? (
+                <div className="text-gray-500 text-center py-8">
+                   <p>Your bag is currently empty.</p>
+                   <button onClick={() => navigate('/shop')} className="mt-4 text-[#d4af37] underline">Return to Shop</button>
+                </div>
+            ) : (
+                <div className="order-items-scroll">
+                    {orderItems.map((item, index) => (
+                        <div key={index} className="order-item">
+                            <img
+                                src={item.imageUrl || item.image}
+                                alt={item.name}
+                                className="order-img"
+                            />
+                            <div className="order-details">
+                                <h3>{item.name || item.title}</h3>
+                                <p className="order-meta">Size: {item.size} | Qty: {item.quantity}</p>
+                                <p className="order-meta">Color: <span style={{color: item.color, fontWeight:'bold', textTransform:'capitalize'}}>{item.color}</span></p>
+                                <p className="order-price">₹ {(item.price * item.quantity).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <hr className="order-divider" />
 
+            <div className="summary-row">
+                <span>Subtotal</span>
+                <span>₹ {totals.subtotal.toLocaleString()}</span>
+            </div>
+            <div className="summary-row">
+                <span>Shipping</span>
+                <span>₹ {totals.total > 0 ? 100 : 0}</span>
+            </div>
+            
             <div className="order-total">
               <span>Total</span>
-              <span>₹ {(state.price * state.quantity).toLocaleString()}</span>
+              <span>₹ {totals.total.toLocaleString()}</span>
             </div>
 
             <p className="delivery-note">
@@ -153,12 +239,26 @@ const Checkout = () => {
                 onChange={handleChange}
               />
 
-              <input
-                name="city"
-                placeholder="City / Pincode"
+               <input
+                name="state"
+                placeholder="State"
                 className="checkout-input"
                 onChange={handleChange}
               />
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                    name="city"
+                    placeholder="City"
+                    className="checkout-input"
+                    onChange={handleChange}
+                />
+                <input
+                    name="Pincode"
+                    placeholder="Pincode"
+                    className="checkout-input"
+                    onChange={handleChange}
+                />
+              </div>
             </div>
 
             {/* PAYMENT METHOD */}
@@ -166,7 +266,6 @@ const Checkout = () => {
               <h3 className="font-semibold mb-3 text-white">Payment Method</h3>
 
               <div className="payment-options">
-                {/* COD */}
                 <div
                   onClick={() => setPaymentMethod("COD")}
                   className={`payment-card ${paymentMethod === "COD" ? "selected" : ""}`}
@@ -175,7 +274,6 @@ const Checkout = () => {
                   <span>💵</span>
                 </div>
 
-                {/* ONLINE */}
                 <div
                   onClick={() => setPaymentMethod("ONLINE")}
                   className={`payment-card ${paymentMethod === "ONLINE" ? "selected" : ""}`}
@@ -195,10 +293,10 @@ const Checkout = () => {
             {/* PLACE ORDER */}
             <button
               onClick={placeOrder}
-              disabled={!isFormValid || loading}
+              disabled={!isFormValid || loading || orderItems.length === 0}
               className="place-order-btn"
             >
-              {loading ? "Processing..." : "Confirm Order"}
+              {loading ? "Processing..." : `Pay ₹ ${totals.total.toLocaleString()}`}
             </button>
           </div>
           
