@@ -139,23 +139,27 @@ export default function Products() {
     }
   };
 
-  const deleteProduct = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
+const deleteProduct = async (id) => {
+  if (!window.confirm("Are you sure?")) return;
 
-    try {
-      setDeletingId(id);
+  try {
+    setDeletingId(id);
 
-      await axios.delete(
-        `https://vulps-fashion-store.onrender.com/api/products/${id}`
-      );
+    await axios.delete(
+      `https://vulps-fashion-store.onrender.com/api/products/${id}`
+    );
 
-      setProducts(products.filter((p) => p.id !== id));
-    } catch (err) {
-      alert("Failed to delete product");
-    } finally {
-      setDeletingId(null);
-    }
-  };
+    // ✅ ALWAYS re-fetch from backend
+    await fetchProducts();
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to delete product");
+  } finally {
+    setDeletingId(null);
+  }
+};
+
 
   return (
     <div className="products-container">
