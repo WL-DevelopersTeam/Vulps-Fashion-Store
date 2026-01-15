@@ -92,58 +92,64 @@ const Checkout = () => {
     paymentMethod;
 
   const placeOrder = async () => {
-    if (!isFormValid) {
-      alert("Please fill all details and select payment method");
-      return;
-    }
+  if (!isFormValid) {
+    alert("Please fill all details");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  if (!userId) {
+    alert("User not logged in");
+    return;
+  }
 
+  try {
+    setLoading(true);
+
+    for (const item of orderItems) {
       const orderPayload = {
-        customerDetails: {
-          fullName: form.fullName,
-          mobile: form.mobile,
-          email: form.email,
-          address: form.address,
-          city: form.city,
-          state: form.state,
-          pincode: form.Pincode
-        },
-        items: orderItems.map(item => ({
-          productId: item.productId || item.id,
-          productName: item.name || item.title,
-          price: item.price,
-          quantity: item.quantity,
-          size: item.size,
-          color: item.color,
-          image: item.imageUrl || item.image
-        })),
-        paymentMethod: paymentMethod,
-        totalAmount: totals.total,
-        status: "PENDING",
+        userId: userId, // ✅ VERY IMPORTANT
+
+        productId: item.productId || item.id,
+        productName: item.name || item.title,
+        size: item.size,
+        color: item.color,
+        quantity: item.quantity,
+        price: item.price,
+
+        fullName: form.fullName,
+        mobile: form.mobile,
+        email: form.email,
+        address: form.address,
+        city: form.city,
+        pincode: form.Pincode,
+
+        paymentMethod: paymentMethod
       };
 
-      // Using fetch for order placement as well
-      const res = await fetch("https://vulps-fashion-store.onrender.com/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderPayload)
-      });
+      const res = await fetch(
+        "https://vulps-fashion-store.onrender.com/api/orders",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload),
+        }
+      );
 
-      if (res.ok) {
-        alert("Order placed successfully!");
-        navigate("/");
-      } else {
-        alert("Failed to place order.");
+      if (!res.ok) {
+        throw new Error("Order failed");
       }
-    } catch (err) {
-      console.error("Order Error:", err);
-      alert("Failed to place order. Please try again.");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    alert("Order placed successfully!");
+    navigate("/orders");
+
+  } catch (err) {
+    console.error(err);
+    alert("Order failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <Layout>

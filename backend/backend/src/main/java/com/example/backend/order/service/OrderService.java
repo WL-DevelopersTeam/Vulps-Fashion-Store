@@ -20,10 +20,13 @@ public class OrderService {
     // ================================
     public Order placeOrder(Order order) {
 
+        if (order.getUserId() == null) {
+            throw new RuntimeException("UserId is required");
+        }
+
         order.setStatus("PENDING");
         order.setOrderDate(LocalDateTime.now());
 
-        // PAYMENT LOGIC
         if ("COD".equalsIgnoreCase(order.getPaymentMethod())) {
             order.setPaymentStatus("PENDING");
         } else if ("ONLINE".equalsIgnoreCase(order.getPaymentMethod())) {
@@ -34,6 +37,7 @@ public class OrderService {
 
         return orderRepository.save(order);
     }
+
 
     // ================================
     // GET ALL ORDERS (ADMIN)
