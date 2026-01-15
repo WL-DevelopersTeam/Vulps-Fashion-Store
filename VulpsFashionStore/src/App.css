@@ -516,7 +516,7 @@ body {
 
 .footer-bottom {
   display: flex; justify-content: space-between;
-  color: #444; font-size: 0.8rem;
+  color: #fefefe; font-size: 0.8rem;
 }
 
 @media (max-width: 768px) {
