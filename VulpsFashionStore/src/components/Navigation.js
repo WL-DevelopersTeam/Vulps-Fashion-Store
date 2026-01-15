@@ -89,7 +89,7 @@ function Navigation() {
     {dropdownOpen && (
       <div className="user-dropdown">
         <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
-        <Link to="/orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
+        <Link to="/my-orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
         <button className="dropdown-item logout-btn" onClick={handleLogout}>Logout</button>
       </div>
     )}

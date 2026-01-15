@@ -70,4 +70,13 @@ public List<Order> getOrdersByUserId(@PathVariable Long userId) {
         orderService.updateOrderStatus(id, "DECLINED");
         return ResponseEntity.ok("Order declined");
     }
+
+    // ================================
+    // ADMIN: SHIP ORDER
+    // ================================
+    @PutMapping("/{id}/ship")
+    public ResponseEntity<String> shipOrder(@PathVariable Long id) {
+        orderService.updateOrderStatus(id, "SHIPPED");
+        return ResponseEntity.ok("Order shipped");
+    }
 }
