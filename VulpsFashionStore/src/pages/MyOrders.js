@@ -15,18 +15,20 @@ const userId = user?.id;
     }
   }, [userId]);
 
-  const fetchOrders = async () => {
-    try {
-      const res = await axios.get(
-        `https://vulps-fashion-store.onrender.com/api/orders/user/${userId}`
-      );
-      setOrders(res.data);
-    } catch (err) {
-      console.error("Failed to fetch orders", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchOrders = async () => {
+  try {
+    const res = await fetch(
+      `https://vulps-fashion-store.onrender.com/api/orders/user/${userId}`
+    );
+    const data = await res.json();
+    setOrders(data);
+  } catch (err) {
+    console.error("Failed to fetch orders", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (!userId) {
     return (
