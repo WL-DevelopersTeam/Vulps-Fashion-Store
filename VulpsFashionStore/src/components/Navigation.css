@@ -106,6 +106,9 @@ body {
   margin: 0;
   padding: 0;
 
+  /* --- NEW: Pushes the menu to the right side --- */
+  margin-left: auto; 
+
   a {
     position: relative;
     text-decoration: none;
@@ -115,6 +118,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     transition: color 0.3s ease;
+    margin-right: 25px;
 
     /* Animated Underline */
     &::after {
