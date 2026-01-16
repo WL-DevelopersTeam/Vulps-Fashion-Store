@@ -115,6 +115,7 @@ const Checkout = () => {
         color: item.color,
         quantity: item.quantity,
         price: item.price,
+        imageUrl: item.imageUrl || item.image, // ✅ VERY IMPORTANT
 
         fullName: form.fullName,
         mobile: form.mobile,
@@ -124,6 +125,7 @@ const Checkout = () => {
         pincode: form.Pincode,
 
         paymentMethod: paymentMethod
+        
       };
 
       const res = await fetch(

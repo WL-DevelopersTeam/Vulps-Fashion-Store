@@ -30,20 +30,7 @@ function Cart() {
         return;
       }
       const data = await res.json();
-
-const normalizedItems = data.items.map(item => ({
-  cartItemId: item.id,
-  productId: item.product.id,
-  name: item.product.name,
-  price: item.product.price,
-  imageUrl: item.product.image,
-  quantity: item.quantity,
-  size: item.size || "",
-  color: item.color || ""
-}));
-
-setCartItems(normalizedItems);
-
+      setCartItems(data);
     } catch (error) {
       console.error("Error fetching cart:", error);
     } finally {

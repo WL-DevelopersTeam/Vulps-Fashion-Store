@@ -40,6 +40,9 @@ public class Order {
     private String paymentMethod;  // COD / ONLINE
     private String paymentStatus;  // PENDING / PAID / FAILED
 
+    @Column(length = 500)
+    private String imageUrl;
+
     // 🔹 GETTERS & SETTERS
 
     public Long getId() {
@@ -181,6 +184,15 @@ public void setUserId(Long userId) {
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
+
+    public String getImageUrl() {
+    return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+    }   
+
 
     
 }
