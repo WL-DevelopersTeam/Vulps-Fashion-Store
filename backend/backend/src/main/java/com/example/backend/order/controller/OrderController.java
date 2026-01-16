@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.backend.order.dto.ShipmentRequest;
 import com.example.backend.order.model.Order;
 import com.example.backend.order.service.OrderService;
 
@@ -75,8 +76,17 @@ public List<Order> getOrdersByUserId(@PathVariable Long userId) {
     // ADMIN: SHIP ORDER
     // ================================
     @PutMapping("/{id}/ship")
-    public ResponseEntity<String> shipOrder(@PathVariable Long id) {
-        orderService.updateOrderStatus(id, "SHIPPED");
-        return ResponseEntity.ok("Order shipped");
-    }
+        public ResponseEntity<String> shipOrder(
+                @PathVariable Long id,
+                @RequestBody ShipmentRequest request) {
+
+            orderService.shipOrder(
+                id,
+                request.getCourierName(),
+                request.getTrackingNumber()
+            );
+
+            return ResponseEntity.ok("Order shipped with tracking");
+        }
+
 }

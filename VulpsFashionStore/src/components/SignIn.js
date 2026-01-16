@@ -92,11 +92,21 @@ React.useEffect(() => {
 
     // ✅ Save token (VERY IMPORTANT)
     // localStorage.setItem('token', response.data.token);
-    localStorage.setItem('user', JSON.stringify(response.data.user));
+    // localStorage.setItem('user', JSON.stringify(response.data.user));
     localStorage.setItem('userId', response.data.user.id);
 
     // Redirect to home/dashboard
-    const userEmail = formData.email;
+    const userEmail = response.data.user.email;
+
+    const isAdmin = ADMIN_EMAILS.includes(userEmail);
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        ...response.data.user,
+        isAdmin: isAdmin
+      })
+    );
 
 
 if (ADMIN_EMAILS.includes(userEmail)) {
