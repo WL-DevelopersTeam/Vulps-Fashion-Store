@@ -13,6 +13,7 @@ function Navigation() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dropdownRef = useRef(null);
+  const isAdmin = user?.isAdmin;
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -89,7 +90,16 @@ function Navigation() {
     {dropdownOpen && (
       <div className="user-dropdown">
         <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
-        <Link to="/orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
+        <Link to="/my-orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
+        {isAdmin && (
+          <Link
+            to="/admin"
+            className="dropdown-item"
+            onClick={() => setDropdownOpen(false)}
+          >
+            🛠 Admin Dashboard
+          </Link>
+        )}
         <button className="dropdown-item logout-btn" onClick={handleLogout}>Logout</button>
       </div>
     )}

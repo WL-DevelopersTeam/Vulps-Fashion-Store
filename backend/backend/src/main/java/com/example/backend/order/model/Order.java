@@ -40,6 +40,14 @@ public class Order {
     private String paymentMethod;  // COD / ONLINE
     private String paymentStatus;  // PENDING / PAID / FAILED
 
+    // 🔹 SHIPMENT DETAILS
+    private String courierName;
+    private String trackingNumber;
+    private LocalDateTime shippedDate;
+
+    @Column(length = 500)
+    private String imageUrl;
+
     // 🔹 GETTERS & SETTERS
 
     public Long getId() {
@@ -181,6 +189,39 @@ public void setUserId(Long userId) {
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
+
+    public String getImageUrl() {
+    return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+    }
+
+    public String getCourierName() {
+        return courierName;
+    }
+
+    public void setCourierName(String courierName) {
+        this.courierName = courierName;
+    }
+
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
+    public LocalDateTime getShippedDate() {
+        return shippedDate;
+    }
+
+    public void setShippedDate(LocalDateTime shippedDate) {
+        this.shippedDate = shippedDate;
+    }   
+    
 
     
 }

@@ -97,7 +97,7 @@ function Home() {
   useEffect(() => {
     const mockData = [
       { id: 1, title: "Oversized Graphic Tee", category: "Streetwear", price: 1299, imageUrl: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80" },
-      { id: 2, title: "Cargo Parachute Pants", category: "Bottoms", price: 2499, imageUrl: "https://images.unsplash.com/photo-1552160753-117159d7419f?w=800&q=80" },
+      { id: 2, title: "Cargo Parachute Pants", category: "Bottoms", price: 2499, imageUrl: "https://images.unsplash.com/photo-1584302052153-623ee529b70c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGNhcmdvJTIwcGFudHN8ZW58MHx8MHx8fDA%3D" },
       { id: 3, title: "Heavyweight Hoodie", category: "Essentials", price: 3499, imageUrl: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80" },
       { id: 4, title: "Utility Vest", category: "Outerwear", price: 1899, imageUrl: "https://images.unsplash.com/photo-1559551409-dadc959f76b8?w=800&q=80" },
     ];
@@ -164,7 +164,7 @@ function Home() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
     >
-      <h5 className="hero-eyebrow">EST. 2026 — CLOVRA STUDIOS</h5>
+      <h5 className="hero-eyebrow">EST. 2024 — CLOVRA </h5>
       <h1 className="hero-title">REDEFINE <br /> <span className="outline-text">EXISTENCE</span></h1>
       <p className="hero-desc">Clovra is a modern fashion house creating refined, contemporary clothing designed for effortless style and lasting impact.</p>
 
@@ -205,9 +205,9 @@ function Home() {
             </div>
           </motion.div>
           <motion.div className="bento-item wide" whileHover={{ scale: 0.98 }}>
-            <img src="https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=800" alt="Accessories" />
+            <img src="https://plus.unsplash.com/premium_photo-1675183690347-662b2f9f3cf7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8a2lkcyUyMGZhc2hpb258ZW58MHx8MHx8fDA%3D" alt="Accessories" />
             <div className="bento-content">
-              <h3>ACCESSORIES</h3>
+              <h3>KIDS</h3>
               <Link to="/shop?cat=acc" className="underline-btn">Explore</Link>
             </div>
           </motion.div>
@@ -270,15 +270,12 @@ function Home() {
           <div className="footer-bottom-container">
             <div className="footer-links-slim">
               <Link to="/about">About</Link>
-              <Link to="/#">Contact</Link>
-              <Link to="/#">Terms</Link>
-              <Link to="/#">Privacy</Link>
+              <Link to="/about">Contact</Link>
             </div>
             <div className="footer-bottom-slim">
-              <p>Powered by <a href="https://wordlanetech.com/" target="_blank">Word Lane Tech</a></p>
-              <p>© 2026 Clovra Studios. All Rights Reserved.</p>
-              <span className="separator">|</span>
-              <p>Patna City, Bihar - 800001</p>
+              <p style={{color:'white'}}>Powered by <a href="https://wordlanetech.com/" target="_blank">Word Lane Tech</a></p>
+              <p style={{color:'white'}}>© 2026 Clovra Studios. All Rights Reserved.</p>
+              
             </div>
           </div>
         </div>

@@ -75,4 +75,18 @@ public class OrderService {
 
         return orderRepository.save(order);
     }
+    
+
+    public Order shipOrder(Long id, String courierName, String trackingNumber) {
+
+    Order order = orderRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+    order.setStatus("SHIPPED");
+    order.setCourierName(courierName);
+    order.setTrackingNumber(trackingNumber);
+    order.setShippedDate(LocalDateTime.now());
+
+    return orderRepository.save(order);
+}
 }

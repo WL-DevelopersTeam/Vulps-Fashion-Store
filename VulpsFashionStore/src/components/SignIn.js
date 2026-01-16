@@ -16,7 +16,7 @@ function SignIn() {
 
   const ADMIN_EMAILS = [
   "sandesh@gmail.com",
-  "pranay@gmail.com",
+  "admin@gmail.com",
   "riteshkmali007@gmail.com"
 ];
 
@@ -91,12 +91,22 @@ React.useEffect(() => {
     console.log('Login success:', response.data);
 
     // ✅ Save token (VERY IMPORTANT)
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('user', JSON.stringify(response.data.user));
+    // localStorage.setItem('token', response.data.token);
+    // localStorage.setItem('user', JSON.stringify(response.data.user));
     localStorage.setItem('userId', response.data.user.id);
 
     // Redirect to home/dashboard
-    const userEmail = formData.email;
+    const userEmail = response.data.user.email;
+
+    const isAdmin = ADMIN_EMAILS.includes(userEmail);
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        ...response.data.user,
+        isAdmin: isAdmin
+      })
+    );
 
 
 if (ADMIN_EMAILS.includes(userEmail)) {

@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.example.backend.cart.repository.CartItemRepository;
-import com.example.backend.cart.repository.CartRepository;
+// import com.example.backend.cart.repository.CartRepository;
 import com.example.backend.product.dto.ProductRequest;
 import com.example.backend.product.dto.ProductResponse;
 import com.example.backend.product.model.Product;
