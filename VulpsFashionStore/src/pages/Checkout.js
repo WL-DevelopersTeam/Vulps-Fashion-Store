@@ -110,7 +110,7 @@ const Checkout = () => {
         userId: userId, // ✅ VERY IMPORTANT
 
         productId: item.productId || item.id,
-        productName: item.name || item.title,
+        productName: item.productName || item.name || item.title,
         size: item.size,
         color: item.color,
         quantity: item.quantity,

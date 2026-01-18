@@ -42,6 +42,32 @@ const MyOrders = () => {
     );
   }
 
+    const getTrackingUrl = (courierName, trackingNumber) => {
+    if (!courierName || !trackingNumber) return null;
+
+    const courier = courierName.toLowerCase();
+
+    if (courier.includes("delhivery")) {
+      return `https://www.delhivery.com/track/package/${trackingNumber}`;
+    }
+
+    if (courier.includes("bluedart")) {
+      return `https://www.bluedart.com/web/guest/trackdartresult?trackFor=0&trackNo=${trackingNumber}`;
+    }
+
+    if (courier.includes("dtdc")) {
+      return `https://www.dtdc.in/tracking/tracking_results.asp?strCnno=${trackingNumber}`;
+    }
+
+    if (courier.includes("amazon")) {
+      return `https://track.amazon.in/tracking/${trackingNumber}`;
+    }
+
+    // fallback – Google search
+    return `https://www.google.com/search?q=${courierName}+tracking+${trackingNumber}`;
+  };
+
+
   return (
     <div className="max-w-7xl mx-auto p-8 space-y-8">
       <h1 className="text-4xl font-bold text-center text-[#FFD700] mb-6">
@@ -68,7 +94,7 @@ const MyOrders = () => {
               <img
                 src={order.imageUrl || "https://via.placeholder.com/120"}
                 alt={order.productName}
-                className="w-28 h-28 object-cover rounded-xl shadow-md"
+                className="w-28 h-28 object-cover rounded-lg shadow-xl"
               />
 
               <div className="flex-1">
@@ -109,6 +135,41 @@ const MyOrders = () => {
                 </p>
               </div>
             </div>
+
+            {/* SHIPMENT DETAILS (UPDATED WITH TRACK BUTTON) */}
+            {(order.status === "SHIPPED" ||
+              order.status === "DELIVERED") && (
+              <div className="mx-6 mb-4 bg-gray-900 p-4 rounded-xl text-sm">
+                <h4 className="font-semibold text-[#FFD700] mb-2">
+                  🚚 Shipment Details
+                </h4>
+
+                <p>
+                  <b>Courier:</b>{" "}
+                  {order.courierName || "Not available"}
+                </p>
+
+                <p>
+                  <b>Tracking ID:</b>{" "}
+                  {order.trackingNumber || "Not available"}
+                </p>
+
+                {order.courierName && order.trackingNumber && (
+                  <a
+                    href={getTrackingUrl(
+                      order.courierName,
+                      order.trackingNumber
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-3 px-4 py-2 bg-[#FFD700] text-black font-semibold rounded-lg hover:opacity-90 transition"
+                  >
+                    📍 Track Package
+                  </a>
+                )}
+              </div>
+            )}
+
 
             {/* PROGRESS TRACKER */}
             <div className="px-6 pb-6">
