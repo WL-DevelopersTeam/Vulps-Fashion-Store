@@ -8,14 +8,18 @@ public class LatestCollectionResponse
     private String title;
     private String description;
     private String imageUrl;
+    private Long price;
 
     public LatestCollectionResponse(Long id, String title,
                                     String description,
-                                    String imageUrl) {
+                                    String imageUrl,
+                                    Long price) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.price=price;
+
     }
 
     public Long getId() {
@@ -34,5 +38,26 @@ public class LatestCollectionResponse
         return imageUrl;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
+    
     // getters
 }

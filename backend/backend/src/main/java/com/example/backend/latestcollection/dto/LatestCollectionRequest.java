@@ -7,6 +7,7 @@ public class LatestCollectionRequest
     private String title;
     private String description;
     private MultipartFile image;
+    private Long price;
     
     public String getTitle() {
         return title;
@@ -25,6 +26,13 @@ public class LatestCollectionRequest
     }
     public void setImage(MultipartFile image) {
         this.image = image;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+    public void setPrice(Long price) {
+        this.price = price;
     }
 
     

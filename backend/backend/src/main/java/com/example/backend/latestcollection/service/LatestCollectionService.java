@@ -40,6 +40,7 @@ public class LatestCollectionService {
         lc.setTitle(request.getTitle());
         lc.setDescription(request.getDescription());
         lc.setImageUrl(imageUrl);
+        lc.setPrice(request.getPrice());
 
         repository.save(lc);
     }
@@ -52,7 +53,8 @@ public class LatestCollectionService {
                         l.getId(),
                         l.getTitle(),
                         l.getDescription(),
-                        l.getImageUrl()
+                        l.getImageUrl(),
+                        l.getPrice()
                 ))
                 .toList();
     }

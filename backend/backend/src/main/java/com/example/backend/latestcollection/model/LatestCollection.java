@@ -22,6 +22,8 @@ public class LatestCollection {
 
     private String imageUrl;
 
+    private  Long price;
+
     public Long getId() {
         return id;
     }
@@ -54,6 +56,15 @@ public class LatestCollection {
         this.imageUrl = imageUrl;
     }
 
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
+    
     // getters & setters
     
 }

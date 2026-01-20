@@ -526,4 +526,72 @@ body {
   .custom-split { flex-direction: column; }
   .footer-top { flex-direction: column; gap: 30px; text-align: center; }
   .footer-links { flex-direction: column; align-items: center; gap: 20px; }
+}/* WRAPPER */
+.latest-carousel-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 2rem;
+}
+
+/* SLIDER */
+.latest-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+  
+}
+
+/* HIDE SCROLLBAR */
+.latest-carousel::-webkit-scrollbar {
+  display: none;
+}
+.latest-carousel {
+  scrollbar-width: none;
+}
+
+/* EACH ITEM */
+.carousel-item {
+  flex: 0 0 auto;
+  width: 260px;
+  scroll-snap-align: start;
+}
+
+/* ENSURE ONLY 4 SHOW */
+@media (min-width: 1024px) {
+  .latest-carousel {
+    max-width: calc((260px * 4) + (24px * 3));
+    margin: 0 auto;
+  }
+}
+
+/* ARROWS */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: black;
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.85;
+}
+
+.carousel-arrow:hover {
+  opacity: 1;
+}
+
+.carousel-arrow.left {
+  left: 30px;
+}
+
+.carousel-arrow.right {
+  right: 30px;
 }

@@ -15,6 +15,9 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private SmsService smsService;
+
     // ================================
     // PLACE ORDER (CUSTOMER)
     // ================================
@@ -55,13 +58,40 @@ public class OrderService {
     // ================================
     public Order updateOrderStatus(Long id, String status) {
 
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+    Order order = orderRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        order.setStatus(status);
+    order.setStatus(status);
+    Order savedOrder = orderRepository.save(order);
 
-        return orderRepository.save(order);
+    // 🔔 SEND SMS BASED ON STATUS
+    if ("ACCEPTED".equals(status)) {
+        smsService.sendSms(
+            order.getMobile(),
+            "Hi " + order.getFullName() +
+            ", your order #" + order.getId() + " has been ACCEPTED."
+        );
     }
+
+    if ("DELIVERED".equals(status)) {
+        smsService.sendSms(
+            order.getMobile(),
+            "Your order #" + order.getId() +
+            " has been DELIVERED. Thank you for shopping with us!"
+        );
+    }
+
+    if ("DECLINED".equals(status)) {
+        smsService.sendSms(
+            order.getMobile(),
+            "Sorry! Your order #" + order.getId() +
+            " has been DECLINED. Please contact support."
+        );
+    }
+
+    return savedOrder;
+}
+
 
     // ================================
     // UPDATE PAYMENT STATUS
@@ -76,7 +106,6 @@ public class OrderService {
         return orderRepository.save(order);
     }
     
-
     public Order shipOrder(Long id, String courierName, String trackingNumber) {
 
     Order order = orderRepository.findById(id)
@@ -87,6 +116,17 @@ public class OrderService {
     order.setTrackingNumber(trackingNumber);
     order.setShippedDate(LocalDateTime.now());
 
-    return orderRepository.save(order);
+    Order savedOrder = orderRepository.save(order);
+
+    // 🔔 SEND SHIPMENT SMS
+    smsService.sendSms(
+        order.getMobile(),
+        "Your order #" + order.getId() +
+        " is SHIPPED via " + courierName +
+        ". Tracking ID: " + trackingNumber
+    );
+
+    return savedOrder;
 }
+
 }

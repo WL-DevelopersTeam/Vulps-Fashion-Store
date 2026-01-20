@@ -6,6 +6,7 @@ import heroVideo from './assets/hero-video.mp4';
 import '../App.css';
 import './Footer.css';
 import './CustomDesign.css';
+import axios from "axios";
 
 // --- 1. Helper Components ---
 
@@ -69,16 +70,14 @@ const ProductCard = ({ item }) => {
       viewport={{ once: true }}
     >
       <div className="image-wrapper">
-        <img src={item.imageUrl || item.img} alt={item.title} />
-        <div className="overlay">
-          <button className="quick-view-btn">Quick View</button>
-        </div>
-      </div>
-      <div className="info">
+        <img src={item.imageUrl} alt={item.title} />
+
         <h3>{item.title}</h3>
+
         <div className="meta">
-          <span className="category">{item.category || item.label}</span>
-          <span className="price">₹{item.price || "1,999"}</span>
+        <span className="category">{item.description}</span>
+
+
         </div>
       </div>
     </motion.div>
@@ -93,16 +92,64 @@ function Home() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
-  // B. Mock Data Effect
-  useEffect(() => {
-    const mockData = [
-      { id: 1, title: "Oversized Graphic Tee", category: "Streetwear", price: 1299, imageUrl: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80" },
-      { id: 2, title: "Cargo Parachute Pants", category: "Bottoms", price: 2499, imageUrl: "https://images.unsplash.com/photo-1584302052153-623ee529b70c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGNhcmdvJTIwcGFudHN8ZW58MHx8MHx8fDA%3D" },
-      { id: 3, title: "Heavyweight Hoodie", category: "Essentials", price: 3499, imageUrl: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80" },
-      { id: 4, title: "Utility Vest", category: "Outerwear", price: 1899, imageUrl: "https://images.unsplash.com/photo-1559551409-dadc959f76b8?w=800&q=80" },
-    ];
-    setLatestCollections(mockData);
-  }, []);
+    // B. Mock Data Effect
+useEffect(() => {
+  loadLatestCollections();
+}, []);
+
+const loadLatestCollections = async () => {
+  try {
+    const res = await axios.get(
+      "https://vulps-fashion-store.onrender.com/api/latest-collections"
+    );
+
+    console.log("Latest collections:", res.data); // 👈 IMPORTANT
+    setLatestCollections(res.data);
+  } catch (err) {
+    console.error("API error:", err);
+  }
+};
+
+const LatestCarousel = ({ items }) => {
+  const sliderRef = useRef(null);
+
+  const CARD_WIDTH = 260; // must match CSS
+  const GAP = 24;
+  const SCROLL_AMOUNT = CARD_WIDTH + GAP;
+
+  const scroll = (direction) => {
+    if (!sliderRef.current) return;
+
+    sliderRef.current.scrollBy({
+      left: direction === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <div className="latest-carousel-wrapper">
+      {/* LEFT ARROW */}
+      <button onClick={() => scroll("left")} className="carousel-arrow left">
+        ❮
+      </button>
+
+      {/* SLIDER */}
+      <div className="latest-carousel" ref={sliderRef}>
+        {items.map((item) => (
+          <div key={item.id} className="carousel-item">
+            <ProductCard item={item} />
+          </div>
+        ))}
+      </div>
+
+      {/* RIGHT ARROW */}
+      <button onClick={() => scroll("right")} className="carousel-arrow right">
+        ❯
+      </button>
+    </div>
+  );
+};
+
 
   // C. Video Auto-Play Logic (Must be INSIDE the Home component)
   const videoRef = useRef(null);
@@ -156,6 +203,8 @@ function Home() {
       animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
       transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
     />
+
+
 
     {/* Text */}
     <motion.div
@@ -219,11 +268,7 @@ function Home() {
         <div className="header-flex">
           <h2>LATEST DROPS</h2>
           <Link to="/shop" className="view-all interactive">View All</Link>
-        </div>
-        <div className="product-grid-modern">
-          {latestCollections.map((item) => (
-            <ProductCard key={item.id} item={item} />
-          ))}
+          <LatestCarousel items={latestCollections} />
         </div>
       </section>
 
