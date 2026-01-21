@@ -33,10 +33,43 @@ const AdminOrders = () => {
         action: null,
       });
 
+  const [filter, setFilter] = useState("ALL");
+  const [filterStatus, setFilterStatus] = useState("ALL");
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [pendingCounts, setPendingCounts] = useState(0);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+
+
+  const pendingCount = orders.filter(
+  (order) => order.status === "PENDING"
+).length;
+
+
+useEffect(() => {
+  const currentPending = orders.filter(
+    (o) => o.status === "PENDING"
+  ).length;
+
+  const lastPending =
+    Number(localStorage.getItem("lastPendingCount")) || 0;
+
+  setPendingCounts(currentPending);
+
+  // 🔔 Play sound ONLY if:
+  // 1. Admin already interacted
+  // 2. New pending order arrived
+  if (soundEnabled && currentPending > lastPending) {
+    const audio = new Audio("/notification.mp3");
+    audio.play().catch(() => {}); // avoid autoplay error
+  }
+
+  localStorage.setItem("lastPendingCount", currentPending);
+}, [orders, soundEnabled]);
+
+
+useEffect(() => {
+  fetchOrders();
+}, []);
 
   const fetchOrders = async () => {
     try {
@@ -75,6 +108,19 @@ const AdminOrders = () => {
   }
 };
 
+const filteredOrders =
+  filter === "ALL"
+    ? orders
+    : orders.filter((o) => o.status === filter);
+
+const sortedOrders = [...filteredOrders].sort(
+  (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+);
+
+const countByStatus = (status) =>
+  orders.filter((o) => o.status === status).length;
+
+
 
     const confirmShipment = async () => {
   if (!courierName || !trackingNumber) return;
@@ -112,12 +158,60 @@ const AdminOrders = () => {
 
   return (
     <div className="p-10 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold mb-12 text-gray-800">
-        📦 Orders Management
-      </h1>
+        <div className="flex items-center justify-between mb-12">
+            <h1 className="text-4xl font-bold text-gray-800">
+              📦 Orders Management
+            </h1>
+
+                <button
+                    onClick={() => {
+                      setSoundEnabled(true); // unlock sound
+                      setFilterStatus(filterStatus === "PENDING" ? "ALL" : "PENDING");
+                    }}
+                    className="relative"
+                  >
+                    🔔
+                    {pendingCounts > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+                        {pendingCount}
+                      </span>
+                    )}
+                  </button>
+
+          </div>
+      <div className="flex flex-wrap gap-3 mb-10">
+  {["ALL", "PENDING", "ACCEPTED", "SHIPPED", "DELIVERED"].map((s) => (
+    <button
+      key={s}
+      onClick={() => setFilter(s)}
+      className={`px-4 py-2 rounded-full font-semibold text-sm flex items-center gap-2
+        ${filter === s ? "bg-black text-white" : "bg-gray-200 text-gray-700"}
+      `}
+    >
+      {s}
+      {s !== "ALL" && (
+        <span className="bg-white text-black px-2 py-0.5 rounded-full text-xs">
+          {countByStatus(s)}
+        </span>
+      )}
+      {s === "ALL" && (
+        <span className="bg-white text-black px-2 py-0.5 rounded-full text-xs">
+          {orders.length}
+        </span>
+      )}
+    </button>
+  ))}
+</div>
+
 
       <div className="space-y-14">
-        {orders.map((order, index) => (
+        {sortedOrders
+  .filter(order =>
+    filterStatus === "ALL" ? true : order.status === filterStatus
+  )
+  .map((order, index) => (
+
+
           <motion.div
             key={order.id}
             initial={{ opacity: 0, y: 40 }}
