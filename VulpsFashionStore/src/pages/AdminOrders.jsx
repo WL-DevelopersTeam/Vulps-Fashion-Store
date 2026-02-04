@@ -18,6 +18,7 @@ const statusColor = {
   SHIPPED: "bg-purple-100 text-purple-700",
   DELIVERED: "bg-green-100 text-green-700",
   DECLINED: "bg-red-100 text-red-700",
+  CANCELLED: "bg-gray-200 text-gray-700",
 };
 
 const AdminOrders = () => {
@@ -90,6 +91,8 @@ useEffect(() => {
     ACCEPTED: "accept",
     DECLINED: "decline",
     DELIVERED: "deliver",
+    DELIVERED: "deliver",
+    CANCELLED: "cancel",
   };
 
   setLoadingAction({ orderId, action: status });
@@ -246,11 +249,7 @@ const countByStatus = (status) =>
 
 
       <div className="space-y-14">
-        {sortedOrders
-  .filter(order =>
-    filterStatus === "ALL" ? true : order.status === filterStatus
-  )
-  .map((order, index) => (
+        {sortedOrders.map((order, index) => (
 
 
           <motion.div

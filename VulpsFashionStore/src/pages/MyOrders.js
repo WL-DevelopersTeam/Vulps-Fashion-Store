@@ -26,6 +26,33 @@ const MyOrders = () => {
     }
   };
 
+  const cancelOrder = async (orderId) => {
+  const confirmCancel = window.confirm(
+    "Are you sure you want to cancel this order?"
+  );
+  if (!confirmCancel) return;
+
+  try {
+    await fetch(
+      `https://vulps-fashion-store.onrender.com/api/orders/${orderId}/cancel`,
+      {
+        method: "PUT",
+      }
+    );
+
+    // update UI without refetch
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId ? { ...o, status: "CANCELLED" } : o
+      )
+    );
+  } catch (err) {
+    console.error("Failed to cancel order", err);
+    alert("Unable to cancel order");
+  }
+};
+
+
   if (!userId) {
     return (
       <div className="text-center py-20 text-gray-600">
@@ -124,7 +151,10 @@ const MyOrders = () => {
                         ? "bg-purple-500"
                         : order.status === "DELIVERED"
                         ? "bg-green-500"
+                        : order.status === "CANCELLED"
+                        ? "bg-red-600"
                         : "bg-red-500"
+
                     }`}
                 >
                   {order.status}
@@ -169,6 +199,19 @@ const MyOrders = () => {
                 )}
               </div>
             )}
+
+            {/* CANCEL ORDER BUTTON */}
+              {order.status === "PENDING" && (
+                <div className="px-6 pb-2">
+                  <button
+                    onClick={() => cancelOrder(order.id)}
+                    className="w-full py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
+                  >
+                    ❌ Cancel Order
+                  </button>
+                </div>
+              )}
+
 
 
             {/* PROGRESS TRACKER */}
