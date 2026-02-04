@@ -72,6 +72,16 @@ public List<Order> getOrdersByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok("Order declined");
     }
 
+        // ================================
+        // CUSTOMER: CANCEL ORDER
+        // ================================
+        @PutMapping("/{id}/cancel")
+        public ResponseEntity<String> cancelOrder(@PathVariable Long id) {
+            orderService.cancelOrder(id);
+            return ResponseEntity.ok("Order cancelled successfully");
+        }
+
+
     // ================================
     // ADMIN: SHIP ORDER
     // ================================

@@ -1,42 +1,4 @@
-// import SalesChart from "../component/SalesChart";
-// import OrdersChart from "../component/OrdersChart";
-// import DashboardQuickForm from "../component/DashboardQuickForm";
-// export default function Dashboard() {
-//     return (
 
-//             <div className="flex-1 p-6">
-//                 <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
-
-//                 {/* Stats Cards */}
-//                 <div className="grid grid-cols-3 gap-6 mb-6">
-//                     <div className="bg-white p-4 rounded-xl shadow-sm">
-//                         <p className="text-gray-500 text-sm">Total Sales</p>
-//                         <h2 className="text-2xl font-bold">₹1,25,000</h2>
-//                     </div>
-
-//                     <div className="bg-white p-4 rounded-xl shadow-sm">
-//                         <p className="text-gray-500 text-sm">Orders</p>
-//                         <h2 className="text-2xl font-bold">40</h2>
-//                     </div>
-
-//                     <div className="bg-white p-4 rounded-xl shadow-sm">
-//                         <p className="text-gray-500 text-sm">Products</p>
-//                         <h2 className="text-2xl font-bold">18</h2>
-//                     </div>
-//                 </div>
-
-//                 {/* Charts */}
-//                 <div className="grid grid-cols-2 gap-6">
-//                     <SalesChart />
-//                     <OrdersChart />
-//                      <DashboardQuickForm />
-//                 </div>
-//             </div>
-//         // </div>
-//     );
-// }
-
-import { useState } from "react";
 import {
     BarChart,
     Bar,
@@ -46,6 +8,10 @@ import {
     ResponsiveContainer,
     CartesianGrid,
 } from "recharts";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 
 /* Mock data (will be replaced by backend later) */
 const DATA = {
@@ -68,6 +34,43 @@ const DATA = {
 
 export default function Dashboard() {
     const [filter, setFilter] = useState("month");
+    const [orders, setOrders] = useState([]);
+    const [pendingCount, setPendingCount] = useState(0);
+    const [totalOrders, setTotalOrders] = useState(0);
+    const [totalSales, setTotalSales] = useState(0);
+
+    useEffect(() => {
+  fetchOrders();
+
+  const interval = setInterval(fetchOrders, 10000); // 10 sec
+  return () => clearInterval(interval);
+}, []);
+
+const fetchOrders = async () => {
+  const res = await axios.get(
+    "https://vulps-fashion-store.onrender.com/api/orders"
+  );
+
+  const data = res.data;
+
+  setOrders(data);
+  setTotalOrders(data.length);
+
+  const pending = data.filter(o => o.status === "PENDING").length;
+  setPendingCount(pending);
+
+  const sales = data
+  .filter(o => o.status === "DELIVERED")
+  .reduce(
+    (sum, o) => sum + Number(o.price) * Number(o.quantity),
+    0
+  );
+
+setTotalSales(sales);
+
+};
+
+
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
@@ -76,6 +79,16 @@ export default function Dashboard() {
                 <h1 className="text-2xl font-semibold text-gray-800">
                     Dashboard
                 </h1>
+
+                <div className="relative cursor-pointer">
+  🔔
+  {pendingCount > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+      {pendingCount}
+    </span>
+  )}
+</div>
+
 
                 {/* Day / Week / Month Filter */}
                 <div className="flex gap-2">
@@ -97,9 +110,10 @@ export default function Dashboard() {
 
             {/* Top Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <StatCard title="Total Sales" value="₹1,24,000" />
-                <StatCard title="Orders" value="240" />
-                <StatCard title="Products" value="58" />
+                <StatCard title="Total Sales" value={`₹${totalSales.toLocaleString()}`} />
+                <StatCard title="Orders" value={totalOrders} />
+                <StatCard title="Pending Orders" value={pendingCount} />
+
             </div>
 
             {/* Charts Section */}

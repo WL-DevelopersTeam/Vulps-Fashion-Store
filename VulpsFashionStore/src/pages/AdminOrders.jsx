@@ -34,9 +34,10 @@ const AdminOrders = () => {
       });
 
   const [filter, setFilter] = useState("ALL");
-  const [filterStatus, setFilterStatus] = useState("ALL");
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [pendingCounts, setPendingCounts] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+
 
 
 
@@ -117,6 +118,11 @@ const sortedOrders = [...filteredOrders].sort(
   (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
 );
 
+const newOrders = orders
+  .filter(o => o.status === "PENDING")
+  .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+
 const countByStatus = (status) =>
   orders.filter((o) => o.status === status).length;
 
@@ -162,21 +168,56 @@ const countByStatus = (status) =>
             <h1 className="text-4xl font-bold text-gray-800">
               📦 Orders Management
             </h1>
+            <div className="relative">
+  <button
+    onClick={() => {
+      setSoundEnabled(true);
+      setShowNotifications(prev => !prev);
+      localStorage.setItem("lastPendingCount", pendingCounts);
+    }}
+    className="relative text-2xl"
+  >
+    🔔
+    {pendingCounts > 0 && (
+      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+        {pendingCounts}
+      </span>
+    )}
+  </button>
 
-                <button
-                    onClick={() => {
-                      setSoundEnabled(true); // unlock sound
-                      setFilterStatus(filterStatus === "PENDING" ? "ALL" : "PENDING");
-                    }}
-                    className="relative"
-                  >
-                    🔔
-                    {pendingCounts > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
-                        {pendingCount}
-                      </span>
-                    )}
-                  </button>
+  {showNotifications && (
+    <div className="absolute right-0 mt-4 w-96 bg-white shadow-2xl rounded-xl z-50 border">
+      <div className="p-4 border-b font-semibold text-gray-800">
+        🔔 New Orders ({newOrders.length})
+      </div>
+
+      {newOrders.length === 0 ? (
+        <p className="p-4 text-gray-500 text-sm">
+          No new orders
+        </p>
+      ) : (
+        <div className="max-h-80 overflow-y-auto">
+          {newOrders.map(order => (
+            <div
+              key={order.id}
+              className="p-4 border-b hover:bg-gray-100 cursor-pointer"
+            >
+              <p className="font-semibold text-sm">
+                Order #{order.id}
+              </p>
+              <p className="text-xs text-gray-500">
+                ₹{order.price * order.quantity}
+              </p>
+              <p className="text-xs text-gray-400">
+                {new Date(order.orderDate).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )}
+</div>
 
           </div>
       <div className="flex flex-wrap gap-3 mb-10">
