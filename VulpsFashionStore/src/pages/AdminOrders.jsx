@@ -224,7 +224,7 @@ const countByStatus = (status) =>
 
           </div>
       <div className="flex flex-wrap gap-3 mb-10">
-  {["ALL", "PENDING", "ACCEPTED", "SHIPPED", "DELIVERED"].map((s) => (
+  {["ALL", "PENDING", "ACCEPTED", "SHIPPED", "DELIVERED","CANCELLED"].map((s) => (
     <button
       key={s}
       onClick={() => setFilter(s)}
