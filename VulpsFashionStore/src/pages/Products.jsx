@@ -66,10 +66,10 @@ export default function Products() {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("description", description);
-      formData.append("price", parseFloat(price));
+      formData.append("price", price);
       formData.append("category", category);
-      formData.append("sizes", JSON.stringify(sizes.length ? sizes : []));
-formData.append("colors", JSON.stringify(colors.length ? colors : []));
+      formData.append("sizes", JSON.stringify(sizes));
+      formData.append("colors", JSON.stringify(colors));
       formData.append("image", image);
 
       await axios.post(

@@ -49,8 +49,9 @@ public class ProductService {
         product.setDescription(request.getDescription());
         product.setPrice(request.getPrice());
         product.setCategory(request.getCategory());
-        product.setSizes(request.getSizes());
-        product.setColors(request.getColors());
+        product.setSizes(String.join(",", request.getSizes()));
+        product.setColors(String.join(",", request.getColors()));
+
         product.setImageUrl(imageUrl);
         product.setImagePublicId(publicId);
 
