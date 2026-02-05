@@ -46,8 +46,8 @@ public class ProductController {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        List<String> sizeList = mapper.readValue(sizes, new TypeReference<List<String>>() {});
-        List<String> colorList = mapper.readValue(colors, new TypeReference<List<String>>() {});
+        List<String> sizeList = List.of(sizes.split(","));
+        List<String> colorList = List.of(colors.split(","));
 
         ProductRequest request = new ProductRequest();
         request.setName(name);

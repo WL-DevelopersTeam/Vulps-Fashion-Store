@@ -30,11 +30,11 @@ public class AuthController
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestBody SigninRequest request) {
-       
+    public ResponseEntity<?> signin(@RequestBody SigninRequest request) 
+    {
         Map<String, Object> response = authService.signin(request);
         return ResponseEntity.ok(response);
-    }
+    }   
     
     
 } 

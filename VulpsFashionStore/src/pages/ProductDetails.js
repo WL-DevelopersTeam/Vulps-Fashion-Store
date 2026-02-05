@@ -38,8 +38,18 @@ const ProductDetails = () => {
       );
       const data = res.data;
 
-      const sizes = Array.isArray(data.sizes) ? data.sizes : JSON.parse(data.sizes || "[]");
-      const colors = Array.isArray(data.colors) ? data.colors : JSON.parse(data.colors || "[]");
+      const sizes = Array.isArray(data.sizes)
+  ? data.sizes
+  : typeof data.sizes === "string"
+  ? data.sizes.split(",").map(s => s.trim())
+  : [];
+
+const colors = Array.isArray(data.colors)
+  ? data.colors
+  : typeof data.colors === "string"
+  ? data.colors.split(",").map(c => c.trim())
+  : [];
+
 
       setProduct({ ...data, sizes, colors });
       setSelectedSize(sizes[0] || "");

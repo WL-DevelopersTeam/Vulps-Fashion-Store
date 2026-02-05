@@ -1,10 +1,5 @@
 import { Navigate } from "react-router-dom";
 
-const ADMIN_EMAILS = [
-  "sandesh@gmail.com",
-  "pranay@gmail.com"
-];
-
 export default function AdminProtectedRoute({ children }) {
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -14,10 +9,10 @@ export default function AdminProtectedRoute({ children }) {
   }
 
   // ❌ Logged in but not admin
-  if (!ADMIN_EMAILS.includes(user.email)) {
+  if (user.role !== "ADMIN") {
     return <Navigate to="/" replace />;
   }
 
-  // ✅ Logged in admin
+  // ✅ Admin can access
   return children;
 }

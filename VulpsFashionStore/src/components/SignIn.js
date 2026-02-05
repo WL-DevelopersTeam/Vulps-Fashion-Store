@@ -14,11 +14,6 @@ function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const ADMIN_EMAILS = [
-  "sandesh@gmail.com",
-  "admin@gmail.com",
-  "riteshkmali007@gmail.com"
-];
 
 React.useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -97,23 +92,17 @@ React.useEffect(() => {
     localStorage.setItem('userId', response.data.user.id);
 
     // Redirect to home/dashboard
-    const userEmail = response.data.user.email;
+    const user = response.data.user;
 
-    const isAdmin = ADMIN_EMAILS.includes(userEmail);
+// Save user in browser
+localStorage.setItem("user", JSON.stringify(user));
+localStorage.setItem("userId", user.id);
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        ...response.data.user,
-        isAdmin: isAdmin
-      })
-    );
-
-
-if (ADMIN_EMAILS.includes(userEmail)) {
-  navigate('/admin');
+// Check role from database
+if (user.role === "ADMIN") {
+  navigate("/admin");
 } else {
-  navigate('/');
+  navigate("/");
 }
 
   } catch (error) {

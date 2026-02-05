@@ -23,16 +23,21 @@ export default function CartConfigModal({
   loading,
 }) {
   // --- DATA NORMALIZATION ---
-  const rawSizes = Array.isArray(product?.sizes) ? product.sizes : [];
-  const rawColors = Array.isArray(product?.colors) ? product.colors : [];
+  const rawSizes = Array.isArray(product?.sizes)
+  ? product.sizes
+  : typeof product?.sizes === "string"
+  ? product.sizes.split(",").map(s => s.trim())
+  : [];
 
-  const sizes = rawSizes.every((v) => SIZE_SET.includes(v))
-    ? rawSizes
-    : rawColors.filter((v) => SIZE_SET.includes(v));
+const rawColors = Array.isArray(product?.colors)
+  ? product.colors
+  : typeof product?.colors === "string"
+  ? product.colors.split(",").map(c => c.trim())
+  : [];
 
-  const colors = rawColors.some((v) => SIZE_SET.includes(v))
-    ? rawSizes.filter((v) => !SIZE_SET.includes(v))
-    : rawColors;
+const sizes = rawSizes.filter(v => SIZE_SET.includes(v));
+const colors = rawColors;
+
 
   // --- STATE ---
   const [selectedSize, setSelectedSize] = useState("");
