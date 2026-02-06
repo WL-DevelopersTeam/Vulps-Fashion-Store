@@ -1,11 +1,12 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Search } from "lucide-react";
 
 // Components
-import Navigation from "../components/Navigation";
-import Loader from "../components/Loader";
+import Navigation from "./Navigation";
+import Loader from "./Loader";
 import CartConfigModal from "../components/CartConfigModal";
 
 // Utils & Styles
