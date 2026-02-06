@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.backend.Common.config.JwtUtil;
 import com.example.backend.Login.dto.SigninRequest;
 import com.example.backend.Login.dto.SignupRequest;
 import com.example.backend.Login.model.User;
@@ -20,6 +21,9 @@ public class AuthService
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // SIGN UP
 
@@ -43,7 +47,7 @@ public class AuthService
         user.setEmail(request.getEmail());
         user.setPhonenumber(request.getPhonenumber());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        //user.setRole(request.getRole());
+        user.setRole("CUSTOMER"); // ✅ IMPORTANT
 
         userRepository.save(user);
         return "User registered successfully";
@@ -51,23 +55,28 @@ public class AuthService
 
     // SIGN IN
 
-    public Map<String, Object>  signin(SigninRequest request)
-    {
+        public Map<String, Object> signin(SigninRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        // Check password
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
-        }// Check password
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                throw new RuntimeException("Invalid email or password");
+            }
+
+            // 🔐 CREATE JWT TOKEN
+            String token = jwtUtil.generateToken(
+                    user.getId(),
+                    user.getRole()   // ADMIN or CUSTOMER
+            );
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("token", token);   // ✅ ADD TOKEN
+            response.put("user", user);
+            System.out.println("ROLE FROM DB = " + user.getRole());
+
+            return response;
         }
-        Map<String, Object> response = new HashMap<>();
-    response.put("message", "Login successful");
-    response.put("user", user); 
 
-        return response;
-    }
 }

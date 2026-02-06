@@ -41,7 +41,8 @@ public class SecurityConfig {
             "https://vulpsfashion.vercel.app",
             "https://vulps-fashion-store.vercel.app",
             "https://vulps-fashion.vercel.app",
-            "http://localhost:3000"
+            "http://localhost:3000",
+            "http://localhost:5173"
         ));
 
         config.setAllowedMethods(List.of(

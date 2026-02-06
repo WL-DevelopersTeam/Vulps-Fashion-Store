@@ -105,8 +105,8 @@ function Cart() {
                   <div className="item-info-group">
                     <div className="item-details">
                       <h3>{item.name}</h3>
-                      <p className="item-meta">Size: <span>{item.size}</span></p>
-                      <p className="item-meta">Color: <span>{item.color}</span></p>
+                      <p className="item-meta">Size: <span>{item.size || "—"}</span></p>
+                      <p className="item-meta">Color: <span>{item.color || "—"}</span></p>
                       <p className="item-price">₹{item.price.toLocaleString()}</p>
                     </div>
 

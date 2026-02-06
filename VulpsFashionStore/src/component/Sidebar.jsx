@@ -18,7 +18,7 @@ export default function Sidebar() {
       <NavLink to="/admin/custom-orders">Custom Orders</NavLink>
 
       {/* 🔹 USER DASHBOARD BUTTON (ADMIN ONLY) */}
-      {user?.isAdmin && (
+      {user?.role === "ADMIN" && (
         <button
           className="user-dashboard-btn"
           onClick={() => navigate("/")}

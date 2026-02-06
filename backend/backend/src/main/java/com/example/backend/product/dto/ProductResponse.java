@@ -14,7 +14,7 @@ public class ProductResponse {
     private String description;
     private double price;
     private String imageUrl;
-    private List<String> sizes;
-    private List<String> colors;
+    private String sizes;
+    private String colors;
     private String category;
 }

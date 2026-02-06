@@ -39,8 +39,23 @@ const ProductDetails = () => {
       );
       const data = res.data;
 
+<<<<<<< HEAD:VulpsFashionStore/src/pages/ProductDetails.jsx
       const sizes = typeof data.sizes === 'string' ? data.sizes.split(',') : data.sizes;
       const colors = Array.isArray(data.colors) ? data.colors : JSON.parse(data.colors || "[]");
+=======
+      const sizes = Array.isArray(data.sizes)
+  ? data.sizes
+  : typeof data.sizes === "string"
+  ? data.sizes.split(",").map(s => s.trim())
+  : [];
+
+const colors = Array.isArray(data.colors)
+  ? data.colors
+  : typeof data.colors === "string"
+  ? data.colors.split(",").map(c => c.trim())
+  : [];
+
+>>>>>>> 4e4d8294e872700ac1ea076b3601fb7cdc67da2e:VulpsFashionStore/src/pages/ProductDetails.js
 
       setProduct({ ...data, sizes, colors });
       setSelectedSize(sizes[0] || "");

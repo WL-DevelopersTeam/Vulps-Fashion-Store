@@ -92,15 +92,15 @@ function Navigation() {
       <div className="user-dropdown">
         <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
         <Link to="/my-orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
-        {isAdmin && (
-          <Link
-            to="/admin"
-            className="dropdown-item"
-            onClick={() => setDropdownOpen(false)}
-          >
-            🛠 Admin Dashboard
-          </Link>
-        )}
+        {user?.role === "ADMIN" && (
+            <button
+              className="admin-dashboard-btn"
+              onClick={() => navigate("/admin")}
+            >
+              Admin Dashboard
+            </button>
+          )}
+
         <button className="dropdown-item logout-btn" onClick={handleLogout}>Logout</button>
       </div>
     )}

@@ -24,7 +24,8 @@ import tools.jackson.databind.ObjectMapper;
 @CrossOrigin(origins = {
     "http://localhost:3000",
     "https://vulps-fashion-store.vercel.app",
-    "https://vulpsfashionstore.vercel.app"
+    "https://vulpsfashionstore.vercel.app",
+    "http://localhost:5173"
 })
 public class ProductController {
 
@@ -45,8 +46,8 @@ public class ProductController {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        List<String> sizeList = mapper.readValue(sizes, new TypeReference<List<String>>() {});
-        List<String> colorList = mapper.readValue(colors, new TypeReference<List<String>>() {});
+        List<String> sizeList = List.of(sizes.split(","));
+        List<String> colorList = List.of(colors.split(","));
 
         ProductRequest request = new ProductRequest();
         request.setName(name);

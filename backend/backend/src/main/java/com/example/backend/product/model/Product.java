@@ -31,11 +31,11 @@ public class Product {
     // ✅ ADD THIS
     private String imagePublicId;
 
-    @ElementCollection
-    private List<String> sizes;
+    @Column(length = 255)
+    private String sizes;   // "S,M,L,XL"
 
-    @ElementCollection
-    private List<String> colors;
+    @Column(length = 255)
+    private String colors;  // "Red,Blue,Black"
 
     @Column(nullable = false)
     private Boolean active = true;
