@@ -11,15 +11,7 @@ import {
     CartesianGrid,
 } from "recharts";
 
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-import api from "../api/axios";
-
-
-/* Mock data (will be replaced by backend later) */
-=======
 /* Mock data */
->>>>>>> 183ced6316916ca66f33d747a80246b4cc618e76
 const DATA = {
     day: [
         { name: "Pending", orders: 4 },
@@ -45,41 +37,10 @@ export default function Dashboard({ onMenuToggle }) {
     const [totalSales, setTotalSales] = useState(0);
 
     useEffect(() => {
-<<<<<<< HEAD
-  fetchOrders();
-
-  const interval = setInterval(fetchOrders, 10000); // 10 sec
-  return () => clearInterval(interval);
-}, []);
-
-const fetchOrders = async () => {
-  const res = await api.get("/api/orders");
-
-  const data = res.data;
-
-  setOrders(data);
-  setTotalOrders(data.length);
-
-  const pending = data.filter(o => o.status === "PENDING").length;
-  setPendingCount(pending);
-
-  const sales = data
-  .filter(o => o.status === "DELIVERED")
-  .reduce(
-    (sum, o) => sum + Number(o.price) * Number(o.quantity),
-    0
-  );
-
-setTotalSales(sales);
-
-};
-
-=======
         fetchOrders();
         const interval = setInterval(fetchOrders, 10000);
         return () => clearInterval(interval);
     }, []);
->>>>>>> 183ced6316916ca66f33d747a80246b4cc618e76
 
     const fetchOrders = async () => {
         try {

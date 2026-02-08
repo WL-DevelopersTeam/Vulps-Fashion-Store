@@ -44,23 +44,6 @@ const CustomShirtForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-<<<<<<< HEAD:VulpsFashionStore/src/components/CustomShirtForm.js
-  try {
-    const response = await api.post(
-      "/api/custom-products",
-      formData
-    );
-
-    console.log("Saved successfully:", response.data);
-    alert("Design submitted successfully!");
-    setFormData(initialState);
-
-  } catch (error) {
-    console.error("Error saving design:", error);
-    alert("Server error. Please try again.");
-  }
-};
-=======
     try {
       await axios.post(
         "https://vulps-fashion-store.onrender.com/api/custom-products",
@@ -76,7 +59,6 @@ const CustomShirtForm = () => {
       setIsSubmitting(false);
     }
   };
->>>>>>> 183ced6316916ca66f33d747a80246b4cc618e76:VulpsFashionStore/src/components/CustomShirtForm.jsx
 
   return (
     <div className="min-h-screen pt-24 pb-12 flex items-center justify-center bg-gradient-to-br from-[#6a82fb] to-[#fc5c7d] p-4 font-sans">
