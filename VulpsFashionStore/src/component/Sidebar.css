@@ -1,25 +1,134 @@
+/* --- Base PC Styles --- */
+/* --- Desktop (PC) Sidebar --- */
 .sidebar {
-  width: 220px;
-  background: #161616;
-  color: #fff;
-  padding: 20px;
+  width: 260px;
+  height: 100vh;
+  background: #000;
+  color: white;
+  position: fixed; /* Keep it locked to the left side */
+  left: 0;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
 }
 
-.logo {
-  margin-bottom: 30px;
-  color: #fff;
-  font-weight: bold;
-  font-size: large;
+/* PC Content Adjustment: THIS IS THE FIX */
+@media (min-width: 768px) {
+  main {
+    margin-left: 260px; /* This ensures your dashboard content starts AFTER the sidebar */
+  }
+}
+
+/* --- Mobile Sidebar --- */
+@media (max-width: 767px) {
+  .sidebar {
+    transform: translateX(-100%); /* Hide sidebar off-screen by default */
+    width: 280px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0); /* Slide in when toggled */
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+  }
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 40px;
 }
 
 .sidebar a {
-  display: block;
-  color: #bbb;
   text-decoration: none;
-  margin-bottom: 15px;
+  color: #888;
+  padding: 12px 15px;
+  border-radius: 8px;
+  transition: 0.3s;
 }
 
 .sidebar a.active {
-  color: #fff;
+  background: #f1b410; /* Match your gold theme */
+  color: black;
   font-weight: bold;
+}
+
+.mobile-header {
+  display: none; /* Hide on PC */
+}
+
+/* --- Mobile Resolution (max-width: 768px) --- */
+@media (max-width: 768px) {
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #000;
+    color: white;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+  }
+
+  .sidebar {
+    transform: translateX(-100%); /* Hide sidebar off-screen */
+    width: 280px;
+    box-shadow: 10px 0 20px rgba(0,0,0,0.5);
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Slide in */
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+  }
+
+  .pc-only {
+    display: none;
+  }
+}
+
+.user-dashboard-btn {
+  margin-top: auto;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid #f1b410;
+  color: #f1b410;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* --- PC Layout Logic --- */
+/* PC Resolution Fix: Prevents Sidebar from covering the background */
+@media (min-width: 768px) {
+  main {
+    margin-left: 260px; /* This pushes the dashboard to the right of the sidebar */
+  }
+}
+
+/* Mobile Resolution Fix: Hides Sidebar off-screen until toggled */
+@media (max-width: 767px) {
+  .sidebar {
+    transform: translateX(-100%); /* Move off-screen */
+    position: fixed;
+    z-index: 1000;
+  }
+  .sidebar.open {
+    transform: translateX(0); /* Slide in when button is clicked */
+  }
+}
+
+/* Hero Text Fix: Prevents REDEFINE and EXISTENCE overlap */
+.hero-title {
+  font-size: clamp(2rem, 10vw, 7.5rem); 
+  line-height: 1.2; 
+  text-align: center;
 }

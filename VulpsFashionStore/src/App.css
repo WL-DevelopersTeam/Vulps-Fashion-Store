@@ -152,37 +152,73 @@ body {
 }
 
 /* --- Text Wrapper --- */
+/* 1. The Container: Adds padding so text doesn't touch the screen edges */
 .hero-text-wrapper {
   position: relative;
-  z-index: 10; /* Highest Priority: The Text */
-}
-/* --- Typography --- */
-.hero-eyebrow {
-  font-size: 1rem;
-  letter-spacing: 4px;
-  color:rgba(231, 180, 16, 0.932) ;
-  margin-bottom: 20px;
+  z-index: 10;
+  padding: 0 20px; 
+  text-align: center;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
+/* 2. The Eyebrow: Scaled down slightly for small screens */
+.hero-eyebrow {
+  font-size: clamp(0.7rem, 2vw, 1rem); 
+  letter-spacing: 3px;
+  color: rgba(231, 180, 16, 0.932);
+  margin-bottom: 15px;
+}
+
+/* 3. The Title: FIXES THE OVERLAP AND OVERFLOW */
 .hero-title {
   font-family: var(--font-display);
-  font-size: 8vw; /* Responsive font size */
-  line-height: 0.9;
+  /* Starts at 1.8rem for small phones, scales to 7.5rem for PC */
+  font-size: clamp(1.8rem, 10vw, 7.5rem); 
+  /* line-height 1.2 provides the vertical gap you were missing */
+  line-height: 1.2; 
   text-transform: uppercase;
   font-weight: 800;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+  word-wrap: break-word;
 }
 
+/* 4. The Outline: Makes the stroke thinner on mobile so it stays crisp */
 .outline-text {
-  -webkit-text-stroke: 2px rgba(231, 180, 16, 0.932);
+  -webkit-text-stroke: clamp(1px, 0.1vw, 2px) rgba(231, 180, 16, 0.932);
   color: transparent;
 }
 
+/* 5. The Description: Ensures it doesn't get too wide on PC */
 .hero-desc {
-  max-width: 500px;
-  margin: 0 auto 40px;
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto 35px;
   color: #ccc;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  line-height: 1.6;
+}
+
+/* 6. The Button Area */
+.hero-btns {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 15px 30px;
+  text-decoration: none;
+}
+
+/* 7. Mobile Specific: Adjusts button width for better tapping */
+@media (max-width: 480px) {
+  .btn-primary {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
 }
 
 /* Video Background styling */

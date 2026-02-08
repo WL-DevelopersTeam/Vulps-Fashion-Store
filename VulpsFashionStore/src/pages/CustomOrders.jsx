@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function CustomOrders() {
@@ -21,45 +20,47 @@ export default function CustomOrders() {
   };
 
   return (
-    <div className="flex-1 p-6">
-      <h1 className="text-2xl font-semibold mb-6">Custom Shirt Orders</h1>
+    <div className="flex-1 p-6 text-gray-900"> {/* Added global text color for this section */}
+      <h1 className="text-2xl font-bold mb-6 text-black">Custom Shirt Orders</h1>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="border-b bg-gray-50">
-            <tr>
-              <th className="p-3 text-left">Client Name</th>
-              <th className="text-left">Size</th>
-              <th className="text-left">Color</th>
-              <th className="text-left">Message</th>
-              <th className="text-left">Created At</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {orders.map((o) => (
-              <tr key={o.id} className="border-t">
-                <td className="p-3">{o.clientName}</td>
-                <td>{o.size}</td>
-                <td>{o.color}</td>
-                <td className="max-w-xs truncate">{o.message}</td>
-                <td>
-                  {o.createdAt
-                    ? new Date(o.createdAt).toLocaleString()
-                    : "-"}
-                </td>
+      <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="border-b bg-gray-100">
+              <tr className="text-black font-bold">
+                <th className="p-4">Client Name</th>
+                <th className="p-4">Size</th>
+                <th className="p-4">Color</th>
+                <th className="p-4">Message</th>
+                <th className="p-4">Created At</th>
               </tr>
-            ))}
+            </thead>
 
-            {orders.length === 0 && (
-              <tr>
-                <td colSpan="5" className="p-4 text-center text-gray-500">
-                  No custom orders yet
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            <tbody className="divide-y divide-gray-100 bg-white">
+              {orders.map((o) => (
+                <tr key={o.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="p-4 font-medium text-black">{o.clientName}</td>
+                  <td className="p-4 text-gray-800">{o.size}</td>
+                  <td className="p-4 text-gray-800">{o.color}</td>
+                  <td className="p-4 text-gray-800 max-w-xs truncate">{o.message}</td>
+                  <td className="p-4 text-gray-600 text-xs">
+                    {o.createdAt
+                      ? new Date(o.createdAt).toLocaleString()
+                      : "-"}
+                  </td>
+                </tr>
+              ))}
+
+              {orders.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="p-8 text-center text-black font-bold text-lg bg-gray-50">
+                    No custom orders yet
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

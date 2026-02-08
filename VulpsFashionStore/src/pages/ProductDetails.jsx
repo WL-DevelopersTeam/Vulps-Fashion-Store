@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "../components/layout/Layout";
@@ -15,8 +14,9 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [addingToCart, setAddingToCart] = useState(false); // Loading state for button
+  const [addingToCart, setAddingToCart] = useState(false);
 
+  // Expanded color map to ensure various common colors render correctly
   const colorMap = {
     black: "#000000",
     blue: "#2563eb",
@@ -24,7 +24,10 @@ const ProductDetails = () => {
     red: "#dc2626",
     green: "#16a34a",
     gray: "#6b7280",
-    yellow: "#eab308"
+    yellow: "#eab308",
+    navy: "#000080",
+    pink: "#db2777",
+    orange: "#ea580c"
   };
 
   useEffect(() => {
@@ -39,23 +42,19 @@ const ProductDetails = () => {
       );
       const data = res.data;
 
-<<<<<<< HEAD:VulpsFashionStore/src/pages/ProductDetails.jsx
-      const sizes = typeof data.sizes === 'string' ? data.sizes.split(',') : data.sizes;
-      const colors = Array.isArray(data.colors) ? data.colors : JSON.parse(data.colors || "[]");
-=======
-      const sizes = Array.isArray(data.sizes)
-  ? data.sizes
-  : typeof data.sizes === "string"
-  ? data.sizes.split(",").map(s => s.trim())
-  : [];
+      // HELPER: Normalizes API data that might arrive as strings with literal brackets ["S"]
+      const normalizeData = (input) => {
+        if (Array.isArray(input)) {
+          return input.map(item => String(item).replace(/[\[\]"]/g, "").trim());
+        }
+        if (typeof input === "string") {
+          return input.replace(/[\[\]"]/g, "").split(",").map(s => s.trim());
+        }
+        return [];
+      };
 
-const colors = Array.isArray(data.colors)
-  ? data.colors
-  : typeof data.colors === "string"
-  ? data.colors.split(",").map(c => c.trim())
-  : [];
-
->>>>>>> 4e4d8294e872700ac1ea076b3601fb7cdc67da2e:VulpsFashionStore/src/pages/ProductDetails.js
+      const sizes = normalizeData(data.sizes);
+      const colors = normalizeData(data.colors);
 
       setProduct({ ...data, sizes, colors });
       setSelectedSize(sizes[0] || "");
@@ -67,46 +66,41 @@ const colors = Array.isArray(data.colors)
     }
   };
 
-  /* --- 1. ADD TO CART FUNCTIONALITY --- */
   const addToCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     
-    // Redirect if not logged in
-    if (!user) {
-      alert("Please login to add items to your cart.");
-      navigate("/SignIn");
-      return;
+    if (!user || !user.id) {
+        alert("Please login to add items to cart");
+        navigate("/signin");
+        return;
     }
 
     if (!selectedSize || !selectedColor) {
-      alert("Please select a size and color.");
-      return;
+        alert("Please select a size and color");
+        return;
     }
 
     try {
-      setAddingToCart(true);
-      
-      const cartPayload = {
-        userId: user.id,
-        productId: product.id, // Ensure this matches your DB (id vs _id)
-        quantity: quantity,
-        size: selectedSize,
-        color: selectedColor
-      };
+        setAddingToCart(true);
+        // Corrected Payload: matching backend requirements for the fashion app
+        const res = await axios.post(
+            `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
+            {
+                productId: product.id,
+                size: selectedSize,
+                color: selectedColor,
+                quantity: quantity
+            }
+        );
 
-      await axios.post(
-        "https://vulps-fashion-store.onrender.com/api/cart/add",
-        cartPayload
-      );
-
-      alert("Item added to cart successfully!");
-      // Optional: Navigate to cart or stay here
-      // navigate("/cart"); 
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      alert("Failed to add item to cart.");
+        if (res.status === 200 || res.status === 201) {
+            navigate("/cart");
+        }
+    } catch (err) {
+        console.error("Error adding to cart:", err);
+        alert(err.response?.data?.message || "Failed to add to cart. Please try again.");
     } finally {
-      setAddingToCart(false);
+        setAddingToCart(false);
     }
   };
 
@@ -126,14 +120,14 @@ const colors = Array.isArray(data.colors)
       <div className="product-page-root">
         <div className="product-main-container">
           
-          {/* LEFT: IMAGE SECTION */}
+          {/* LEFT: IMAGE SECTION WITH ZOOM */}
           <div className="product-image-section">
             <div className="zoom-container" onMouseMove={handleMouseMove}>
               <img src={product.imageUrl} alt={product.name} className="main-product-image" />
             </div>
           </div>
 
-          {/* RIGHT: INFO CARD */}
+          {/* RIGHT: PRODUCT INFO CARD */}
           <div className="product-info-section">
             <div className="info-card">
               <div className="badge-row">
@@ -154,16 +148,15 @@ const colors = Array.isArray(data.colors)
                 <span className="discount-pill">30% OFF</span>
               </div>
 
-              <p className="description-text">{product.description || "Experience unmatched comfort and style with our premium cotton blend, designed for daily wear and durability."}</p>
+              <p className="description-text">{product.description || "Premium apparel designed for maximum comfort and lasting style."}</p>
 
               <div className="specs-grid">
                 <div className="spec-item"><span>✔</span> Premium Cotton</div>
-                <div className="spec-item"><span>✔</span> Skin-friendly</div>
                 <div className="spec-item"><span>✔</span> Fade-resistant</div>
                 <div className="spec-item"><span>✔</span> Made in India</div>
               </div>
 
-              {/* SIZE SELECTION */}
+              {/* SIZE SELECTION AREA */}
               <div className="selection-area">
                 <label className="section-label">Select Size</label>
                 <div className="options-flex">
@@ -179,7 +172,7 @@ const colors = Array.isArray(data.colors)
                 </div>
               </div>
 
-              {/* COLOR SELECTION */}
+              {/* COLOR SELECTION AREA: Normalized for API formats */}
               <div className="selection-area">
                 <label className="section-label">Select Color</label>
                 <div className="options-flex">
@@ -189,14 +182,12 @@ const colors = Array.isArray(data.colors)
                       <button 
                         key={color} 
                         className={`color-pill ${selectedColor === color ? 'active' : ''}`}
-                        /* --- 3. FIX: Add White Border so Black shows on Dark Background --- */
                         style={{ 
                             backgroundColor: bgColor,
-                            border: '2px solid white', 
-                            boxShadow: selectedColor === color ? '0 0 0 4px #d4af37' : 'none'
+                            border: selectedColor === color ? '3px solid #d4af37' : '1px solid #555'
                         }}
                         onClick={() => setSelectedColor(color)}
-                        title={color} // Shows color name on hover
+                        title={color}
                       />
                     );
                   })}
@@ -207,7 +198,7 @@ const colors = Array.isArray(data.colors)
                 🚚 Free delivery within 4–6 working days | 🔄 7-day returns
               </div>
 
-              {/* ACTION ROW */}
+              {/* ACTION ROW: Quantity and Add to Cart */}
               <div className="action-row">
                 <div className="quantity-toggle">
                   <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>−</button>
@@ -215,21 +206,17 @@ const colors = Array.isArray(data.colors)
                   <button onClick={() => setQuantity(quantity + 1)}>+</button>
                 </div>
                 
-                {/* --- 2. UPDATED ADD TO CART BUTTON --- */}
                 <button 
                     className="btn-add" 
                     onClick={addToCart}
                     disabled={addingToCart}
-                    style={{ width: '100%' }} // Make it fill the space since Buy Now is gone
+                    style={{ flex: 1 }}
                 >
                     {addingToCart ? "Adding..." : "Add to Cart"}
                 </button>
-                
-                {/* Buy Now button Removed */}
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </Layout>

@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-// Removed Axios to match your Cart.js implementation
 import Layout from "../components/layout/Layout";
 import './Checkout.css'; 
 
@@ -9,15 +7,14 @@ const Checkout = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  // 1. Local state for database items & loading status
+  // States
   const [dbItems, setDbItems] = useState([]);
-  const [isFetchingCart, setIsFetchingCart] = useState(true); // Starts true to show loading initially
+  const [isFetchingCart, setIsFetchingCart] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false); 
   
-  // 2. Get User ID
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
 
-  // 3. Determine items: Use "Buy Now" items (state) OR "Database Cart" items (dbItems)
   const passedItems = state?.items;
   const orderItems = (passedItems && passedItems.length > 0) ? passedItems : dbItems;
 
@@ -28,21 +25,19 @@ const Checkout = () => {
     address: "",
     city: "",
     state: "",
-    Pincode: "",
+    pincode: "", // Changed to lowercase for consistent validation
   });
 
   const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
   const [totals, setTotals] = useState({ subtotal: 0, total: 0 });
 
-  // 4. FETCH CART FALLBACK (Uses 'fetch' like Cart.js)
+  // Fetch Cart Fallback
   useEffect(() => {
-    // If we already have items passed from the previous page, don't fetch.
     if (passedItems && passedItems.length > 0) {
       setIsFetchingCart(false); 
       return;
     }
-
     if (!userId) {
       setIsFetchingCart(false);
       return;
@@ -51,27 +46,20 @@ const Checkout = () => {
     const fetchCart = async () => {
       try {
         setIsFetchingCart(true);
-        // Using standard fetch exactly like Cart.js
         const res = await fetch(`https://vulps-fashion-store.onrender.com/api/cart?userId=${userId}`);
-        
-        if (!res.ok) {
-          throw new Error("Failed to fetch");
-        }
-        
+        if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setDbItems(data || []);
       } catch (error) {
-        console.error("Error fetching cart for checkout:", error);
-        setDbItems([]); // Ensure it's an array even on error
+        console.error("Error fetching cart:", error);
       } finally {
-        setIsFetchingCart(false); // Stop loading regardless of success/failure
+        setIsFetchingCart(false);
       }
     };
-
     fetchCart();
   }, [userId, passedItems]);
 
-  // 5. Calculate Totals
+  // Totals calculation
   useEffect(() => {
     const sub = orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     const shipping = orderItems.length > 0 ? 100 : 0; 
@@ -82,235 +70,145 @@ const Checkout = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const isFormValid =
-    form.fullName &&
-    form.mobile &&
-    form.email &&
-    form.address &&
-    form.city &&
-    form.state &&
-    form.Pincode &&
-    paymentMethod;
+  // Validation: Button will enable once all fields are filled AND payment is selected
+  const isFormValid = 
+    form.fullName.trim() && 
+    form.mobile.trim() && 
+    form.email.trim() && 
+    form.address.trim() && 
+    form.city.trim() && 
+    form.state.trim() && 
+    form.pincode.trim() && 
+    paymentMethod !== "";
 
   const placeOrder = async () => {
-  if (!isFormValid) {
-    alert("Please fill all details");
-    return;
-  }
+    if (!isFormValid || !userId) return;
 
-  if (!userId) {
-    alert("User not logged in");
-    return;
-  }
+    try {
+      setLoading(true);
+      for (const item of orderItems) {
+        // Handle array color data
+        const cleanColor = Array.isArray(item.color) ? item.color[0] : item.color;
 
-  try {
-    setLoading(true);
+        const orderPayload = {
+          userId,
+          productId: item.productId || item.id,
+          productName: item.productName || item.name || item.title,
+          size: item.size,
+          color: cleanColor,
+          quantity: item.quantity,
+          price: item.price,
+          imageUrl: item.imageUrl || item.image,
+          fullName: form.fullName,
+          mobile: form.mobile,
+          email: form.email,
+          address: form.address,
+          city: form.city,
+          pincode: form.pincode,
+          paymentMethod
+        };
 
-    for (const item of orderItems) {
-      const orderPayload = {
-        userId: userId, // ✅ VERY IMPORTANT
-
-        productId: item.productId || item.id,
-        productName: item.productName || item.name || item.title,
-        size: item.size,
-        color: item.color,
-        quantity: item.quantity,
-        price: item.price,
-        imageUrl: item.imageUrl || item.image, // ✅ VERY IMPORTANT
-
-        fullName: form.fullName,
-        mobile: form.mobile,
-        email: form.email,
-        address: form.address,
-        city: form.city,
-        pincode: form.Pincode,
-
-        paymentMethod: paymentMethod
-        
-      };
-
-      const res = await fetch(
-        "https://vulps-fashion-store.onrender.com/api/orders",
-        {
+        const res = await fetch("https://vulps-fashion-store.onrender.com/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(orderPayload),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Order failed");
+        });
+        if (!res.ok) throw new Error("Order failed");
       }
+      setShowSuccessModal(true);
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    alert("Order placed successfully!");
-    navigate("/orders");
-
-  } catch (err) {
-    console.error(err);
-    alert("Order failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <Layout>
       <div className="checkout-container">
         <div className="checkout-grid">
-
-          {/* LEFT - ORDER SUMMARY */}
+          
+          {/* LEFT: ORDER SUMMARY */}
           <div className="checkout-card">
             <h2 className="checkout-title">Order Summary ({orderItems.length})</h2>
-
-            {/* LOGIC FIX: Show Loading OR Empty OR Items */}
-            {isFetchingCart ? (
-                <div className="text-gray-500 text-center py-8">
-                   Loading your items...
-                </div>
-            ) : orderItems.length === 0 ? (
-                <div className="text-gray-500 text-center py-8">
-                   <p>Your bag is currently empty.</p>
-                   <button onClick={() => navigate('/shop')} className="mt-4 text-[#d4af37] underline">Return to Shop</button>
-                </div>
-            ) : (
-                <div className="order-items-scroll">
-                    {orderItems.map((item, index) => (
-                        <div key={index} className="order-item">
-                            <img
-                                src={item.imageUrl || item.image}
-                                alt={item.name}
-                                className="order-img"
-                            />
-                            <div className="order-details">
-                                <h3>{item.name || item.title}</h3>
-                                <p className="order-meta">Size: {item.size} | Qty: {item.quantity}</p>
-                                <p className="order-meta">Color: <span style={{color: item.color, fontWeight:'bold', textTransform:'capitalize'}}>{item.color}</span></p>
-                                <p className="order-price">₹ {(item.price * item.quantity).toLocaleString()}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-
+            <div className="order-items-scroll">
+              {orderItems.map((item, index) => {
+                const displayColor = Array.isArray(item.color) ? item.color[0] : item.color;
+                return (
+                  <div key={index} className="order-item">
+                    <img src={item.imageUrl || item.image} alt="product" className="order-img" />
+                    <div className="order-details">
+                      <h3>{item.name || item.title}</h3>
+                      <p className="order-meta">Size: {item.size} | Qty: {item.quantity}</p>
+                      <p className="order-meta">
+                        Color: <span style={{ color: displayColor }}>{displayColor}</span>
+                      </p>
+                      <p className="order-price">₹ {item.price.toLocaleString()}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             <hr className="order-divider" />
-
-            <div className="summary-row">
-                <span>Subtotal</span>
-                <span>₹ {totals.subtotal.toLocaleString()}</span>
-            </div>
-            <div className="summary-row">
-                <span>Shipping</span>
-                <span>₹ {totals.total > 0 ? 100 : 0}</span>
-            </div>
-            
-            <div className="order-total">
-              <span>Total</span>
-              <span>₹ {totals.total.toLocaleString()}</span>
-            </div>
-
-            <p className="delivery-note">
-              🚚 Free delivery in 4–6 working days
-            </p>
+            <div className="summary-row"><span>Subtotal</span><span>₹ {totals.subtotal.toLocaleString()}</span></div>
+            <div className="summary-row"><span>Shipping</span><span>₹ {totals.total > 0 ? 100 : 0}</span></div>
+            <div className="order-total"><span>Total</span><span>₹ {totals.total.toLocaleString()}</span></div>
           </div>
 
-          {/* RIGHT - CUSTOMER DETAILS */}
+          {/* RIGHT: SHIPPING DETAILS */}
           <div className="checkout-card">
             <h2 className="checkout-title">Shipping Details</h2>
-
             <div className="form-grid">
-              <input
-                name="fullName"
-                placeholder="Full Name"
-                className="checkout-input"
-                onChange={handleChange}
-              />
-
+              <input name="fullName" value={form.fullName} placeholder="Full Name" className="checkout-input" onChange={handleChange} />
               <div className="grid grid-cols-2 gap-4">
-                <input
-                  name="mobile"
-                  placeholder="Mobile Number"
-                  className="checkout-input"
-                  onChange={handleChange}
-                />
-                <input
-                  name="email"
-                  placeholder="Email Address"
-                  className="checkout-input"
-                  onChange={handleChange}
-                />
+                <input name="mobile" value={form.mobile} placeholder="Mobile" className="checkout-input" onChange={handleChange} />
+                <input name="email" value={form.email} placeholder="Email" className="checkout-input" onChange={handleChange} />
               </div>
-
-              <textarea
-                name="address"
-                placeholder="Full Address (House No, Street, Area)"
-                className="checkout-input"
-                onChange={handleChange}
-              />
-
-               <input
-                name="state"
-                placeholder="State"
-                className="checkout-input"
-                onChange={handleChange}
-              />
+              <textarea name="address" value={form.address} placeholder="Full Address" className="checkout-input" onChange={handleChange} />
+              <input name="state" value={form.state} placeholder="State" className="checkout-input" onChange={handleChange} />
               <div className="grid grid-cols-2 gap-4">
-                <input
-                    name="city"
-                    placeholder="City"
-                    className="checkout-input"
-                    onChange={handleChange}
-                />
-                <input
-                    name="Pincode"
-                    placeholder="Pincode"
-                    className="checkout-input"
-                    onChange={handleChange}
-                />
+                <input name="city" value={form.city} placeholder="City" className="checkout-input" onChange={handleChange} />
+                <input name="pincode" value={form.pincode} placeholder="Pincode" className="checkout-input" onChange={handleChange} />
               </div>
             </div>
 
-            {/* PAYMENT METHOD */}
             <div className="payment-section">
-              <h3 className="font-semibold mb-3 text-white">Payment Method</h3>
-
+              <h3 className="payment-title">Payment Method</h3>
               <div className="payment-options">
-                <div
-                  onClick={() => setPaymentMethod("COD")}
-                  className={`payment-card ${paymentMethod === "COD" ? "selected" : ""}`}
-                >
-                  <span>Cash on Delivery</span>
-                  <span>💵</span>
+                <div onClick={() => setPaymentMethod("COD")} className={`payment-card ${paymentMethod === "COD" ? "selected" : ""}`}>
+                  <span>Cash on Delivery</span> <span>💵</span>
                 </div>
-
-                <div
-                  onClick={() => setPaymentMethod("ONLINE")}
-                  className={`payment-card ${paymentMethod === "ONLINE" ? "selected" : ""}`}
-                >
-                  <span>Online Payment</span>
-                  <span>💳</span>
+                <div onClick={() => setPaymentMethod("ONLINE")} className={`payment-card ${paymentMethod === "ONLINE" ? "selected" : ""}`}>
+                  <span>Online Payment</span> <span>💳</span>
                 </div>
               </div>
-
-              {paymentMethod === "ONLINE" && (
-                <p className="text-xs text-[#d4af37] mt-2 opacity-80">
-                  * Secure Gateway (Razorpay/Stripe) integration pending.
-                </p>
-              )}
             </div>
 
-            {/* PLACE ORDER */}
-            <button
-              onClick={placeOrder}
-              disabled={!isFormValid || loading || orderItems.length === 0}
-              className="place-order-btn"
-            >
-              {loading ? "Processing..." : `Pay ₹ ${totals.total.toLocaleString()}`}
-            </button>
+           <button 
+  onClick={placeOrder} 
+  // Added: paymentMethod === "ONLINE" to the disabled conditions
+  disabled={!isFormValid || loading || paymentMethod === "ONLINE" || orderItems.length === 0} 
+  className="place-order-btn"
+>
+  {loading ? "Processing..." : paymentMethod === "ONLINE" ? "Online Pay is not available" : `Pay ₹ ${totals.total.toLocaleString()}`}
+</button>
           </div>
-          
         </div>
       </div>
+
+      {showSuccessModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-icon">✔</div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Your style is on the way. Check your orders for updates.</p>
+            <div className="modal-actions">
+              <button onClick={() => navigate("/my-orders")} className="modal-btn-primary">View Orders</button>
+              <button onClick={() => navigate("/")} className="modal-btn-secondary">Back to Home</button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };
