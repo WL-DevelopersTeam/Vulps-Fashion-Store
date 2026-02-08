@@ -218,18 +218,39 @@
   background: #d4af37; color: #000; border-color: #d4af37; font-weight: bold;
 }
 
+/* Update your existing color-pill styles */
 .color-pill {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid transparent;
+  /* Important: Always show a subtle border so black/white pills are visible */
+  border: 2px solid rgba(255, 255, 255, 0.2); 
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
 }
+
 .color-pill.active {
   transform: scale(1.15);
-  border-color: #d4af37;
-  box-shadow: 0 0 0 4px rgba(0,0,0,0.5); /* Ring effect */
+  border-color: #d4af37; /* Gold border for active */
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2); /* Soft gold glow */
+}
+
+/* Update your size-chip to handle the normalized data */
+.size-chip {
+  width: 60px; /* Slightly wider for XL/XXL */
+  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
 }
 
 /* ACTION BUTTONS (Bottom Fixed feel) */
@@ -286,4 +307,54 @@
   flex: 1;
   text-align: center;
   font-weight: bold;
+}
+.info-card {
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  /* Add a subtle fade-in animation */
+  animation: fadeInRight 0.8s ease-out;
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Ensure the options (size/color) wrap nicely */
+.options-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 1024px) {
+  .product-page-root {
+    height: auto;
+    overflow: auto;
+    padding-top: 60px;
+  }
+
+  .product-main-container {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+  }
+
+  .product-image-section {
+    height: 500px;
+    flex: none;
+  }
+
+  .product-title {
+    font-size: 2.2rem;
+  }
+
+  .action-row {
+    flex-direction: column;
+  }
+
+  .quantity-toggle {
+    width: 100%;
+  }
 }
