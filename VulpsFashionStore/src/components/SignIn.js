@@ -84,21 +84,17 @@ React.useEffect(() => {
       }
     );
 
-    console.log('Login success:', response.data);
+    console.log("Login success:", response.data);
 
-    // ✅ Save token (VERY IMPORTANT)
-    // localStorage.setItem('token', response.data.token);
-    // localStorage.setItem('user', JSON.stringify(response.data.user));
-    localStorage.setItem('userId', response.data.user.id);
+// ✅ SAVE JWT TOKEN
+localStorage.setItem("token", response.data.token);
 
-    // Redirect to home/dashboard
-    const user = response.data.user;
-
-// Save user in browser
+// ✅ SAVE USER OBJECT
+const user = response.data.user;
 localStorage.setItem("user", JSON.stringify(user));
 localStorage.setItem("userId", user.id);
 
-// Check role from database
+// ✅ ROLE BASED REDIRECT
 if (user.role === "ADMIN") {
   navigate("/admin");
 } else {

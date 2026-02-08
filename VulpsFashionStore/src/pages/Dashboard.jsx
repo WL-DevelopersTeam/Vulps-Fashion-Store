@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 
 /* Mock data (will be replaced by backend later) */
@@ -47,9 +47,7 @@ export default function Dashboard() {
 }, []);
 
 const fetchOrders = async () => {
-  const res = await axios.get(
-    "https://vulps-fashion-store.onrender.com/api/orders"
-  );
+  const res = await api.get("/api/orders");
 
   const data = res.data;
 

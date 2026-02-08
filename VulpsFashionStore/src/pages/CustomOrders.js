@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 export default function CustomOrders() {
   const [orders, setOrders] = useState([]);
@@ -10,9 +10,7 @@ export default function CustomOrders() {
 
   const fetchCustomOrders = async () => {
     try {
-      const res = await axios.get(
-        "https://vulps-fashion-store.onrender.com/api/custom-products"
-      );
+      const res = await api.get("/api/custom-products");
       setOrders(res.data);
     } catch (error) {
       console.error("Failed to fetch custom orders", error);

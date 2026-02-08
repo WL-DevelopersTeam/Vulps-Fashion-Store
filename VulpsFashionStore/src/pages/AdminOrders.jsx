@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { motion } from "framer-motion";
 import Loader from "../components/Loader";
 
@@ -75,9 +75,7 @@ useEffect(() => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(
-        "https://vulps-fashion-store.onrender.com/api/orders"
-      );
+      const res = await api.get("/api/orders");
       setOrders(res.data);
     } catch (err) {
       console.error("Failed to fetch orders", err);
@@ -98,9 +96,7 @@ useEffect(() => {
   setLoadingAction({ orderId, action: status });
 
   try {
-    await axios.put(
-      `https://vulps-fashion-store.onrender.com/api/orders/${orderId}/${map[status]}`
-    );
+    await api.put(`/api/orders/${orderId}/${map[status]}`);
 
     setOrders((prev) =>
       prev.map((o) =>
@@ -137,10 +133,10 @@ const countByStatus = (status) =>
   setLoadingAction({ orderId: selectedOrder.id, action: "SHIP" });
 
   try {
-    await axios.put(
-      `https://vulps-fashion-store.onrender.com/api/orders/${selectedOrder.id}/ship`,
-      { courierName, trackingNumber }
-    );
+    await api.put(
+        `/api/orders/${selectedOrder.id}/ship`,
+        { courierName, trackingNumber }
+      );
 
     setOrders((prev) =>
       prev.map((o) =>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Cart.css";
+import api from "../api/axios";
 
 function Cart() {
   const navigate = useNavigate();
@@ -21,16 +22,8 @@ function Cart() {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch(
-        `https://vulps-fashion-store.onrender.com/api/cart?userId=${userId}`
-      );
-      if (!res.ok) {
-        setCartItems([]);
-        setLoading(false);
-        return;
-      }
-      const data = await res.json();
-      setCartItems(data);
+      const res = await api.get(`/api/cart?userId=${userId}`);
+      setCartItems(res.data);
     } catch (error) {
       console.error("Error fetching cart:", error);
     } finally {
@@ -39,10 +32,9 @@ function Cart() {
   };
 
   const removeItem = async (cartItemId) => {
-    await fetch(
-      `https://vulps-fashion-store.onrender.com/api/cart/remove/${cartItemId}`,
-      { method: "DELETE" }
-    );
+    await api.delete(`/api/cart/remove/${cartItemId}`);
+    fetchCart();
+
     fetchCart();
   };
 

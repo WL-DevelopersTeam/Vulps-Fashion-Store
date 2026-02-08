@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import api from "../api/axios";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -12,19 +13,18 @@ const MyOrders = () => {
     if (userId) fetchOrders();
   }, [userId]);
 
-  const fetchOrders = async () => {
-    try {
-      const res = await fetch(
-        `https://vulps-fashion-store.onrender.com/api/orders/user/${userId}`
-      );
-      const data = await res.json();
-      setOrders(data);
-    } catch (err) {
-      console.error("Failed to fetch orders", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchOrders = async () => {
+  try {
+    const res = await api.get(`/api/orders/user/${userId}`);
+
+    setOrders(res.data);
+  } catch (err) {
+    console.error("Failed to fetch orders", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const cancelOrder = async (orderId) => {
   const confirmCancel = window.confirm(
@@ -33,12 +33,8 @@ const MyOrders = () => {
   if (!confirmCancel) return;
 
   try {
-    await fetch(
-      `https://vulps-fashion-store.onrender.com/api/orders/${orderId}/cancel`,
-      {
-        method: "PUT",
-      }
-    );
+    await api.put(`/api/orders/${orderId}/cancel`);
+
 
     // update UI without refetch
     setOrders((prev) =>

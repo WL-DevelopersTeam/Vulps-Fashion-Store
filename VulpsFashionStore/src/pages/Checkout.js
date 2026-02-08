@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-// Removed Axios to match your Cart.js implementation
+import api from "../api/axios";
 import Layout from "../components/layout/Layout";
 import './Checkout.css'; 
 
@@ -51,14 +51,9 @@ const Checkout = () => {
       try {
         setIsFetchingCart(true);
         // Using standard fetch exactly like Cart.js
-        const res = await fetch(`https://vulps-fashion-store.onrender.com/api/cart?userId=${userId}`);
-        
-        if (!res.ok) {
-          throw new Error("Failed to fetch");
-        }
-        
-        const data = await res.json();
-        setDbItems(data || []);
+       const res = await api.get("/api/cart");
+        setDbItems(res.data || []);
+
       } catch (error) {
         console.error("Error fetching cart for checkout:", error);
         setDbItems([]); // Ensure it's an array even on error
@@ -91,14 +86,9 @@ const Checkout = () => {
     form.Pincode &&
     paymentMethod;
 
-  const placeOrder = async () => {
+const placeOrder = async () => {
   if (!isFormValid) {
     alert("Please fill all details");
-    return;
-  }
-
-  if (!userId) {
-    alert("User not logged in");
     return;
   }
 
@@ -107,15 +97,13 @@ const Checkout = () => {
 
     for (const item of orderItems) {
       const orderPayload = {
-        userId: userId, // ✅ VERY IMPORTANT
-
         productId: item.productId || item.id,
-        productName: item.productName || item.name || item.title,
+        productName: item.productName || item.name,
         size: item.size,
         color: item.color,
         quantity: item.quantity,
         price: item.price,
-        imageUrl: item.imageUrl || item.image, // ✅ VERY IMPORTANT
+        imageUrl: item.imageUrl || item.image,
 
         fullName: form.fullName,
         mobile: form.mobile,
@@ -125,25 +113,13 @@ const Checkout = () => {
         pincode: form.Pincode,
 
         paymentMethod: paymentMethod
-        
       };
 
-      const res = await fetch(
-        "https://vulps-fashion-store.onrender.com/api/orders",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderPayload),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Order failed");
-      }
+      await api.post("/api/orders", orderPayload);
     }
 
     alert("Order placed successfully!");
-    navigate("/orders");
+    navigate("/my-orders");
 
   } catch (err) {
     console.error(err);
@@ -152,6 +128,7 @@ const Checkout = () => {
     setLoading(false);
   }
 };
+
 
   return (
     <Layout>

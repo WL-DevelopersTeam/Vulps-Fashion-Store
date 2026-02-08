@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from "axios";
+import api from "../api/axios"; 
 
 // 1. Define initialState outside the component so it's globally accessible
 const initialState = {
@@ -44,15 +44,9 @@ const CustomShirtForm = () => {
   e.preventDefault();
 
   try {
-    const response = await axios.post(
-      "https://vulps-fashion-store.onrender.com/api/custom-products", // SAME PC
-      // "http://10.191.17.135:8080/api/custom-products", // OTHER PCs
-      formData,
-      {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
+    const response = await api.post(
+      "/api/custom-products",
+      formData
     );
 
     console.log("Saved successfully:", response.data);
