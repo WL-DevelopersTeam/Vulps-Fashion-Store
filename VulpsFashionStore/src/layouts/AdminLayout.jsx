@@ -21,13 +21,13 @@ export default function AdminLayout({ children }) {
       
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between bg-black text-white p-4 sticky top-0 z-50">
-        <h2 className="text-lg font-bold tracking-widest">CLOVRA</h2>
-        <button 
+        {/* <h2 className="text-lg font-bold tracking-widest">CLOVRA</h2> */}
+        {/* <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="p-2 border border-gray-700 rounded-md"
         >
           {isSidebarOpen ? "✕" : "☰"}
-        </button>
+        </button> */}
       </div>
 
       {/* Sidebar Component */}
