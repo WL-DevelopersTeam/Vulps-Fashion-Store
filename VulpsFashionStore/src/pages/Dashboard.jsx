@@ -144,7 +144,7 @@ export default function Dashboard({ onMenuToggle }) {
             </div>
 
             {/* Add Product Form */}
-            <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-gray-100 mt-8">
+            {/* <div className="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-gray-100 mt-8">
                 <h2 className="text-lg font-bold text-gray-800 mb-6">Add New Product</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                     <Input label="Product Name" placeholder="e.g. Summer T-Shirt" />
@@ -155,7 +155,7 @@ export default function Dashboard({ onMenuToggle }) {
                 <button className="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all shadow-lg">
                     Save Product
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 }
