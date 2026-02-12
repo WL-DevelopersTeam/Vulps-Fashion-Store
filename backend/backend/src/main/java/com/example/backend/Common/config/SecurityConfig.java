@@ -38,6 +38,17 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
             .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
 
+             // ===== LATEST COLLECTIONS =====
+
+        // Public GET
+        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/latest-collections/**").permitAll()
+
+        // ADMIN modify
+        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/latest-collections/**").hasRole("ADMIN")
+        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/latest-collections/**").hasRole("ADMIN")
+        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/latest-collections/**").hasRole("ADMIN")
+
+
             // Everything else needs login
             .anyRequest().authenticated()
         )
