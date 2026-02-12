@@ -84,7 +84,7 @@ React.useEffect(() => {
       }
     );
 
-    console.log("Login success:", response.data);
+    // console.log("Login success:", response.data);
 
 // ✅ SAVE JWT TOKEN
 localStorage.setItem("token", response.data.token);

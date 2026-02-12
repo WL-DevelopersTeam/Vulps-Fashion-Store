@@ -104,7 +104,7 @@ const loadLatestCollections = async () => {
       "https://vulps-fashion-store.onrender.com/api/latest-collections"
     );
 
-    console.log("Latest collections:", res.data); // 👈 IMPORTANT
+    // console.log("Latest collections:", res.data); // 👈 IMPORTANT
     setLatestCollections(res.data);
   } catch (err) {
     console.error("API error:", err);

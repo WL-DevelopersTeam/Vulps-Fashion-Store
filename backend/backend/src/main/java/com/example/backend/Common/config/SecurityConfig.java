@@ -2,6 +2,7 @@ package com.example.backend.Common.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,19 +16,41 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Autowired
+private JwtFilter jwtFilter;
 
-        http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-                // 🔥 ALLOW EVERYTHING FOR NOW
-                .anyRequest().permitAll()
-            );
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http.build();
-    }
+    http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> auth
+
+            // Public endpoints
+            .requestMatchers("/api/auth/**").permitAll()
+
+            // Allow viewing products without login
+            .requestMatchers("/api/products").permitAll()
+            .requestMatchers("/api/products/**").permitAll()
+
+            // Protect add/delete products (ADMIN only)
+            .requestMatchers("/api/products/**").hasRole("ADMIN")
+
+            // Everything else needs login
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(
+                    org.springframework.security.config.http.SessionCreationPolicy.STATELESS
+            )
+        )
+        .addFilterBefore(jwtFilter,
+                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+
+    return http.build();
+}
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
