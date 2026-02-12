@@ -30,12 +30,13 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             // Public endpoints
             .requestMatchers("/api/auth/**").permitAll()
 
-            // Allow viewing products without login
-            .requestMatchers("/api/products").permitAll()
-            .requestMatchers("/api/products/**").permitAll()
+            // Public GET only (view products)
+            .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
 
-            // Protect add/delete products (ADMIN only)
-            .requestMatchers("/api/products/**").hasRole("ADMIN")
+            // ADMIN only for modifying products
+            .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+            .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+            .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
 
             // Everything else needs login
             .anyRequest().authenticated()
