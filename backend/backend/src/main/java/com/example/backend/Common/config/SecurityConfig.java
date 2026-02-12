@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 public class SecurityConfig {
@@ -48,6 +49,24 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/latest-collections/**").hasRole("ADMIN")
         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/latest-collections/**").hasRole("ADMIN")
 
+
+        // ===== ORDERS =====
+
+    // CUSTOMER place order
+    .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("USER", "ADMIN")
+
+    // CUSTOMER view own orders
+    .requestMatchers(HttpMethod.GET, "/api/orders/user/**").hasAnyRole("USER", "ADMIN")
+
+    // CUSTOMER cancel
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/cancel").hasAnyRole("USER", "ADMIN")
+
+    // ADMIN only
+    .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/accept").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/deliver").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/decline").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/ship").hasRole("ADMIN")
 
             // Everything else needs login
             .anyRequest().authenticated()

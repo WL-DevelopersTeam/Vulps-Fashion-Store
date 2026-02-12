@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.order.dto.ShipmentRequest;
@@ -40,10 +41,12 @@ public class OrderController {
     // ================================
     // CUSTOMER: GET PROFILE ORDERS
     // ================================
-    @GetMapping("/user/{userId}")
-public List<Order> getOrdersByUserId(@PathVariable Long userId) {
-    return orderService.getOrdersByUserId(userId);
-}
+    @GetMapping("/user")
+    public List<Order> getMyOrders(Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+        return orderService.getOrdersByUserId(userId);
+    }
 
     // ================================
     // ADMIN: ACCEPT ORDER
