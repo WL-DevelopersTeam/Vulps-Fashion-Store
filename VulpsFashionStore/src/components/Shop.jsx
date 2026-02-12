@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Search } from "lucide-react";
+import api from "../api/axios";
 
 // Components
 import Layout from "../components/layout/Layout";
@@ -81,27 +82,31 @@ const Shop = () => {
     };
 
     // --- ADD TO CART ---
-    const confirmAddToCart = async ({ product, size, color, quantity }) => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-            navigate("/signin");
-            return;
-        }
+const confirmAddToCart = async ({ product, size, color, quantity }) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        navigate("/signin");
+        return;
+    }
 
-        try {
-            setAddingToCartId(product.id);
-            await axios.post(
-                `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
-                { productId: product.id, size, color, quantity }
-            );
-            setShowCartModal(false);
-            navigate("/cart");
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setAddingToCartId(null);
-        }
-    };
+    try {
+        setAddingToCartId(product.id);
+
+        await api.post(
+            `/api/cart/add?userId=${user.id}`,
+            { productId: product.id, size, color, quantity }
+        );
+
+        setShowCartModal(false);
+        navigate("/cart");
+
+    } catch (err) {
+        console.error(err);
+    } finally {
+        setAddingToCartId(null);
+    }
+};
+
 
     const resetFilters = () => {
         setSelectedCategory("All Products");

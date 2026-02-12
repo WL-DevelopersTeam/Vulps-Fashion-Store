@@ -4,6 +4,7 @@ import axios from "axios";
 import Layout from "../components/layout/Layout";
 import Loader from "../components/Loader";
 import "./ProductDetails.css";
+import api from "../api/axios";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -37,10 +38,8 @@ const ProductDetails = () => {
   const fetchProduct = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `https://vulps-fashion-store.onrender.com/api/products/${id}`
-      );
-      const data = res.data;
+      const res = await api.get(`/api/products/${id}`);
+     const data = res.data;
 
       // HELPER: Normalizes API data that might arrive as strings with literal brackets ["S"]
       const normalizeData = (input) => {
@@ -83,15 +82,16 @@ const ProductDetails = () => {
     try {
         setAddingToCart(true);
         // Corrected Payload: matching backend requirements for the fashion app
-        const res = await axios.post(
-            `https://vulps-fashion-store.onrender.com/api/cart/add?userId=${user.id}`,
+        const res = await api.post(
+            `/api/cart/add?userId=${user.id}`,
             {
-                productId: product.id,
-                size: selectedSize,
-                color: selectedColor,
-                quantity: quantity
+              productId: product.id,
+              size: selectedSize,
+              color: selectedColor,
+              quantity: quantity
             }
-        );
+          );
+
 
         if (res.status === 200 || res.status === 201) {
             navigate("/cart");

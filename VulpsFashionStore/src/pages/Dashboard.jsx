@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import { Menu, X, Bell } from "lucide-react"; // Using Lucide for modern icons
 import {
     BarChart,
@@ -44,7 +44,7 @@ export default function Dashboard({ onMenuToggle }) {
 
     const fetchOrders = async () => {
         try {
-            const res = await axios.get("https://vulps-fashion-store.onrender.com/api/orders");
+            const res = await api.get("/api/orders");
             const data = res.data;
             setTotalOrders(data.length);
             setPendingCount(data.filter(o => o.status === "PENDING").length);
