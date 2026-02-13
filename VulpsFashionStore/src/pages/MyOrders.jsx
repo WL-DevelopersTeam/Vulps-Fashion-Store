@@ -16,7 +16,7 @@ const MyOrders = () => {
 
 const fetchOrders = async () => {
   try {
-    const res = await api.get(`/api/orders/user/${userId}`);
+    const res = await api.get("/api/orders/user");
 
     setOrders(res.data);
   } catch (err) {

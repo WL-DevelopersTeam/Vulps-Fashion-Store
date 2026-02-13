@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import './Checkout.css'; 
+import api from "../api/axios";
 
 const Checkout = () => {
   const { state } = useLocation();
@@ -81,47 +82,48 @@ const Checkout = () => {
     form.pincode.trim() && 
     paymentMethod !== "";
 
-  const placeOrder = async () => {
-    if (!isFormValid || !userId) return;
+const placeOrder = async () => {
+  if (!isFormValid || !userId) return;
 
-    try {
-      setLoading(true);
-      for (const item of orderItems) {
-        // Handle array color data
-        const cleanColor = Array.isArray(item.color) ? item.color[0] : item.color;
+  try {
+    setLoading(true);
 
-        const orderPayload = {
-          userId,
-          productId: item.productId || item.id,
-          productName: item.productName || item.name || item.title,
-          size: item.size,
-          color: cleanColor,
-          quantity: item.quantity,
-          price: item.price,
-          imageUrl: item.imageUrl || item.image,
-          fullName: form.fullName,
-          mobile: form.mobile,
-          email: form.email,
-          address: form.address,
-          city: form.city,
-          pincode: form.pincode,
-          paymentMethod
-        };
+    for (const item of orderItems) {
 
-        const res = await fetch("https://vulps-fashion-store.onrender.com/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderPayload),
-        });
-        if (!res.ok) throw new Error("Order failed");
-      }
-      setShowSuccessModal(true);
-    } catch (err) {
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+      const cleanColor = Array.isArray(item.color)
+        ? item.color[0]
+        : item.color;
+
+      const orderPayload = {
+        userId,
+        productId: item.productId || item.id,
+        productName: item.productName || item.name || item.title,
+        size: item.size,
+        color: cleanColor,
+        quantity: item.quantity,
+        price: item.price,
+        imageUrl: item.imageUrl || item.image,
+        fullName: form.fullName,
+        mobile: form.mobile,
+        email: form.email,
+        address: form.address,
+        city: form.city,
+        pincode: form.pincode,
+        paymentMethod
+      };
+
+      await api.post("/api/orders", orderPayload);
     }
-  };
+
+    setShowSuccessModal(true);
+
+  } catch (err) {
+    alert("Something went wrong. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <Layout>
