@@ -74,13 +74,12 @@ formData.append("colors", colors.join(","));
 
       formData.append("image", image);
 
-      await api.post(
-  "/api/products",
-  formData,
-  {
-    headers: { "Content-Type": "multipart/form-data" }
-  }
-);
+      await api.post("/api/products",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" }
+        }
+      );
 
       alert("Product added successfully");
       fetchProducts();
@@ -125,11 +124,16 @@ formData.append("colors", colors.join(","));
       formData.append("description", latestDescription);
       formData.append("image", latestImage);
 
-      await axios.post(
-        "https://vulps-fashion-store.onrender.com/api/latest-collections",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      await api.post(
+  "/api/latest-collections",
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }
+);
+
 
       alert("Latest product added successfully");
       setLatestName("");
