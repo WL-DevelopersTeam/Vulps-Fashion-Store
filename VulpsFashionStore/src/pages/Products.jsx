@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/axios";
 import Loader from "../components/Loader";
 import "./Products.css"; // Make sure to create this file
 
@@ -74,11 +74,13 @@ formData.append("colors", colors.join(","));
 
       formData.append("image", image);
 
-      await axios.post(
-        "https://vulps-fashion-store.onrender.com/api/products",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      await api.post(
+  "/api/products",
+  formData,
+  {
+    headers: { "Content-Type": "multipart/form-data" }
+  }
+);
 
       alert("Product added successfully");
       fetchProducts();
