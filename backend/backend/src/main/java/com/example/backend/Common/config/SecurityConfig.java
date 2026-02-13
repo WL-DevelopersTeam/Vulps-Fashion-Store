@@ -35,9 +35,9 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
 
             // ADMIN only for modifying products
-            .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasAuthority("ADMIN")
-            .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasAuthority("ADMIN")
-            .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMIN")
+            .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+            .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+            .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
 
              // ===== LATEST COLLECTIONS =====
 
@@ -45,9 +45,9 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/latest-collections/**").permitAll()
 
         // ADMIN modify
-        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/latest-collections/**").hasAuthority("ADMIN")
-        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/latest-collections/**").hasAuthority("ADMIN")
-        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/latest-collections/**").hasAuthority("ADMIN")
+        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/latest-collections/**").hasRole("ADMIN")
+        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/latest-collections/**").hasRole("ADMIN")
+        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/latest-collections/**").hasRole("ADMIN")
 
 
         // ===== ORDERS =====
@@ -63,10 +63,10 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
     // ADMIN only
     .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
-    .requestMatchers(HttpMethod.PUT, "/api/orders/*/accept").hasAuthority("ADMIN")
-    .requestMatchers(HttpMethod.PUT, "/api/orders/*/deliver").hasAuthority("ADMIN")
-    .requestMatchers(HttpMethod.PUT, "/api/orders/*/decline").hasAuthority("ADMIN")
-    .requestMatchers(HttpMethod.PUT, "/api/orders/*/ship").hasAuthority("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/accept").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/deliver").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/decline").hasRole("ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/ship").hasRole("ADMIN")
 
             // Everything else needs login
             .anyRequest().authenticated()
