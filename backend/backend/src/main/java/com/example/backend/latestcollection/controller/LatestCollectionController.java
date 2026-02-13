@@ -10,7 +10,11 @@ import com.example.backend.latestcollection.dto.LatestCollectionRequest;
 import com.example.backend.latestcollection.dto.LatestCollectionResponse;
 import com.example.backend.latestcollection.service.LatestCollectionService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {
+    "http://localhost:3000",
+    "https://vulpsfashion.netlify.app",
+    "http://localhost:5173"
+})
 @RestController
 @RequestMapping("/api/latest-collections")
 public class LatestCollectionController {

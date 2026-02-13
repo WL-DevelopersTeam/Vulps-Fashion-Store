@@ -23,8 +23,7 @@ import tools.jackson.databind.ObjectMapper;
 @RequestMapping("/api/products")
 @CrossOrigin(origins = {
     "http://localhost:3000",
-    "https://vulps-fashion-store.vercel.app",
-    "https://vulpsfashionstore.vercel.app",
+    "https://vulpsfashion.netlify.app",
     "http://localhost:5173"
 })
 public class ProductController {

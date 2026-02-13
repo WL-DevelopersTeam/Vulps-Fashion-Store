@@ -93,8 +93,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
         config.setAllowedOrigins(List.of(
             "https://vulpsfashion.vercel.app",
-            "https://vulps-fashion-store.vercel.app",
-            "https://vulps-fashion.vercel.app",
+            "https://vulpsfashion.netlify.app",
             "http://localhost:3000",
             "http://localhost:5173"
         ));

@@ -15,7 +15,8 @@ import com.example.backend.order.service.OrderService;
 @RequestMapping("/api/orders")
 @CrossOrigin(origins = {
     "http://localhost:3000",
-    "https://vulps-fashion-store.vercel.app"
+    "https://vulpsfashion.netlify.app",
+    "http://localhost:5173"
 })
 public class OrderController {
 
