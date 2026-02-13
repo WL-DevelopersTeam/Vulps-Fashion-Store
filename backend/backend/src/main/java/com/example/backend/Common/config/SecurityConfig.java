@@ -89,7 +89,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         CorsConfiguration config = new CorsConfiguration();
 
         // 🔥 VERY IMPORTANT
-        config.setAllowCredentials(false);
+        config.setAllowCredentials(true);
 
         config.setAllowedOrigins(List.of(
             "https://vulpsfashion.vercel.app",

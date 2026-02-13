@@ -97,9 +97,7 @@ formData.append("colors", colors.join(","));
   const fetchProducts = async () => {
     try {
       setLoadingProducts(true);
-      const res = await axios.get(
-        "https://vulps-fashion-store.onrender.com/api/products"
-      );
+     const res = await api.get("/api/products");
       setProducts(res.data);
     } catch (err) {
       console.error("Fetch failed", err);
@@ -153,9 +151,7 @@ const deleteProduct = async (id) => {
   try {
     setDeletingId(id);
 
-    await axios.delete(
-      `https://vulps-fashion-store.onrender.com/api/products/${id}`
-    );
+    await api.delete(`/api/products/${id}`);
 
     // ✅ ALWAYS re-fetch from backend
     await fetchProducts();
