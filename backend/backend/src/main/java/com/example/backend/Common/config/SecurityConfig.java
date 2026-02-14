@@ -53,13 +53,13 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         // ===== ORDERS =====
 
     // CUSTOMER place order
-    .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("USER", "ADMIN")
+    .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("CUSTOMER", "ADMIN")
 
     // CUSTOMER view own orders
-    .requestMatchers(HttpMethod.GET, "/api/orders/user/**").hasAnyRole("USER", "ADMIN")
+    .requestMatchers(HttpMethod.GET, "/api/orders/user/**").hasAnyRole("CUSTOMER", "ADMIN")
 
     // CUSTOMER cancel
-    .requestMatchers(HttpMethod.PUT, "/api/orders/*/cancel").hasAnyRole("USER", "ADMIN")
+    .requestMatchers(HttpMethod.PUT, "/api/orders/*/cancel").hasAnyRole("CUSTOMER", "ADMIN")
 
     // ADMIN only
     .requestMatchers(HttpMethod.GET, "/api/orders").hasRole("ADMIN")
