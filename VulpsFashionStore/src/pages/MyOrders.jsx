@@ -1,11 +1,13 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "../api/axios";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // --- NEW STATE FOR POPUP ---
+  const [cancelConfirm, setCancelConfirm] = useState({ show: false, orderId: null });
 
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?.id;
@@ -14,41 +16,44 @@ const MyOrders = () => {
     if (userId) fetchOrders();
   }, [userId]);
 
-const fetchOrders = async () => {
-  try {
-    const res = await api.get("/api/orders/user");
+  const fetchOrders = async () => {
+    try {
+      const res = await api.get("/api/orders/user");
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Failed to fetch orders", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setOrders(res.data);
-  } catch (err) {
-    console.error("Failed to fetch orders", err);
-  } finally {
-    setLoading(false);
-  }
-};
+  /* --- UPDATED CANCEL LOGIC --- */
+  
+  // 1. Trigger the popup
+  const cancelOrder = (orderId) => {
+    setCancelConfirm({ show: true, orderId });
+  };
 
-
-  const cancelOrder = async (orderId) => {
-  const confirmCancel = window.confirm(
-    "Are you sure you want to cancel this order?"
-  );
-  if (!confirmCancel) return;
-
-  try {
-    await api.put(`/api/orders/${orderId}/cancel`);
-
-
-    // update UI without refetch
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === orderId ? { ...o, status: "CANCELLED" } : o
-      )
-    );
-  } catch (err) {
-    console.error("Failed to cancel order", err);
-    alert("Unable to cancel order");
-  }
-};
-
+  // 2. Handle the actual API call when "Yes" is clicked
+  const handleActualCancel = async () => {
+    const orderId = cancelConfirm.orderId;
+    try {
+      await api.put(`/api/orders/${orderId}/cancel`);
+      
+      // Update UI without refetch
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === orderId ? { ...o, status: "CANCELLED" } : o
+        )
+      );
+    } catch (err) {
+      console.error("Failed to cancel order", err);
+      alert("Unable to cancel order");
+    } finally {
+      // Close popup
+      setCancelConfirm({ show: false, orderId: null });
+    }
+  };
 
   if (!userId) {
     return (
@@ -66,34 +71,50 @@ const fetchOrders = async () => {
     );
   }
 
-    const getTrackingUrl = (courierName, trackingNumber) => {
+  const getTrackingUrl = (courierName, trackingNumber) => {
     if (!courierName || !trackingNumber) return null;
-
     const courier = courierName.toLowerCase();
-
-    if (courier.includes("delhivery")) {
-      return `https://www.delhivery.com/track/package/${trackingNumber}`;
-    }
-
-    if (courier.includes("bluedart")) {
-      return `https://www.bluedart.com/web/guest/trackdartresult?trackFor=0&trackNo=${trackingNumber}`;
-    }
-
-    if (courier.includes("dtdc")) {
-      return `https://www.dtdc.in/tracking/tracking_results.asp?strCnno=${trackingNumber}`;
-    }
-
-    if (courier.includes("amazon")) {
-      return `https://track.amazon.in/tracking/${trackingNumber}`;
-    }
-
-    // fallback – Google search
+    if (courier.includes("delhivery")) return `https://www.delhivery.com/track/package/${trackingNumber}`;
+    if (courier.includes("bluedart")) return `https://www.bluedart.com/web/guest/trackdartresult?trackFor=0&trackNo=${trackingNumber}`;
+    if (courier.includes("dtdc")) return `https://www.dtdc.in/tracking/tracking_results.asp?strCnno=${trackingNumber}`;
+    if (courier.includes("amazon")) return `https://track.amazon.in/tracking/${trackingNumber}`;
     return `https://www.google.com/search?q=${courierName}+tracking+${trackingNumber}`;
   };
 
-
   return (
-    <div className="max-w-7xl mx-auto p-8 space-y-8">
+    <div className="max-w-7xl mx-auto p-8 space-y-8 relative">
+      
+      {/* --- CUSTOM CONFIRMATION POPUP --- */}
+      <AnimatePresence>
+        {cancelConfirm.show && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-gray-900 p-8 rounded-2xl border border-gray-700 shadow-2xl max-w-sm w-full text-center"
+            >
+              <h2 className="text-2xl font-bold text-white mb-2">Are you sure?</h2>
+              <p className="text-gray-400 mb-8">Do you really want to cancel this order? This cannot be undone.</p>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setCancelConfirm({ show: false, orderId: null })}
+                  className="flex-1 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-600 transition"
+                >
+                  No, Back
+                </button>
+                <button 
+                  onClick={handleActualCancel}
+                  className="flex-1 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition"
+                >
+                  Yes, Cancel
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <h1 className="text-4xl font-bold text-center text-[#FFD700] mb-6">
         📦 My Orders
       </h1>
@@ -151,7 +172,6 @@ const fetchOrders = async () => {
                         : order.status === "CANCELLED"
                         ? "bg-red-600"
                         : "bg-red-500"
-
                     }`}
                 >
                   {order.status}
@@ -163,30 +183,18 @@ const fetchOrders = async () => {
               </div>
             </div>
 
-            {/* SHIPMENT DETAILS (UPDATED WITH TRACK BUTTON) */}
-            {(order.status === "SHIPPED" ||
-              order.status === "DELIVERED") && (
+            {/* SHIPMENT DETAILS */}
+            {(order.status === "SHIPPED" || order.status === "DELIVERED") && (
               <div className="mx-6 mb-4 bg-gray-900 p-4 rounded-xl text-sm">
                 <h4 className="font-semibold text-[#FFD700] mb-2">
                   🚚 Shipment Details
                 </h4>
-
-                <p>
-                  <b>Courier:</b>{" "}
-                  {order.courierName || "Not available"}
-                </p>
-
-                <p>
-                  <b>Tracking ID:</b>{" "}
-                  {order.trackingNumber || "Not available"}
-                </p>
+                <p><b>Courier:</b> {order.courierName || "Not available"}</p>
+                <p><b>Tracking ID:</b> {order.trackingNumber || "Not available"}</p>
 
                 {order.courierName && order.trackingNumber && (
                   <a
-                    href={getTrackingUrl(
-                      order.courierName,
-                      order.trackingNumber
-                    )}
+                    href={getTrackingUrl(order.courierName, order.trackingNumber)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block mt-3 px-4 py-2 bg-[#FFD700] text-black font-semibold rounded-lg hover:opacity-90 transition"
@@ -198,18 +206,16 @@ const fetchOrders = async () => {
             )}
 
             {/* CANCEL ORDER BUTTON */}
-              {order.status === "PENDING" && (
-                <div className="px-6 pb-2">
-                  <button
-                    onClick={() => cancelOrder(order.id)}
-                    className="w-full py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
-                  >
-                    ❌ Cancel Order
-                  </button>
-                </div>
-              )}
-
-
+            {order.status === "PENDING" && (
+              <div className="px-6 pb-2">
+                <button
+                  onClick={() => cancelOrder(order.id)}
+                  className="w-full py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
+                >
+                  ❌ Cancel Order
+                </button>
+              </div>
+            )}
 
             {/* PROGRESS TRACKER */}
             <div className="px-6 pb-6">
@@ -226,13 +232,10 @@ const fetchOrders = async () => {
                   initial={{ width: 0 }}
                   animate={{
                     width:
-                      order.status === "PENDING"
-                        ? "25%"
-                        : order.status === "ACCEPTED"
-                        ? "50%"
-                        : order.status === "SHIPPED"
-                        ? "75%"
-                        : "100%",
+                      order.status === "PENDING" ? "25%" : 
+                      order.status === "ACCEPTED" ? "50%" : 
+                      order.status === "SHIPPED" ? "75%" : 
+                      order.status === "CANCELLED" ? "0%" : "100%",
                   }}
                   transition={{ duration: 0.6 }}
                 />

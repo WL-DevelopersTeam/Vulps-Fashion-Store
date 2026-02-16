@@ -220,6 +220,38 @@
     border-color: #eb4d4b;
     color: #eb4d4b;
   }
+  /* Popup Notification Style */
+.cart-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #1a1a1a; /* Sleek dark theme */
+  color: #ffffff;
+  padding: 16px 28px;
+  border-radius: 4px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  font-weight: 500;
+  border-left: 4px solid #ff4d4d; /* Red accent for "Remove" */
+  animation: slideInRight 0.4s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Optional: Add a smooth hover effect to the remove button */
+.remove-btn:hover {
+  color: #ff4d4d;
+  text-decoration: underline;
+}
   
   /* --- Order Summary (Sidebar) --- */
   .cart-summary {

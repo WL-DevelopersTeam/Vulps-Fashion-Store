@@ -127,7 +127,7 @@ function SignUp() {
         <div className="auth-card">
           <div className="auth-header">
             <h1>Create Account</h1>
-            <p>Join Vulps Fashion Store and start shopping today!</p>
+            <p>Join Clovra Fashion Store and start shopping today!</p>
           </div>
           
           {errors.submit && (

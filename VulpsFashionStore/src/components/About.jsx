@@ -33,7 +33,7 @@ const About = () => {
             {/* --- Hero Section --- */}
             <section className="about-hero-section">
                 <img
-                    src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=800&fit=crop"
+                    src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Clovra Fashion"
                     className="about-bg-img"
                 />

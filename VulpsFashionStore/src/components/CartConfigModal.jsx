@@ -15,8 +15,7 @@ const COLOR_MAP = {
   Gray: "#9ca3af",
 };
 
-const SIZE_SET = ["XS", "S", "M", "L", "XL", "XXL"];
-
+// Removed the strict filter list to allow any size coming from the database
 export default function CartConfigModal({
   product,
   onClose,
@@ -25,20 +24,20 @@ export default function CartConfigModal({
 }) {
   // --- DATA NORMALIZATION ---
   const rawSizes = Array.isArray(product?.sizes)
-  ? product.sizes
-  : typeof product?.sizes === "string"
-  ? product.sizes.split(",").map(s => s.trim())
-  : [];
+    ? product.sizes
+    : typeof product?.sizes === "string"
+    ? product.sizes.split(",").map(s => s.trim())
+    : [];
 
-const rawColors = Array.isArray(product?.colors)
-  ? product.colors
-  : typeof product?.colors === "string"
-  ? product.colors.split(",").map(c => c.trim())
-  : [];
+  const rawColors = Array.isArray(product?.colors)
+    ? product.colors
+    : typeof product?.colors === "string"
+    ? product.colors.split(",").map(c => c.trim())
+    : [];
 
-const sizes = rawSizes.filter(v => SIZE_SET.includes(v));
-const colors = rawColors;
-
+  // FIX: Don't filter against a strict set. Use whatever the product data provides.
+  const sizes = rawSizes.filter(v => v !== ""); 
+  const colors = rawColors.filter(v => v !== "");
 
   // --- STATE ---
   const [selectedSize, setSelectedSize] = useState("");
@@ -50,17 +49,22 @@ const colors = rawColors;
     if (colors.length > 0) setSelectedColor(colors[0]);
   }, [product]);
 
+  // NEW: Wrapped confirmation to trigger the navbar update
+  const handleConfirm = async () => {
+    await onConfirm({ product, size: selectedSize, color: selectedColor, quantity });
+    
+    // SYNC: Shouts to the Navigation component to refresh the cart count
+    window.dispatchEvent(new Event('cartUpdated')); 
+  };
+
   return (
-    // OVERLAY
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       
-      {/* MODAL BOX: Changed max-w-4xl to max-w-2xl for smaller size */}
       <div 
         className="relative w-full max-w-2xl bg-[#121212] border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row text-white"
         onClick={(e) => e.stopPropagation()}
       >
         
-        {/* Close Button */}
         <button 
           onClick={onClose} 
           className="absolute top-3 right-3 z-10 p-1.5 bg-black/60 rounded-full text-white/70 hover:text-white hover:bg-[#d4af37] transition-all"
@@ -68,7 +72,7 @@ const colors = rawColors;
           <X size={18} />
         </button>
 
-        {/* LEFT: Image (Reduced width on desktop) */}
+        {/* LEFT: Image */}
         <div className="w-full md:w-5/12 bg-zinc-900 h-48 md:h-auto relative group">
           <img 
             src={product?.image} 
@@ -78,10 +82,8 @@ const colors = rawColors;
           <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent md:bg-gradient-to-r" />
         </div>
 
-        {/* RIGHT: Form (Reduced padding) */}
+        {/* RIGHT: Form */}
         <div className="w-full md:w-7/12 p-5 flex flex-col gap-4">
-          
-          {/* Header */}
           <div>
             <h2 className="text-xl font-playfair font-bold text-white leading-tight">{product?.name}</h2>
             <p className="text-lg font-bold text-[#d4af37] mt-1">₹ {(product?.price * quantity).toLocaleString()}</p>
@@ -89,7 +91,6 @@ const colors = rawColors;
 
           <div className="h-px bg-white/10 w-full" />
 
-          {/* SCROLLABLE AREA for smaller screens if content is long */}
           <div className="flex-1 flex flex-col gap-4 overflow-y-auto max-h-[40vh] md:max-h-none pr-1 custom-scrollbar">
             
             {/* SIZE */}
@@ -102,7 +103,7 @@ const colors = rawColors;
                       key={s}
                       onClick={() => setSelectedSize(s)}
                       className={cn(
-                        "w-9 h-9 rounded-md border flex items-center justify-center text-xs font-bold transition-all",
+                        "w-9 h-9 rounded-md border flex items-center justify-center text-xs font-bold transition-all uppercase",
                         selectedSize === s
                           ? "bg-[#d4af37] text-black border-[#d4af37] shadow-[0_0_10px_rgba(212,175,55,0.4)]"
                           : "bg-white/5 border-white/10 text-gray-400 hover:border-white/50 hover:text-white"
@@ -163,7 +164,6 @@ const colors = rawColors;
             </div>
           </div>
 
-          {/* ACTIONS */}
           <div className="flex gap-3 mt-auto pt-2">
             <button 
               onClick={onClose}
@@ -173,7 +173,7 @@ const colors = rawColors;
             </button>
             
             <button
-              onClick={() => onConfirm({ product, size: selectedSize, color: selectedColor, quantity })}
+              onClick={handleConfirm}
               disabled={loading}
               className="flex-[2] py-3 rounded-lg bg-[#d4af37] text-black font-bold uppercase tracking-wider text-[10px] hover:bg-white hover:scale-[1.02] transition-all shadow-lg disabled:opacity-50 flex items-center justify-center"
             >

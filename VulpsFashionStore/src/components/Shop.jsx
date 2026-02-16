@@ -52,7 +52,6 @@ const Shop = () => {
             setLoadingProducts(true);
             let url = "https://vulps-fashion-store.onrender.com/api/products";
             
-            // Priority: If color is selected, use color endpoint. Otherwise, use category.
             if (color) {
                 url = `https://vulps-fashion-store.onrender.com/api/products/color/${color}`;
             } else if (category && category !== "All Products") {
@@ -68,7 +67,7 @@ const Shop = () => {
                 price: p.price,
                 category: p.category,
                 colors: p.colors,
-                sizes: Array.isArray(p.sizes) ? p.sizes : [], // Safety normalization
+                sizes: p.sizes, // Passing raw data to Modal for normalization
                 image: p.imageUrl,
             }));
             setProducts(mappedProducts);
@@ -81,32 +80,35 @@ const Shop = () => {
         }
     };
 
-    // --- ADD TO CART ---
-const confirmAddToCart = async ({ product, size, color, quantity }) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-        navigate("/signin");
-        return;
-    }
+    // --- ADD TO CART (UPDATED WITH SYNC TRIGGER) ---
+    const confirmAddToCart = async ({ product, size, color, quantity }) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            navigate("/signin");
+            return;
+        }
 
-    try {
-        setAddingToCartId(product.id);
+        try {
+            setAddingToCartId(product.id);
 
-        await api.post(
-            `/api/cart/add?userId=${user.id}`,
-            { productId: product.id, size, color, quantity }
-        );
+            await api.post(
+                `/api/cart/add?userId=${user.id}`,
+                { productId: product.id, size, color, quantity }
+            );
 
-        setShowCartModal(false);
-        navigate("/cart");
+            // SYNC: Shout to the Navigation component to refresh the badge!
+            window.dispatchEvent(new Event('cartUpdated')); 
 
-    } catch (err) {
-        console.error(err);
-    } finally {
-        setAddingToCartId(null);
-    }
-};
+            setShowCartModal(false);
+            // Optional: Redirect to cart or stay on shop
+            navigate("/cart");
 
+        } catch (err) {
+            console.error("Failed to add to cart", err);
+        } finally {
+            setAddingToCartId(null);
+        }
+    };
 
     const resetFilters = () => {
         setSelectedCategory("All Products");
@@ -120,9 +122,15 @@ const confirmAddToCart = async ({ product, size, color, quantity }) => {
     const filteredProducts = products.filter((p) => {
         const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
         
-        // FIX: Added robust check for Array.isArray to prevent "some is not a function" error
+        // Fix: Robust array check
+        const pSizes = Array.isArray(p.sizes) 
+            ? p.sizes 
+            : typeof p.sizes === 'string' 
+            ? p.sizes.split(',').map(s => s.trim()) 
+            : [];
+
         const matchesSize = selectedSizes.length === 0 || 
-            (Array.isArray(p.sizes) && p.sizes.some((s) => selectedSizes.includes(s)));
+            pSizes.some((s) => selectedSizes.includes(s));
 
         return matchesSearch && matchesSize;
     });
@@ -229,10 +237,9 @@ const confirmAddToCart = async ({ product, size, color, quantity }) => {
                                     {paginatedProducts.map((product) => (
                                         <div
                                             key={product.id}
-                                            onClick={() => navigate(`/product/${product.id}`)}
                                             className="group bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden cursor-pointer hover:border-[#d4af37]/30 transition-all duration-500"
                                         >
-                                            <div className="relative aspect-[3/4] overflow-hidden">
+                                            <div className="relative aspect-[3/4] overflow-hidden" onClick={() => navigate(`/product/${product.id}`)}>
                                                 <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                                 <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-3 py-1 rounded-lg text-[#d4af37] text-sm font-bold border border-white/10">
                                                     ₹{product.price.toLocaleString()}
@@ -252,29 +259,15 @@ const confirmAddToCart = async ({ product, size, color, quantity }) => {
                                                     >
                                                         Add to Bag
                                                     </button>
-                                                    <button className="border border-white/10 text-white text-[10px] font-bold py-3 rounded-xl uppercase tracking-widest hover:bg-white/5 transition-colors">
+                                                    <button 
+                                                        onClick={() => navigate(`/product/${product.id}`)}
+                                                        className="border border-white/10 text-white text-[10px] font-bold py-3 rounded-xl uppercase tracking-widest hover:bg-white/5 transition-colors"
+                                                    >
                                                         Details
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {totalPages > 1 && (
-                                <div className="flex justify-center gap-3 pt-12">
-                                    {[...Array(totalPages)].map((_, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => setPage(i + 1)}
-                                            className={cn(
-                                                "w-12 h-12 rounded-xl border font-bold transition-all text-sm",
-                                                page === i + 1 ? "bg-[#d4af37] text-black border-[#d4af37]" : "text-gray-500 border-white/10 hover:border-white/40"
-                                            )}
-                                        >
-                                            {i + 1}
-                                        </button>
                                     ))}
                                 </div>
                             )}

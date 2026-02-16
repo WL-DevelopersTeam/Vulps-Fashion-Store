@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
 import axios from 'axios';
 
-
 function SignIn() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,14 +13,12 @@ function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
-React.useEffect(() => {
+  React.useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       navigate('/'); // redirect to home/dashboard if user exists
     }
-  }, [navigate])
-
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,65 +54,69 @@ React.useEffect(() => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (isLoading) return;
+    if (isLoading) return;
 
-  const newErrors = validate();
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    return;
-  }
-
-  setIsLoading(true);
-
-  try {
-    const response = await axios.post(
-      'https://vulps-fashion-store.onrender.com/api/auth/signin',
-      {
-        email: formData.email,
-        password: formData.password
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-        
-      }
-    );
-
-    // console.log("Login success:", response.data);
-
-// ✅ SAVE JWT TOKEN
-localStorage.setItem("token", response.data.token);
-
-// ✅ SAVE USER OBJECT
-const user = response.data.user;
-localStorage.setItem("user", JSON.stringify(user));
-localStorage.setItem("userId", user.id);
-
-// ✅ ROLE BASED REDIRECT
-if (user.role === "ADMIN") {
-  navigate("/admin");
-} else {
-  navigate("/");
-}
-
-  } catch (error) {
-    console.error('Login error:', error);
-
-    if (error.response && error.response.status === 401) {
-      setErrors({ submit: 'Invalid email or password' });
-    } else if (error.response && error.response.data) {
-      setErrors({ submit: error.response.data.message });
-    } else {
-      setErrors({ submit: 'Server error. Please try again.' });
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
 
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post(
+        'https://vulps-fashion-store.onrender.com/api/auth/signin',
+        {
+          email: formData.email,
+          password: formData.password
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // console.log("Login success:", response.data);
+
+      // ✅ SAVE JWT TOKEN
+      localStorage.setItem("token", response.data.token);
+
+      // ✅ SAVE USER OBJECT
+      const user = response.data.user;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("userId", user.id);
+
+      // ---------------------------------------------------------
+      // 🔥 THIS IS THE ONLY NEW LINE
+      // It tells the Navbar to refresh immediately
+      window.dispatchEvent(new Event('authChange'));
+      // ---------------------------------------------------------
+
+      // ✅ ROLE BASED REDIRECT
+      if (user.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+
+    } catch (error) {
+      console.error('Login error:', error);
+
+      if (error.response && error.response.status === 401) {
+        setErrors({ submit: 'Invalid email or password' });
+      } else if (error.response && error.response.data) {
+        setErrors({ submit: error.response.data.message });
+      } else {
+        setErrors({ submit: 'Server error. Please try again.' });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="auth-page">
@@ -179,9 +180,9 @@ if (user.role === "ADMIN") {
                 <input type="checkbox" disabled={isLoading} />
                 <span>Remember me</span>
               </label>
-              <Link to="/forgot-password" className="forgot-password">
+              {/* <Link to="/forgot-password" className="forgot-password">
                 Forgot Password?
-              </Link>
+              </Link> */}
             </div>
 
             <button 
