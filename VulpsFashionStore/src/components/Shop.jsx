@@ -23,7 +23,7 @@ const colors = [
 const CATEGORY_API_MAP = {
     "All Products": null,
     "Men": "Mens",
-    "Women": "Women",
+    "Women": "Womens",
     "Kids": "Kids",
 };
 
