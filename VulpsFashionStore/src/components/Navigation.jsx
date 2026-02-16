@@ -14,11 +14,15 @@ function Navigation() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Function to fetch total items from API
+  // --- FIXED FUNCTION: Counts unique items instead of total quantity ---
   const fetchCartCount = async (userId) => {
     try {
       const res = await api.get(`/api/cart?userId=${userId}`);
-      const totalItems = res.data.reduce((sum, item) => sum + item.quantity, 0);
+      
+      // FIX: Use .length to count unique product rows (matches Cart Page header)
+      // Old way (Quantity): const totalItems = res.data.reduce((sum, item) => sum + item.quantity, 0);
+      const totalItems = res.data.length; 
+      
       setCartCount(totalItems);
     } catch (error) {
       console.error("Error fetching cart count:", error);
@@ -47,7 +51,7 @@ function Navigation() {
       if (currentUser) fetchCartCount(currentUser.id);
     };
 
-    // --- NEW LISTENER: Syncs Navbar immediately on Login/Logout ---
+    // Listener for Login/Logout updates
     const handleAuthChange = () => {
       syncUserAuth();
     };
@@ -82,7 +86,6 @@ function Navigation() {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     
-    // Trigger signal so navbar updates to "Sign In" button immediately
     window.dispatchEvent(new Event('authChange'));
     
     setDropdownOpen(false);

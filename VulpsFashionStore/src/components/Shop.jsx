@@ -18,6 +18,9 @@ const colors = [
     { name: "Red", value: "red" },
     { name: "Blue", value: "blue" },
     { name: "Green", value: "green" },
+    {name: "white", value: "white"},
+    {name: "black", value: "black"},
+    {name : "orange", value: "orange"}
 ];
 
 const CATEGORY_API_MAP = {
