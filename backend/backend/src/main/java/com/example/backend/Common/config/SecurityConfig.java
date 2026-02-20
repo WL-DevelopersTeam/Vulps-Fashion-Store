@@ -95,8 +95,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         config.setAllowCredentials(true);
 
         config.setAllowedOrigins(List.of(
-            "https://vulpsfashion.vercel.app",
-            "https://vulpsfashion.netlify.app",
+            "https://clovra-fashion-store.netlify.app",
             "http://localhost:3000",
             "http://localhost:5173"
         ));

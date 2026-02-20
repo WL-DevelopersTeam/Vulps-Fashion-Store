@@ -17,7 +17,7 @@ import com.example.backend.returnorder.service.ReturnRequestService;
 @RequestMapping("/api/orders")
 @CrossOrigin(origins = {
     "http://localhost:3000",
-    "https://vulpsfashion.netlify.app",
+    "https://clovra-fashion-store.netlify.app",
     "http://localhost:5173"
 })
 public class OrderController {

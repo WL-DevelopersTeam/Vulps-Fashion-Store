@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @CrossOrigin(origins = {
     "http://localhost:3000",
-    "https://vulpsfashion.netlify.app",
+    "https://clovra-fashion-store.netlify.app",
     "http://localhost:5173"
 })
 @RestController
