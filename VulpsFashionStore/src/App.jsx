@@ -32,7 +32,7 @@ import CustomOrders from "./pages/CustomOrders.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import CustomerProfile from "./pages/CustomerProfile";
 import MyOrders from "./pages/MyOrders.jsx";
-import AdminReturns from "./pages/admin/AdminReturns";
+import AdminReturns from "./pages/AdminReturnOrders.jsx";
 
 /* ---------- MAIN LAYOUT ---------- */
 function Layout() {
