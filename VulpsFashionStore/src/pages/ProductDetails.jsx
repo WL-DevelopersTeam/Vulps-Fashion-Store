@@ -195,7 +195,7 @@ const ProductDetails = () => {
               </div>
 
               <div className="delivery-note">
-                🚚 Free delivery within 4–6 working days | 🔄 7-day returns
+                🚚  delivery within 4–6 working days | 🔄 7-day returns
               </div>
 
               {/* ACTION ROW: Quantity and Add to Cart */}

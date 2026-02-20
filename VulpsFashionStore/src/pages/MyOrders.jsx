@@ -239,12 +239,7 @@ const MyOrders = () => {
                     >
                       Return Order
                     </button>
-                    <button
-                      onClick={() => alert("Replace functionality coming soon!")}
-                      className="flex-1 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition"
-                    >
-                      Replace Order
-                    </button>
+                    
                   </div>
                 </div>
               )}
@@ -481,7 +476,7 @@ const MyOrders = () => {
                   onClick={() => startReturnFlow(order.id)}
                   className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
                 >
-                  🔄 Return / Replace Order
+                  🔄 Return Order
                 </button>
               </div>
             )}
