@@ -68,6 +68,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     .requestMatchers(HttpMethod.PUT, "/api/orders/*/decline").hasRole("ADMIN")
     .requestMatchers(HttpMethod.PUT, "/api/orders/*/ship").hasRole("ADMIN")
 
+    .requestMatchers(HttpMethod.POST, "/api/orders/*/return").hasRole("CUSTOMER")
+
             // Everything else needs login
             .anyRequest().authenticated()
         )

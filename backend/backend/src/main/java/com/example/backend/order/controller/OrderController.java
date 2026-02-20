@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import com.example.backend.order.dto.ShipmentRequest;
 import com.example.backend.order.model.Order;
 import com.example.backend.order.service.OrderService;
+import com.example.backend.returnorder.dto.ReturnRequestDTO;
+import com.example.backend.returnorder.service.ReturnRequestService;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -22,6 +24,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ReturnRequestService returnRequestService;
 
     // ================================
     // PLACE ORDER
@@ -102,5 +107,14 @@ public class OrderController {
 
             return ResponseEntity.ok("Order shipped with tracking");
         }
+
+        @PostMapping("/{orderId}/return")
+            public ResponseEntity<?> createReturnRequest(
+                    @PathVariable Long orderId,
+                    @RequestBody ReturnRequestDTO dto) {
+
+                returnRequestService.createReturnRequest(orderId, dto);
+                return ResponseEntity.ok("Return request submitted");
+            }
 
 }

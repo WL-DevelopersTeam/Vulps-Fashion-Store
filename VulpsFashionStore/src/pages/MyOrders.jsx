@@ -91,11 +91,12 @@ const MyOrders = () => {
     try {
       // Build payload dynamically based on user choice
       const payload = {
-        action: "RETURN",
-        refundMethod,
-        userId,
-        ...(refundMethod === "UPI" ? { upiId } : { bankDetails }),
-      };
+      refundMethod,
+      upiId: refundMethod === "UPI" ? upiId : null,
+      accountName: refundMethod === "BANK" ? bankDetails.accountName : null,
+      accountNumber: refundMethod === "BANK" ? bankDetails.accountNumber : null,
+      ifsc: refundMethod === "BANK" ? bankDetails.ifsc : null,
+    };
 
       await api.post(`/api/orders/${orderId}/return`, payload);
 
