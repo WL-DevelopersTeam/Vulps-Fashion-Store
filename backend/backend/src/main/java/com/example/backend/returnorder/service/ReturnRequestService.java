@@ -21,10 +21,17 @@ public class ReturnRequestService {
     @Autowired
     private ReturnRequestRepository returnRepository;
 
-    public void createReturnRequest(Long orderId, ReturnRequestDTO dto) {
+    public void createReturnRequest(Long orderId,
+                                ReturnRequestDTO dto,
+                                Long userId) {
 
     Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new RuntimeException("Order not found"));
+
+    // 🔐 SECURITY CHECK
+    if (!order.getUserId().equals(userId)) {
+        throw new RuntimeException("Unauthorized return request");
+    }
 
     if (!order.getStatus().equals("DELIVERED")
             && !order.getStatus().equals("SHIPPED")) {

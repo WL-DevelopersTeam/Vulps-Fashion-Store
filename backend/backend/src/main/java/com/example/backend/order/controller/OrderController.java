@@ -111,10 +111,13 @@ public class OrderController {
         @PostMapping("/{orderId}/return")
             public ResponseEntity<?> createReturnRequest(
                     @PathVariable Long orderId,
-                    @RequestBody ReturnRequestDTO dto) {
+                    @RequestBody ReturnRequestDTO dto,
+                    Authentication authentication) {
 
-                returnRequestService.createReturnRequest(orderId, dto);
+                Long userId = Long.parseLong(authentication.getName());
+
+                returnRequestService.createReturnRequest(orderId, dto, userId);
+
                 return ResponseEntity.ok("Return request submitted");
             }
-
 }
