@@ -33,6 +33,7 @@ export default function Sidebar() {
           <NavLink to="/admin/orders" onClick={() => setIsOpen(false)}>Orders</NavLink>
           <NavLink to="/admin/products" onClick={() => setIsOpen(false)}>Products</NavLink>
           <NavLink to="/admin/custom-orders" onClick={() => setIsOpen(false)}>Custom Orders</NavLink>
+          <NavLink to="/admin/returns" onClick={() => setIsOpen(false)}>Return Orders</NavLink>
           
         </nav>
 

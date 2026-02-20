@@ -32,6 +32,7 @@ import CustomOrders from "./pages/CustomOrders.jsx";
 import Checkout from "./pages/Checkout.jsx";
 import CustomerProfile from "./pages/CustomerProfile";
 import MyOrders from "./pages/MyOrders.jsx";
+import AdminReturns from "./pages/admin/AdminReturns";
 
 /* ---------- MAIN LAYOUT ---------- */
 function Layout() {
@@ -114,6 +115,16 @@ function Layout() {
             </AdminProtectedRoute>
           }
         />
+        <Route
+            path="/admin/returns"
+            element={
+              <AdminProtectedRoute>
+                <AdminLayout>
+                  <AdminReturns />
+                </AdminLayout>
+              </AdminProtectedRoute>
+            }
+          />
       </Routes>
     </>
   );
