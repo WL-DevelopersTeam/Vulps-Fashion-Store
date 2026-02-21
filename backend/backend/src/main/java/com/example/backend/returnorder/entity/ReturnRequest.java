@@ -22,7 +22,7 @@ public class ReturnRequest {
     private String status;
     private LocalDateTime requestedAt;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;
 
