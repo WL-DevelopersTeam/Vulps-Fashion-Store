@@ -31,17 +31,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = null;
 
-        // 🔥 Extract token from cookies
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("accessToken".equals(cookie.getName())) {
                     token = cookie.getValue();
-                    break;
                 }
             }
         }
 
-        // 🔐 If token exists, validate it
         if (token != null) {
             try {
                 Claims claims = jwtUtil.validateToken(token);

@@ -55,7 +55,7 @@ public class AuthController
                     .secure(true)            // true in production (HTTPS)
                     .path("/")
                     .maxAge(Duration.ofMinutes(15))   // change from 1 day to 15 mins
-                    .sameSite("Strict")
+                    .sameSite("None")
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
