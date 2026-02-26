@@ -54,6 +54,8 @@ export default function AdminReturns() {
         <thead>
           <tr>
             <th style={cellStyle}>Order ID</th>
+            <th style={cellStyle}>Customer Name</th>
+            <th style={cellStyle}>Email</th>
             <th style={cellStyle}>Refund Method</th>
             <th style={cellStyle}>UPI ID</th>
             <th style={cellStyle}>Account Name</th>
@@ -73,6 +75,8 @@ export default function AdminReturns() {
               whileHover={{ scale: 1.01 }}
             >
               <td style={cellStyle}>{r.order?.id}</td>
+              <td style={cellStyle}>{r.order?.fullName}</td>
+              <td style={cellStyle}>{r.order?.email}</td>
               <td style={cellStyle}>{r.refundMethod}</td>
               <td style={cellStyle}>{r.upiId || "-"}</td>
               <td style={cellStyle}>{r.accountName || "-"}</td>

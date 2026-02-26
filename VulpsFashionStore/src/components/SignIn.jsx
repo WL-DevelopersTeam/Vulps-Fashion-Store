@@ -73,17 +73,12 @@ function SignIn() {
           email: formData.email,
           password: formData.password
         },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
+         {
+            withCredentials: true   // 🔥 MUST ADD THIS
         }
       );
 
       // console.log("Login success:", response.data);
-
-      // ✅ SAVE JWT TOKEN
-      localStorage.setItem("token", response.data.token);
 
       // ✅ SAVE USER OBJECT
       const user = response.data.user;
