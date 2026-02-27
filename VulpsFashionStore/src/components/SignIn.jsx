@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
-import axios from 'axios';
+import api from '../api';
 
 function SignIn() {
   const navigate = useNavigate();
@@ -67,23 +67,21 @@ function SignIn() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        'https://vulps-fashion-store.onrender.com/api/auth/signin',
-        {
-          email: formData.email,
-          password: formData.password
-        },
-         {
-            withCredentials: true   // 🔥 MUST ADD THIS
-        }
-      );
+      const response = await api.post('/api/auth/signin', {
+        email: formData.email,
+        password: formData.password
+      });
 
       // console.log("Login success:", response.data);
 
       // ✅ SAVE USER OBJECT
-      const user = response.data.user;
+      const user = {
+        email: response.data.userId,
+        role: response.data.role
+      };
+
       localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("userId", user.id);
+      localStorage.setItem("userId", response.data.userId);
 
       // ---------------------------------------------------------
       // 🔥 THIS IS THE ONLY NEW LINE
