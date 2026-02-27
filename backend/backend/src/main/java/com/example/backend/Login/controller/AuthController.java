@@ -7,8 +7,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.Common.config.JwtUtil;
 import com.example.backend.Login.dto.SigninRequest;
@@ -18,31 +17,22 @@ import com.example.backend.Login.service.AuthService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-// import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
-// import org.springframework.http.ResponseCookie;
-import java.time.Duration;
-
-@CrossOrigin(origins = {
-    "http://localhost:3000",
-    "https://clovra-fashion-store.netlify.app",
-    "http://localhost:5173"
-})
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController 
-{
+@CrossOrigin(origins = {
+        "https://clovra-fashion-store.netlify.app",
+        "http://localhost:3000",
+        "http://localhost:5173"
+})
+public class AuthController {
+
     @Autowired
     private AuthService authService;
 
-     private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
     public AuthController(JwtUtil jwtUtil,
@@ -52,94 +42,94 @@ public class AuthController
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequest request) 
-    {
+    public String signup(@RequestBody SignupRequest request) {
         return authService.signup(request);
     }
 
     @PostMapping("/signin")
-        public ResponseEntity<?> signin(@RequestBody SigninRequest request,
-                                        HttpServletResponse response) {
+    public ResponseEntity<?> signin(@RequestBody SigninRequest request,
+                                    HttpServletResponse response) {
 
-            Map<String, Object> authResponse = authService.signin(request);
+        Map<String, Object> authResponse = authService.signin(request);
 
-            String userId = String.valueOf(authResponse.get("userId"));
-            String role = (String) authResponse.get("role");
+        String userId = String.valueOf(authResponse.get("userId"));
+        String role = (String) authResponse.get("role");
 
-            String accessToken = jwtUtil.generateAccessToken(
-                    userDetailsService.loadUserByUsername(userId), role);
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(userId);
 
-            String refreshToken = jwtUtil.generateRefreshToken(
-                    userDetailsService.loadUserByUsername(userId));
+        String accessToken =
+                jwtUtil.generateAccessToken(userDetails, role);
 
-            ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
-                    .httpOnly(true)
-                    .secure(true)
-                    .sameSite("None")
-                    .path("/")
-                    .maxAge(15 * 60)
-                    .build();
+        String refreshToken =
+                jwtUtil.generateRefreshToken(userDetails);
 
-            ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
-                    .httpOnly(true)
-                    .secure(true)
-                    .sameSite("None")
-                    .path("/")
-                    .maxAge(7 * 24 * 60 * 60)
-                    .build();
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+                .httpOnly(true)
+                .secure(true)        // ✅ Production
+                .sameSite("None")    // ✅ Production
+                .path("/")
+                .maxAge(15 * 60)
+                .build();
 
-            response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-            response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)        // ✅ Production
+                .sameSite("None")    // ✅ Production
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .build();
 
-            authResponse.remove("token");
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-            return ResponseEntity.ok(authResponse);
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse response) {
+
+        if (refreshToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-       @PostMapping("/refresh")
-            public ResponseEntity<?> refreshToken(
-                    @CookieValue(name = "refreshToken", required = false) String refreshToken,
-                    HttpServletResponse response) {
+        try {
+            Claims claims = jwtUtil.validateToken(refreshToken);
 
-                if (refreshToken == null) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                }
+            if (!"refresh".equals(claims.get("type", String.class))) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
 
-                try {
-                    Claims claims = jwtUtil.validateToken(refreshToken);
+            String username = claims.getSubject();
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(username);
 
-                    String tokenType = claims.get("type", String.class);
-                    if (!"refresh".equals(tokenType)) {
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                    }
+            String role = userDetails.getAuthorities()
+                    .iterator()
+                    .next()
+                    .getAuthority()
+                    .replace("ROLE_", "");
 
-                    String username = claims.getSubject();
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            String newAccessToken =
+                    jwtUtil.generateAccessToken(userDetails, role);
 
-                    String role = userDetails.getAuthorities()
-                            .iterator()
-                            .next()
-                            .getAuthority()
-                            .replace("ROLE_", "");
-
-                    String newAccessToken = jwtUtil.generateAccessToken(userDetails, role);
-
-                    ResponseCookie accessCookie = ResponseCookie.from("accessToken", newAccessToken)
+            ResponseCookie accessCookie =
+                    ResponseCookie.from("accessToken", newAccessToken)
                             .httpOnly(true)
-                            .secure(false)   // use true in production
-                            .sameSite("Lax") // use None in production
+                            .secure(true)      // ✅ Production
+                            .sameSite("None")  // ✅ Production
                             .path("/")
                             .maxAge(15 * 60)
                             .build();
 
-                    response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+            response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
-                    return ResponseEntity.ok("Token refreshed");
+            return ResponseEntity.ok("Token refreshed");
 
-                } catch (Exception e) {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-                }
-            }
-    
-    
-} 
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+}
