@@ -54,29 +54,20 @@ public class AuthService
     }
 
     // SIGN IN
+    public Map<String, Object> signin(SigninRequest request) {
 
-        public Map<String, Object> signin(SigninRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-            User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new RuntimeException("Invalid email or password"));
-
-            if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                throw new RuntimeException("Invalid email or password");
-            }
-
-            // 🔐 CREATE JWT TOKEN
-            String token = jwtUtil.generateToken(
-                    user.getId(),
-                    user.getRole()   // ADMIN or CUSTOMER
-            );
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Login successful");
-            response.put("token", token);   // ✅ ADD TOKEN
-            response.put("user", user);
-            System.out.println("ROLE FROM DB = " + user.getRole());
-
-            return response;
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
         }
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("userId", user.getEmail());   // must match UserDetails username
+        response.put("role", user.getRole());
+        response.put("message", "Login successful");
+
+        return response;
+    }
 }
