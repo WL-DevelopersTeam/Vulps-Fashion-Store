@@ -46,9 +46,10 @@ public class AuthController {
         return authService.signup(request);
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestBody SigninRequest request,
-                                    HttpServletResponse response) {
+   @PostMapping("/signin")
+public ResponseEntity<?> signin(@RequestBody SigninRequest request,
+                                HttpServletResponse response) {
+    try {
 
         Map<String, Object> authResponse = authService.signin(request);
 
@@ -66,16 +67,16 @@ public class AuthController {
 
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
                 .httpOnly(true)
-                .secure(true)        // ✅ Production
-                .sameSite("None")    // ✅ Production
+                .secure(true)
+                .sameSite("None")
                 .path("/")
                 .maxAge(15 * 60)
                 .build();
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-                .secure(true)        // ✅ Production
-                .sameSite("None")    // ✅ Production
+                .secure(true)
+                .sameSite("None")
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60)
                 .build();
@@ -84,7 +85,12 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
         return ResponseEntity.ok(authResponse);
+
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "Invalid email or password"));
     }
+}
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(

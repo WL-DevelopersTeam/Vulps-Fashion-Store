@@ -49,7 +49,7 @@ public class AuthService {
 
         if (user == null || 
             !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new org.springframework.security.authentication.BadCredentialsException("Invalid email or password");
+            throw new RuntimeException("Invalid email or password");
         }
 
         Map<String, Object> response = new HashMap<>();
