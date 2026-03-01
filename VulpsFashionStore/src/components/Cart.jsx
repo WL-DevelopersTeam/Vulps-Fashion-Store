@@ -9,16 +9,17 @@ function Cart() {
   const [loading, setLoading] = useState(true);
   const [popupMessage, setPopupMessage] = useState(""); 
 
-  const user = JSON.parse(localStorage.getItem("user")) || {};
-  const userId = user?.id;
+const user = JSON.parse(localStorage.getItem("user")) || {};
+const userId = user?.id;
 
-  useEffect(() => {
-    if (!userId) {
-      navigate("/SignIn");
-      return;
-    }
-    fetchCart();
-  }, [userId, navigate]);
+// Example: only fetch if user exists
+useEffect(() => {
+  if (!userId) {
+    navigate("/SignIn");
+    return;
+  }
+  fetchCart();
+}, [userId, navigate]);
 
   const fetchCart = async () => {
     try {
