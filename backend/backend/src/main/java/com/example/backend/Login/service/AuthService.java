@@ -45,11 +45,11 @@ public class AuthService {
     public Map<String, Object> signin(SigninRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() ->
-                        new RuntimeException("Invalid email or password"));
+                .orElse(null);
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+        if (user == null || 
+            !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new org.springframework.security.authentication.BadCredentialsException("Invalid email or password");
         }
 
         Map<String, Object> response = new HashMap<>();
