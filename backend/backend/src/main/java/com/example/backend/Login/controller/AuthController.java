@@ -22,11 +22,11 @@ import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {
-        "https://clovra-fashion-store.netlify.app",
-        "http://localhost:3000",
-        "http://localhost:5173"
-})
+// @CrossOrigin(origins = {
+//         "https://clovra-fashion-store.netlify.app",
+//         "http://localhost:3000",
+//         "http://localhost:5173"
+// })
 public class AuthController {
 
     @Autowired
