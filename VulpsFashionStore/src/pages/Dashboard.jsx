@@ -100,15 +100,14 @@ export default function Dashboard({ onMenuToggle }) {
                     {/* Filter Segmented Control */}
                     <div className="flex bg-white p-1 rounded-lg border border-gray-200 w-full sm:w-auto">
                         {["day", "week", "month"].map((f) => (
-                            <button
-                                key={f}
-                                onClick={() => setFilter(f)}
-                                className={`flex-1 sm:flex-none px-4 py-1.5 rounded-md text-xs md:text-sm font-medium transition-all
-                                ${filter === f ? "bg-blue-600 text-white shadow-md" : "text-gray-600 hover:bg-gray-50"}`}
-                            >
-                                {f.charAt(0).toUpperCase() + f.slice(1)}
-                            </button>
-                        ))}
+                                <button
+                                    key={f}
+                                    onClick={() => setFilter(f)}
+                                    className={`...`}
+                                >
+                                    {f?.charAt(0).toUpperCase() + f?.slice(1)}
+                                </button>
+                            ))}
                     </div>
                 </div>
             </div>

@@ -7,7 +7,7 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false); // State for mobile toggle
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")) || {};
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
