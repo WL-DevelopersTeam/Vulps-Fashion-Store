@@ -24,38 +24,41 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     // 🔥 VERY IMPORTANT: Skip auth endpoints
+    // @Override
+    // protected boolean shouldNotFilter(HttpServletRequest request) {
+    //     String path = request.getServletPath();
+    //     return path.startsWith("/api/auth/");
+    // }
+
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getServletPath();
-        return path.startsWith("/api/auth/");
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain filterChain)
+        throws ServletException, IOException {
+
+    String path = request.getRequestURI();
+
+    // 🔥 Skip auth endpoints safely
+    if (path.startsWith("/api/auth/")) {
+        filterChain.doFilter(request, response);
+        return;
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+    String token = null;
 
-        String token = null;
-
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("accessToken".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                }
+    if (request.getCookies() != null) {
+        for (Cookie cookie : request.getCookies()) {
+            if ("accessToken".equals(cookie.getName())) {
+                token = cookie.getValue();
             }
         }
+    }
 
-        if (token != null) {
-            try {
-                Claims claims = jwtUtil.validateToken(token);
+    if (token != null) {
+        try {
+            Claims claims = jwtUtil.validateToken(token);
 
-                String tokenType = claims.get("type", String.class);
-                if (!"access".equals(tokenType)) {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-
+            if ("access".equals(claims.get("type", String.class))) {
                 String role = claims.get("role", String.class);
 
                 UsernamePasswordAuthenticationToken authentication =
@@ -68,14 +71,13 @@ public class JwtFilter extends OncePerRequestFilter {
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            } catch (Exception e) {
-                // 🔥 DO NOT block request
-                SecurityContextHolder.clearContext();
             }
+
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
         }
-
-        filterChain.doFilter(request, response);
-
     }
+
+    filterChain.doFilter(request, response);
+}
 }
