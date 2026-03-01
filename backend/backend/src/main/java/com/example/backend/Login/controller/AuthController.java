@@ -46,50 +46,44 @@ public class AuthController {
         return authService.signup(request);
     }
 
-   @PostMapping("/signin")
+@PostMapping("/signin")
 public ResponseEntity<?> signin(@RequestBody SigninRequest request,
                                 HttpServletResponse response) {
-    try {
 
-        Map<String, Object> authResponse = authService.signin(request);
+    Map<String, Object> authResponse = authService.signin(request);
 
-        String userId = String.valueOf(authResponse.get("userId"));
-        String role = (String) authResponse.get("role");
+    String userId = String.valueOf(authResponse.get("userId"));
+    String role = (String) authResponse.get("role");
 
-        UserDetails userDetails =
-                userDetailsService.loadUserByUsername(userId);
+    UserDetails userDetails =
+            userDetailsService.loadUserByUsername(userId);
 
-        String accessToken =
-                jwtUtil.generateAccessToken(userDetails, role);
+    String accessToken =
+            jwtUtil.generateAccessToken(userDetails, role);
 
-        String refreshToken =
-                jwtUtil.generateRefreshToken(userDetails);
+    String refreshToken =
+            jwtUtil.generateRefreshToken(userDetails);
 
-        ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .path("/")
-                .maxAge(15 * 60)
-                .build();
+    ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .maxAge(15 * 60)
+            .build();
 
-        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .path("/")
-                .maxAge(7 * 24 * 60 * 60)
-                .build();
+    ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+            .httpOnly(true)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .maxAge(7 * 24 * 60 * 60)
+            .build();
 
-        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+    response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+    response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-        return ResponseEntity.ok(authResponse);
-
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("message", "Invalid email or password"));
-    }
+    return ResponseEntity.ok(authResponse);
 }
 
     @PostMapping("/refresh")
