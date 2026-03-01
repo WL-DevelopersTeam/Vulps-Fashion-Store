@@ -21,8 +21,8 @@ const MyOrders = () => {
     },
   });
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user?.id;
+const user = JSON.parse(localStorage.getItem("user")) || {};
+const userId = user?.id;
 
   useEffect(() => {
     if (userId) fetchOrders();
