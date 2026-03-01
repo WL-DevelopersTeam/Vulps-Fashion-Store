@@ -15,12 +15,15 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Prevent infinite loop
-    if (originalRequest.url.includes("/api/auth/refresh")) {
+    // ❌ Do NOT refresh for auth endpoints
+    if (
+      originalRequest.url.includes("/api/auth/signin") ||
+      originalRequest.url.includes("/api/auth/signup") ||
+      originalRequest.url.includes("/api/auth/refresh")
+    ) {
       return Promise.reject(error);
     }
 
-    // Only refresh on 401 (NOT 403)
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
