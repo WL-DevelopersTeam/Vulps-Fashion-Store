@@ -30,9 +30,10 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
 
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            
-            // Public endpoints
-            .requestMatchers("/api/auth/**").permitAll()
+
+            .requestMatchers("/api/auth/signup").permitAll()
+            .requestMatchers("/api/auth/signin").permitAll()
+            .requestMatchers("/api/auth/refresh").permitAll()
 
             // Public GET only (view products)
             .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
