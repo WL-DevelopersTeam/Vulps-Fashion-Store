@@ -45,12 +45,23 @@ public class AuthService {
     public Map<String, Object> signin(SigninRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElse(null);
+        .orElse(null);
 
-        if (user == null || 
-            !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
-        }
+System.out.println("Email entered: " + request.getEmail());
+System.out.println("Password entered: [" + request.getPassword() + "]");
+
+if (user != null) {
+    System.out.println("Stored hash: " + user.getPassword());
+    System.out.println("Match result: " + 
+        passwordEncoder.matches(request.getPassword(), user.getPassword()));
+} else {
+    System.out.println("User NOT found in database");
+}
+
+if (user == null ||
+    !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+    throw new RuntimeException("Invalid email or password");
+}
 
         Map<String, Object> response = new HashMap<>();
         response.put("userId", user.getEmail());
