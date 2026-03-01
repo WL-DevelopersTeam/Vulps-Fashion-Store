@@ -70,7 +70,10 @@ function SignIn() {
       const response = await api.post('/api/auth/signin', {
         email: formData.email,
         password: formData.password
-      });
+      },
+    { withCredentials: true } 
+    
+    );
 
       // console.log("Login success:", response.data);
 
