@@ -5,36 +5,52 @@ import api from '../api';
 
 function SignIn() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
-    email: "",
-    password: ""
+    email: '',
+    password: ''
   });
-
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      navigate("/");
+      navigate('/'); // redirect to home/dashboard if user exists
     }
   }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-
+    // Clear error when user starts typing
     if (errors[name]) {
-      setErrors((prev) => ({
+      setErrors(prev => ({
         ...prev,
-        [name]: ""
+        [name]: ''
       }));
     }
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
@@ -42,26 +58,38 @@ function SignIn() {
 
     if (isLoading) return;
 
-    if (!formData.email || !formData.password) {
-      setErrors({ submit: "Email and password are required" });
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response = await api.post("/api/auth/signin", formData);
+      const response = await api.post('/api/auth/signin', {
+        email: formData.email,
+        password: formData.password
+      });
 
+      // console.log("Login success:", response.data);
+
+      // ✅ SAVE USER OBJECT
       const user = {
-        userId: response.data.userId,
+        email: response.data.userId,
         role: response.data.role
       };
 
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("userId", response.data.userId);
 
-      window.dispatchEvent(new Event("authChange"));
+      // ---------------------------------------------------------
+      // 🔥 THIS IS THE ONLY NEW LINE
+      // It tells the Navbar to refresh immediately
+      window.dispatchEvent(new Event('authChange'));
+      // ---------------------------------------------------------
 
+      // ✅ ROLE BASED REDIRECT
       if (user.role === "ADMIN") {
         navigate("/admin");
       } else {
@@ -69,14 +97,14 @@ function SignIn() {
       }
 
     } catch (error) {
-      console.error("Login error:", error);
+      console.error('Login error:', error);
 
-      if (error.response?.status === 401) {
-        setErrors({ submit: "Invalid email or password" });
-      } else if (error.response?.status === 403) {
-        setErrors({ submit: "Access denied. Contact administrator." });
+      if (error.response && error.response.status === 401) {
+        setErrors({ submit: 'Invalid email or password' });
+      } else if (error.response && error.response.data) {
+        setErrors({ submit: error.response.data.message });
       } else {
-        setErrors({ submit: "Server error. Please try again." });
+        setErrors({ submit: 'Server error. Please try again.' });
       }
     } finally {
       setIsLoading(false);

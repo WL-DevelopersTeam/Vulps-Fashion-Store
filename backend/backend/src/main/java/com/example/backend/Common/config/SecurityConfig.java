@@ -28,6 +28,9 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
 
+
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            
             // Public endpoints
             .requestMatchers("/api/auth/**").permitAll()
 
