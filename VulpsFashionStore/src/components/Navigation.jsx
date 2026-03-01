@@ -16,18 +16,14 @@ function Navigation() {
 
   // --- FIXED FUNCTION: Counts unique items instead of total quantity ---
   const fetchCartCount = async (userId) => {
-    try {
-      const res = await api.get(`/api/cart?userId=${userId}`);
-      
-      // FIX: Use .length to count unique product rows (matches Cart Page header)
-      // Old way (Quantity): const totalItems = res.data.reduce((sum, item) => sum + item.quantity, 0);
-      const totalItems = res.data.length; 
-      
-      setCartCount(totalItems);
-    } catch (error) {
-      console.error("Error fetching cart count:", error);
-    }
-  };
+  if (!userId) return; // ✅ Skip if no user
+  try {
+    const res = await api.get(`/api/cart?userId=${userId}`);
+    setCartCount(res.data.length);
+  } catch (error) {
+    console.error("Error fetching cart count:", error);
+  }
+};
 
   // Helper function to sync user data from localStorage
   const syncUserAuth = () => {
@@ -119,15 +115,15 @@ function Navigation() {
           {user ? (
             <div className="user-dropdown-wrapper" ref={dropdownRef}>
               <button className="user-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                <div className="user-avatar">{user.name.charAt(0).toUpperCase()}</div>
+                <div className="user-avatar">{user?.name ? user.name.charAt(0).toUpperCase() : "?"}</div>
               </button>
               {dropdownOpen && (
                 <div className="user-dropdown">
                   <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Profile</Link>
                   <Link to="/my-orders" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Orders</Link>
-                  {user.role === "ADMIN" && (
-                    <Link to="/admin" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Dashboard</Link>
-                  )}
+                  {user?.role === "ADMIN" && (
+  <Link to="/admin" className="dropdown-item" onClick={() => setDropdownOpen(false)}>Dashboard</Link>
+)}
                   <button className="dropdown-item logout-btn" onClick={handleLogout}>Logout</button>
                 </div>
               )}
