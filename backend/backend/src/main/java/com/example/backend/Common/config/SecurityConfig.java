@@ -91,32 +91,36 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+        public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration config = new CorsConfiguration();
+            CorsConfiguration config = new CorsConfiguration();
 
-        // 🔥 VERY IMPORTANT
-        config.setAllowCredentials(true);
+            config.setAllowCredentials(true);
 
-        config.setAllowedOrigins(List.of(
-            "https://clovra-fashion-store.netlify.app",
-            "http://localhost:3000",
-            "http://localhost:5173"
-        ));
+            config.setAllowedOrigins(List.of(
+                "https://clovra-fashion-store.netlify.app"
+            ));
 
-        config.setAllowedMethods(List.of(
-            "GET", "POST", "PUT", "DELETE", "OPTIONS"
-        ));
+            config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+            ));
 
-        // 🔥 MUST BE *
-        config.setAllowedHeaders(List.of("*"));
+            config.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type",
+                "X-Requested-With"
+            ));
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+            config.setExposedHeaders(List.of(
+                "Set-Cookie"
+            ));
 
-        return source;
-    }
+            UrlBasedCorsConfigurationSource source =
+                    new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", config);
+
+            return source;
+        }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
