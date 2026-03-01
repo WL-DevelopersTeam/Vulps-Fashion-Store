@@ -9,7 +9,7 @@ function Cart() {
   const [loading, setLoading] = useState(true);
   const [popupMessage, setPopupMessage] = useState(""); 
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user")) || {};
   const userId = user?.id;
 
   useEffect(() => {
