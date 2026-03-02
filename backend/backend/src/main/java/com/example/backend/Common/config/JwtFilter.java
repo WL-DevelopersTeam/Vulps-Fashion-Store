@@ -24,11 +24,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     // 🔥 VERY IMPORTANT: Skip auth endpoints
-    // @Override
-    // protected boolean shouldNotFilter(HttpServletRequest request) {
-    //     String path = request.getServletPath();
-    //     return path.startsWith("/api/auth/");
-    // }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/api/auth/");
+    }
 
     @Override
 protected void doFilterInternal(HttpServletRequest request,
@@ -36,13 +36,13 @@ protected void doFilterInternal(HttpServletRequest request,
                                 FilterChain filterChain)
         throws ServletException, IOException {
 
-    String path = request.getRequestURI();
+    // String path = request.getRequestURI();
 
     // 🔥 Skip auth endpoints safely
-    if (path.startsWith("/api/auth/")) {
-        filterChain.doFilter(request, response);
-        return;
-    }
+    // if (path.startsWith("/api/auth/")) {
+    //     filterChain.doFilter(request, response);
+    //     return;
+    // }
 
     String token = null;
 
