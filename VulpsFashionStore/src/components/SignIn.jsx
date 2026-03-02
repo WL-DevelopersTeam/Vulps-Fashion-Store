@@ -79,7 +79,7 @@ function SignIn() {
 
       // ✅ SAVE USER OBJECT
       const user = {
-        email: response.data.userId,
+        id: response.data.userId,
         role: response.data.role
       };
 
