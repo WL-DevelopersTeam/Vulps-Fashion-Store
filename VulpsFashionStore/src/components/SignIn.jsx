@@ -80,7 +80,8 @@ function SignIn() {
       // ✅ SAVE USER OBJECT
       const user = {
         id: response.data.userId,
-        role: response.data.role
+        role: response.data.role,
+        name: response.data.name 
       };
 
       localStorage.setItem("user", JSON.stringify(user));
