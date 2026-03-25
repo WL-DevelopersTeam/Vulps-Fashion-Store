@@ -66,6 +66,7 @@ if (user == null ||
         Map<String, Object> response = new HashMap<>();
         response.put("userId", user.getId());
         response.put("role", user.getRole());
+        response.put("name", user.getName()); // ✅ ADD THIS
         response.put("message", "Login successful");
 
         return response;
